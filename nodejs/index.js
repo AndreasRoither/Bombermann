@@ -3,6 +3,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+const ConsoleColor = require('./colorcodes.js');
+
 var currentdate = new Date();
 var datetime = "Start time: " + currentdate.getDate() + "/" +
     (currentdate.getMonth() + 1) + "/" +
@@ -18,15 +20,18 @@ app.get('/', function(req, res, next) {
 });
 
 io.on('connection', function(client) {
-    console.log('\x1b[1m\x1b[32m%s\x1b[0m', '\nServer');
+    console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\nServer' + ConsoleColor.Reset);
     console.log('\n\tClient connected...\n\tid: %s', client.id);
 
     client.on('join', function(data) {
-        console.log('\x1b[1m\x1b[36m%s\x1b[0m', '\nClient');
-        console.log(' \n\tclient message\tMessage: %s', data);
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
+        console.log(' \n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'joined' + ConsoleColor.Reset + '\tMessage: %s', data);
     });
 
     client.on('messages', function(data) {
+        console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\nClient' + ConsoleColor.Reset);
+        console.log('\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'message' + ConsoleColor.Reset + '\tMessage: %s', data);
+
         client.emit('broad', data);
         client.broadcast.emit('broad', data);
     });
