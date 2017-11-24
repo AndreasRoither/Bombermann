@@ -20,6 +20,7 @@
     socket.on('connect', function(data) {
         socket.emit('join', 'Hello World from client');
     });
+
     socket.on('broad', function(data) {
         $('#future').append(data + "<br/>");
     });

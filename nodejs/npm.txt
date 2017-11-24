@@ -2,4 +2,4 @@ npm init
 npm install socket.io express --save
 npm install jquery --save
 npm install express --save 
-node app.js
+node index.js
