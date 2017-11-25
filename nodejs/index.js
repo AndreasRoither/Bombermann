@@ -25,7 +25,8 @@ io.on('connection', function(client) {
 
     client.on('join', function(data) {
         console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
-        console.log(' \n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'joined' + ConsoleColor.Reset + '\tMessage: %s', data);
+        console.log('\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'joined' + ConsoleColor.Reset);
+        console.log('\tIP Address: ' + data);
     });
 
     client.on('messages', function(data) {
@@ -37,13 +38,9 @@ io.on('connection', function(client) {
     });
 });
 
-
-
 server.listen(4200, function() {
     var host = server.address().address;
     var port = server.address().port;
-
-    console.log(host);
 
     console.log('\n-- Server listening --');
     console.log(datetime);
