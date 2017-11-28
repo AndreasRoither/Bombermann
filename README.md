@@ -10,6 +10,7 @@ Download the repository. Start the Node JS Server with: node index.js. After tha
 
 ### INFO
 Bombermann is undergoing constant changing. 
+[Page](https://andiroither.github.io/Bombermann/)
 
 ### Technology used
 Built with
