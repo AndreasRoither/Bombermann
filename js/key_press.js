@@ -50,6 +50,7 @@ window.addEventListener("keydown", function(event) {
 
 window.addEventListener("keyup", function(event) {
   if ( event.which == 13 ) { // Enter Key
+    draw_background();
   }
   if ( event.which == 97 || event.which == 65) { // a || A Key
     movLeft = 0;
