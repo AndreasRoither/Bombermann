@@ -1,60 +1,56 @@
 <!doctype html>
 
 <head>
-  <meta charset="utf-8">
-  <title>Bomberman</title>
-  <link href="css/style.css" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Bombermann</title>
+    <link href="css/style.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-  <header></header>
-  <div id="main">
-    <article>
-      <button onclick="show_snackbar()">Show Snackbar Alert</button>
-    </article>
 
-    <nav>
-      <div class="header" id="myHeader">
-        <h2>Client Input</h2>
-      </div>
-      <ul id="left-list">
-        <li><div class="alert">
-            <span class="closebtn">&times;</span>
-            Blind Text
-          </div>
-        </li>
-      </ul>
-    </nav>
-    <aside>
-      <div class="alert">
-        <span class="closebtn">&times;</span>
-        Connection failed
-      </div>
+    <div class="header">
+        <h1>Bombermann</h1>
+    </div>
 
-      <div class="alert success">
-        <span class="closebtn">&times;</span>
-        Connection established
-      </div>
+    <div class="topnav">
+        <a href="#">Multiplayer</a>
+        <a href="#">Singleplayer</a>
+        <a href="#">Contact</a>
+    </div>
 
-      <div class="alert info">
-        <span class="closebtn">&times;</span>
-        Player joined
-      </div>
+    <div class="row">
+        <div class="column side">
+            <div class="divheader" id="servermsg">
+                <h2>Client Input</h2>
+            </div>
+            <ul id="left-list">
+                <li>
+                    <div class="alert">
+                        <span class="closebtn">&times;</span> Blind Text
+                    </div>
+                </li>
+            </ul>
+            <button onclick="show_snackbar()">Show Snackbar Alert</button>
+        </div>
+        <div class="column middle">
+            <h2>Main Content</h2>
+            <p>test</p>
+        </div>
+        <div class="column side">
+            <div class="divheader" id="playermsg">
+                <h2>Player messages</h2>
+            </div>
+            <h2>Side</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
+        </div>
+        <div id="snackbar">You are connected!</div>
+    </div>
+    <div class="footer">
+        <p>Bombermann</p>
+    </div>
 
-      <div class="alert warning">
-        <span class="closebtn">&times;</span>
-        Server connection problem
-      </div>
-    </aside>
-
-    <div id="snackbar">You are connected!</div>
-  </div>
-  <footer>
-    Bomberman
-  </footer>
-
-  <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-  <script src="js/alertboxes.js"></script>
-  <script src="js/key_press.js"></script>
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="js/alertboxes.js"></script>
+    <script src="js/key_press.js"></script>
 </body>

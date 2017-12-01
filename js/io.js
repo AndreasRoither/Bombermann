@@ -8,7 +8,6 @@ socket.on('welcome', function(id, playerInfo) {
 
 });
 
-
 socket.on('game-not-found', function(id, playerInfo) {
 
 });
