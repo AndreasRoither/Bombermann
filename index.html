@@ -1,4 +1,5 @@
 <!doctype html>
+<html>
 
 <head>
     <meta charset="utf-8">
@@ -10,39 +11,93 @@
 <body>
 
     <div class="header">
-        <h1>Bombermann</h1>
+        <div class="image">
+            <img src="img/Bomb/Bomb_f02.png">
+        </div>
+        <div class="text">Bombermann</div>
     </div>
 
-    <div class="topnav">
-        <a href="#">Multiplayer</a>
-        <a href="#">Singleplayer</a>
-        <a href="#">Contact</a>
+    <div class="topnav" id="topnav1">
+        <a href="#multi" class="active">Multiplayer</a>
+        <a href="#single">Singleplayer</a>
+        <a href="#contact">Contact</a>
+        <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="make_responsive()">&#9776;</a>
     </div>
 
     <div class="row">
         <div class="column side">
-            <div class="divheader" id="servermsg">
-                <h2>Client Input</h2>
+            <div class="divheader">
+                <h2>Server Output</h2>
             </div>
-            <ul id="left-list">
+            <ul id="serveroutput">
                 <li>
                     <div class="alert">
                         <span class="closebtn">&times;</span> Blind Text
                     </div>
                 </li>
+                <li>
+                    <div class="alert success">
+                        <span class="closebtn">&times;</span> Blind Text
+                    </div>
+                </li>
             </ul>
-            <button onclick="show_snackbar()">Show Snackbar Alert</button>
         </div>
         <div class="column middle">
             <h2>Main Content</h2>
-            <p>test</p>
+            <button onclick="show_snackbar()">Show Connection Alert</button>
         </div>
         <div class="column side">
             <div class="divheader" id="playermsg">
                 <h2>Player messages</h2>
             </div>
-            <h2>Side</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit..</p>
+            <ul id="playermsg">
+                <li>
+                    <div class="msg-container">
+                        <img src="img/Bomb/Bomb_f02.png" alt="Avatar" style="width:10%;">
+                        <p>Test1</p>
+                        <span class="time-right">11:10</span>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="msg-container darker">
+                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" class="right" style="width:10%;">
+                        <p>Test2</p>
+                        <span class="time-left">11:09</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="msg-container">
+                        <img src="img/Bomb/Bomb_f02.png" alt="Avatar" style="width:10%;">
+                        <p>Whoop</p>
+                        <span class="time-right">11:07</span>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="msg-container darker">
+                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" class="right" style="width:10%;">
+                        <p>Hello</p>
+                        <span class="time-left">11:05</span>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="msg-container">
+                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" style="width:10%;">
+                        <p>Hello</p>
+                        <span class="time-right">11:04</span>
+                    </div>
+                </li>
+
+                <li>
+                    <div class="msg-container darker">
+                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" class="right" style="width:10%;">
+                        <p>Hello</p>
+                        <span class="time-left">11:03</span>
+                    </div>
+                </li>
+            </ul>
         </div>
         <div id="snackbar">You are connected!</div>
     </div>
@@ -51,6 +106,10 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="js/alertboxes.js"></script>
-    <script src="js/key_press.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
+    <script src="js/site.js"></script>
+    <script src="js/io.js"></script>
+    <script src="js/functions.js"></script>
 </body>
+
+</html>

@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var port_to_listen = 4200;
 
 var currentdate = new Date();
 var datetime = "Start time: " + currentdate.getDate() + "/" +
@@ -224,7 +225,7 @@ io.on('connection', function(client) {
     });
 });
 
-server.listen(4200, function() {
+server.listen(port_to_listen, function() {
     var host = server.address().address;
     var port = server.address().port;
 
