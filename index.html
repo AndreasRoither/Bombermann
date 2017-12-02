@@ -86,13 +86,13 @@
             </div>
         </div>
         <div id="infopopup" class="infopopup">You are connected!</div>
-        <div class="popup">
-            <div class="container stretch">
-                <button class="tablink" onclick="openPage('create', this)" id="defaultOpen">Create</button>
-                <button class="tablink" onclick="openPage('join', this)">Join</button>
+        <div class="popup animate" id="startPopup">
+            <div class="container">
+                <button class="tablink" onclick="openPage('create', this, 'gray')" id="defaultOpen">Create</button>
+                <button class="tablink" onclick="openPage('join', this, 'gray')">Join</button>
 
                 <div id="create" class="tabcontent">
-                    <form action="">
+                    <form action="#">
                         <label for="fname">Player name</label>
                         <input type="text" id="fname" name="firstname" placeholder="Your name..">
 
@@ -104,11 +104,11 @@
                         </select>
 
                         <input type="submit" value="Join" class="btn success right bottom">
-                        <input type="submit" value="Cancel" class="btn danger left bottom">
                     </form>
+                    <button value="Cancel" class="btn danger left bottom" onclick="closePopup()">Cancel</button>
                 </div>
                 <div id="join" class="tabcontent">
-                    <form action="">
+                    <form action="#">
                         <label for="fname">Player name</label>
                         <input type="text" id="fname" name="firstname" placeholder="Your name..">
 
@@ -116,13 +116,10 @@
                         <input type="text" id="fname" name="firstname" placeholder="Game id..">
 
                         <input type="submit" value="Join" class="btn success right bottom">
-                        <input type="submit" value="Cancel" class="btn danger left bottom">
                     </form>
+                    <button value="Cancel" class="btn danger left bottom" onclick="closePopup()">Cancel</button>
                 </div>
             </div>
-            <span class="close">
-                <button class="btn success">X</button>
-            </span>
         </div>
     </div>
     <div class="footer">
