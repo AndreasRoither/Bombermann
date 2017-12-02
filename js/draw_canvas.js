@@ -18,6 +18,8 @@ var Bomb = new Image();
 Bomb.src = './img/Bomb/Bomb_f01.png';
 var Player = new Image();
 Player.src = './img/Bomberman/test.png';
+var Flame = new Image();
+Flame.src = './img/Flame/Flame_f00.png';
 
 /* **************** */
 /* Canvas Functions */

@@ -4,7 +4,6 @@ var movLeft = 0;
 var movRight = 0;
 var movUp = 0;
 var movDown = 0;
-//var layBomb = 0;
 
 window.addEventListener("keydown", function(event) {
 
@@ -46,8 +45,7 @@ window.addEventListener("keydown", function(event) {
     movDown = 1;
     event.preventDefault();
   }
-
-  console.log( event.type + ": " +  event.keyCode ); //debug
+  //console.log( event.type + ": " +  event.keyCode ); //debug
 })
 
 window.addEventListener("keyup", function(event) {
@@ -86,5 +84,5 @@ window.addEventListener("keyup", function(event) {
     movDown = 0;
     event.preventDefault();
   }
-  console.log( event.type + ": " +  event.keyCode ); //debug
+  //console.log( event.type + ": " +  event.keyCode ); //debug
 })
