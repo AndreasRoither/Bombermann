@@ -1,6 +1,6 @@
 // connect
 
-var socket = io.connect('https://localhost:4200/');
+//var socket = io.connect('https://localhost:4200');
 
 // event listeners
 
