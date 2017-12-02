@@ -12,7 +12,7 @@
 
     <div class="header">
         <div class="image">
-            <img src="img/Bomb/Bomb_f02.png">
+            <img class="pulse" src="img/Bomb/Bomb_f02.png">
         </div>
         <div class="text">Bombermann</div>
     </div>
@@ -27,28 +27,35 @@
     <div class="row">
         <div class="column side">
             <div class="divheader">
-                <h2>Server Output</h2>
+                <h2>Players</h2>
             </div>
             <ul id="serveroutput">
                 <li>
-                    <div class="alert">
-                        <span class="closebtn">&times;</span> Blind Text
+                    <div class="msg-container">
+                        <img src="img/Bomberman/Front/Bman_F_f00_blue.png" alt="Avatar" style="width:10%;">
+                        <p>Andi</p>
+                        <span class="player-status ready">ready</span>
                     </div>
                 </li>
                 <li>
-                    <div class="alert success">
+                    <div class="msg-container">
+                        <img src="img/Bomberman/Front/Bman_F_f00_yellow.png" alt="Avatar" style="width:10%;">
+                        <p>Andi</p>
+                        <span class="player-status not-ready">not ready</span>
+                    </div>
+                </li>
+                <li>
+                    <div class="alert info">
                         <span class="closebtn">&times;</span> Blind Text
                     </div>
                 </li>
             </ul>
-            <button onclick="start_game()">Start Game</button>
+            <button class="btn success" onclick="start_game()">Start Game</button>
+            <button class="btn info" onclick="show_infobar()">Show Connection Alert</button>
         </div>
         <div class="column middle">
-            <h2>Main Content</h2>
-            <button onclick="show_snackbar()">Show Connection Alert</button>
-            <canvas id="gamearea" width="665" height="455" style="border:1px solid #000000;">
+            <canvas class="canvas" id="gamearea" width="665" height="455" style="border:1px solid #000000;">
             </canvas>
-            <p>test</p>
         </div>
         <div class="column side">
             <div class="divheader" id="playermsg">
@@ -57,7 +64,7 @@
             <ul id="playermsg">
                 <li>
                     <div class="msg-container">
-                        <img src="img/Bomb/Bomb_f02.png" alt="Avatar" style="width:10%;">
+                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" style="width:10%;">
                         <p>Test1</p>
                         <span class="time-right">11:10</span>
                     </div>
@@ -65,45 +72,58 @@
 
                 <li>
                     <div class="msg-container darker">
-                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" class="right" style="width:10%;">
+                        <img src="img/Bomb/Bomb_f02.png" alt="Avatar" class="right" style="width:10%;">
                         <p>Test2</p>
                         <span class="time-left">11:09</span>
                     </div>
                 </li>
-                <li>
-                    <div class="msg-container">
-                        <img src="img/Bomb/Bomb_f02.png" alt="Avatar" style="width:10%;">
-                        <p>Whoop</p>
-                        <span class="time-right">11:07</span>
-                    </div>
-                </li>
-
-                <li>
-                    <div class="msg-container darker">
-                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" class="right" style="width:10%;">
-                        <p>Hello</p>
-                        <span class="time-left">11:05</span>
-                    </div>
-                </li>
-
-                <li>
-                    <div class="msg-container">
-                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" style="width:10%;">
-                        <p>Hello</p>
-                        <span class="time-right">11:04</span>
-                    </div>
-                </li>
-
-                <li>
-                    <div class="msg-container darker">
-                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" class="right" style="width:10%;">
-                        <p>Hello</p>
-                        <span class="time-left">11:03</span>
-                    </div>
-                </li>
             </ul>
+            <div class="container">
+                <form action="/action_page.php">
+                    <label for="subject">Message</label>
+                    <textarea id="subject" name="subject" placeholder="Write something.." style="height:80px"></textarea>
+                </form>
+            </div>
         </div>
-        <div id="snackbar">You are connected!</div>
+        <div id="infopopup" class="infopopup">You are connected!</div>
+        <div class="popup">
+            <div class="container stretch">
+                <button class="tablink" onclick="openPage('create', this)" id="defaultOpen">Create</button>
+                <button class="tablink" onclick="openPage('join', this)">Join</button>
+
+                <div id="create" class="tabcontent">
+                    <form action="">
+                        <label for="fname">Player name</label>
+                        <input type="text" id="fname" name="firstname" placeholder="Your name..">
+
+                        <label for="mode">Mode</label>
+                        <select id="mode" name="mode">
+                            <option value="Deathmatch">Deathmatch</option>
+                            <option value="ClosingIn">ClosingIn</option>
+                            <option value="Hardmode">Hardmode</option>
+                        </select>
+
+                        <input type="submit" value="Join" class="btn success right bottom">
+                        <input type="submit" value="Cancel" class="btn danger left bottom">
+                    </form>
+                </div>
+                <div id="join" class="tabcontent">
+                    <form action="">
+                        <label for="fname">Player name</label>
+                        <input type="text" id="fname" name="firstname" placeholder="Your name..">
+
+                        <label for="fname">Game id</label>
+                        <input type="text" id="fname" name="firstname" placeholder="Game id..">
+
+                        <input type="submit" value="Join" class="btn success right bottom">
+                        <input type="submit" value="Cancel" class="btn danger left bottom">
+                    </form>
+                </div>
+            </div>
+            <span class="close">
+                <button class="btn success">X</button>
+            </span>
+        </div>
     </div>
     <div class="footer">
         <p>Bombermann</p>
