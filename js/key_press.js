@@ -11,6 +11,7 @@ window.addEventListener("keydown", function(event) {
   if(event.repeat)
   return;
   if ( event.which == 13 ) { // Enter Key
+    event.preventDefault();
   }
   if ( event.which == 97 || event.which == 65) { // a || A Key
     movLeft = 1;
@@ -26,6 +27,7 @@ window.addEventListener("keydown", function(event) {
   }
   if ( event.which == 32) { // space Key
     lay_bomb();
+    event.preventDefault();
   }
  //Arrow Keys
   if ( event.which == 37) { // left key
@@ -50,7 +52,7 @@ window.addEventListener("keydown", function(event) {
 
 window.addEventListener("keyup", function(event) {
   if ( event.which == 13 ) { // Enter Key
-    draw_background();
+    event.preventDefault();
   }
   if ( event.which == 97 || event.which == 65) { // a || A Key
     movLeft = 0;
@@ -65,6 +67,7 @@ window.addEventListener("keyup", function(event) {
     movUp = 0;
   }
   if ( event.which == 32) { // space Key
+    event.preventDefault();
   }
  //Arrow Keys
   if ( event.which == 37) { // left key
