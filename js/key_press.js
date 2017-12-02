@@ -4,7 +4,7 @@ var movLeft = 0;
 var movRight = 0;
 var movUp = 0;
 var movDown = 0;
-var layBomb = 0;
+//var layBomb = 0;
 
 window.addEventListener("keydown", function(event) {
 
@@ -25,7 +25,7 @@ window.addEventListener("keydown", function(event) {
     movUp = 1;
   }
   if ( event.which == 32) { // space Key
-    layBomb = 1;
+    lay_bomb();
   }
  //Arrow Keys
   if ( event.which == 37) { // left key
@@ -65,7 +65,6 @@ window.addEventListener("keyup", function(event) {
     movUp = 0;
   }
   if ( event.which == 32) { // space Key
-    layBomb = 0;
   }
  //Arrow Keys
   if ( event.which == 37) { // left key

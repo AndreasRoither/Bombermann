@@ -1,5 +1,4 @@
 /* draw_canvas.js */
-
 var c = document.getElementById("gamearea");
 var ctx = c.getContext("2d");
 var tile_size = 25;
@@ -15,20 +14,28 @@ var SolidBlock = new Image();
 SolidBlock.src = './img/Blocks/SolidBlock.png';
 var ExplodableBlock = new Image();
 ExplodableBlock.src = './img/Blocks/ExplodableBlock.png';
+var Bomb = new Image();
+Bomb.src = './img/Bomb/Bomb_f01.png';
+var Player = new Image();
+Player.src = './img/Bomberman/test.png';
 
 /* ****************** */
 /* Decalre Background */
 /* ****************** */
 var background = [
-  [1,1,1,1,1,1,1,1,1],
-  [1,0,0,0,2,0,0,0,1],
-  [1,0,1,0,1,0,1,0,1],
-  [1,0,0,2,2,2,0,0,1],
-  [1,0,1,2,1,2,1,0,1],
-  [1,0,0,2,2,2,0,0,1],
-  [1,0,1,0,1,0,1,0,1],
-  [1,0,0,0,2,0,0,0,1],
-  [1,1,1,1,1,1,1,1,1]
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+  [1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+  [1,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,1,2,1,2,1,0,1,0,1,0,1,0,1,0,1,0,1],
+  [1,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+  [1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+  [1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1],
+  [1,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
   ];
 
 /* **************** */
@@ -40,8 +47,8 @@ function draw_block (img, x, y) {
 }
 
 function draw_background () {
-  for (var y = 0; y<9; ++y) {
-    for (var x = 0; x<9; ++x) {
+  for (var y = 0; y<13; ++y) { //heigth
+    for (var x = 0; x<19; ++x) {  //width
 
       switch(background[y][x]) {
         case 0: //background
@@ -56,4 +63,8 @@ function draw_background () {
       }
     }
   }
+}
+
+function draw_player (img, pos, size) {
+  ctx.drawImage(img, pos[1], pos[0], size[0], size[1]);
 }
