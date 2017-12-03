@@ -6,6 +6,7 @@ $(document).ready(function() {
   showModalPopup();
   // Get the element with id="defaultOpen" and click on it
   document.getElementById("defaultOpen").click();
+  addListeners();
 });
 
 function make_responsive() {
@@ -31,6 +32,18 @@ function openPage(pageName, elmnt, color) {
   elmnt.style.backgroundColor = color;
 }
 
+function addListeners() {
+  $("#text_msg").on("keyup", function(e) {
+    if (e.keyCode == 13) {
+      $( "#chatform" ).submit().preventDefault;
+    }
+  });
+
+  $("#chatform").submit(function(e) {
+    e.preventDefault();
+});
+}
+
 /* ******************** */
 /*        Popup         */
 /* ******************** */
@@ -53,7 +66,6 @@ function closePopup() {
   $("#startPopup").remove();
   $("body").removeClass("overlay");
 }
-
 
 /* ******************** */
 /*         Alert        */
@@ -90,8 +102,8 @@ function show_infobar() {
   }, 5000);
 }
 
-function change_snackbar(msg) {
-  $("#infopopup").text(event.which);
+function change_infobar(msg) {
+  $("#infopopup").text(msg);
   show_infobar();
 }
 

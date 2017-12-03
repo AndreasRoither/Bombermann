@@ -1,3 +1,27 @@
+ /*// sending to sender-client only
+ socket.emit('message', "this is a test");
+ 
+  // sending to all clients, include sender
+  io.emit('message', "this is a test");
+ 
+  // sending to all clients except sender
+  socket.broadcast.emit('message', "this is a test");
+ 
+  // sending to all clients in 'game' room(channel) except sender
+  socket.broadcast.to('game').emit('message', 'nice game');
+ 
+  // sending to all clients in 'game' room(channel), include sender
+  io.in('game').emit('message', 'cool game');
+ 
+  // sending to sender client, only if they are in 'game' room(channel)
+  socket.to('game').emit('message', 'enjoy the game');
+ 
+  // sending to all clients in namespace 'myNamespace', include sender
+  io.of('myNamespace').emit('message', 'gg');
+ 
+  // sending to individual socketid
+  socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
+
 // load
 
 var express = require('express');
@@ -16,7 +40,7 @@ var datetime = "Start time: " + currentdate.getDate() + "/" +
 
 // game vars
 var games = {},
-    avatars = ['Bomberman'];
+    avatars = ['Bomberman', 'Test', 'test2'];
 
 const ConsoleColor = require('./colorcodes.js');
 
@@ -28,14 +52,19 @@ app.get('/', function(req, res, next) {
 
 io.on('connection', function(client) {
     console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\nServer' + ConsoleColor.Reset);
-    console.log('\n\tPlayer connected...\n\tid: %s', client.id);
+    console.log('\tClient connected...\n\tid: %s', client.id);
 
     // socket id for connecting player
-    var socketId = socket.id;
+    var socketId = client.id;
     var gameID,
         userName;
 
-    socket.on('create', function(id, name, avatar, matrix) {
+    client.on('create', function(id, name, avatar, matrix) {
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
+        console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to create game server' + ConsoleColor.Reset);
+        console.log('\tplayer name ' + name);
+        console.log('\tGame Server ID ' + id);
+
         var player = {
             id: socketId,
             name: name,
@@ -45,7 +74,7 @@ io.on('connection', function(client) {
             alive: true
         };
 
-        games[i] = {
+        games[id] = {
             id: id,
             players: [player],
             matrix: matrix,
@@ -57,14 +86,16 @@ io.on('connection', function(client) {
         userName = name;
 
         client.join(id);
-        client.emit('welcome', id, player);
+        client.emit('game-server-created', id, player);
     });
 
     client.on('join', function(data) {
         console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
-        console.log('\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'joined' + ConsoleColor.Reset);
+        console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to join game server' + ConsoleColor.Reset);
+        console.log('\tplayer name: ' + data.name);
+        console.log('\tgame id: ' + data.id);
 
-        var game = games[id];
+        var game = games[data.id];
 
         if (!game) return client.emit('game-not-found');
         if (game.started) return client.emit('game-started');
@@ -73,7 +104,7 @@ io.on('connection', function(client) {
             var avatar = pickAvatar(game),
                 player = {
                     id: socketId,
-                    name: name,
+                    name: data.name,
                     avatar: avatar,
                     index: pickIndex(game),
                     ready: false,
@@ -82,13 +113,13 @@ io.on('connection', function(client) {
 
             game.players.push(player);
 
-            gameId = id;
-            userName = name;
+            gameID = data.id;
+            userName = data.name;
 
-            client.join(id);
+            client.join(data.id);
             client.emit('joined', player, game);
 
-            client.broadcast.to(id).emit('player-joined', player);
+            client.broadcast.to(data.id).emit('player-joined', player);
         }
     });
 
@@ -114,7 +145,7 @@ io.on('connection', function(client) {
             game.started = true;
             game.matrix = createMatrix();
 
-            io.to(id).emit('start', game.matrix);
+            client.to(id).emit('start', game.matrix);
         }
     });
 
@@ -192,7 +223,7 @@ io.on('connection', function(client) {
             });
 
             if (totalAlive == 1) {
-                io.to(id).emit('win', winner);
+                client.to(id).emit('win', winner);
             }
 
         }, bombTimer);
@@ -200,28 +231,51 @@ io.on('connection', function(client) {
     });
 
     client.on('disconnect', function() {
-        if (!gameId) return;
+        if (!gameID) return;
+        var game = games[gameID];
 
-        var game = games[gameId];
-
-        if (!game) return;
+        console.log(ConsoleColor.Bright + ConsoleColor.FgRed + '\nClient' + ConsoleColor.Reset);
+        console.log('\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'disconnected' + ConsoleColor.Reset);
 
         game.players.forEach(function(player, index) {
             if (player.id == socketId) {
                 this.splice(index, 1);
 
-                socket.broadcast.to(gameId).emit('left', player.id);
+                console.log('\tplayer name: ' + player.name);
+                console.log('\tgame id: ' + player.id);
+
+                client.broadcast.to(gameID).emit('left', client.id, player.name);
             }
         }, game.players);
-
     });
 
 
     client.on('messages', function(data) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\nClient' + ConsoleColor.Reset);
-        console.log('\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'message' + ConsoleColor.Reset + '\tMessage: %s', data);
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
+        console.log('\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'message' + ConsoleColor.Reset);
+        console.log('\tclient game: ' + gameID);
+        var game = games[gameID];
+        if (!game) {
+            console.log('\tclient has no game sesion, not broadcasting message');
+            return;
+        }
+        
+        var playername;
 
-        client.broadcast.to(gameId).emit('player-message', data);
+        console.log('\tclient foreach');
+        game.players.forEach(function(player, index) {
+            console.log('\tPlayer ID: %s', player.id);
+            if (player.id == socketId) {
+                playername = player.name
+            }
+        }, game.players);
+
+        console.log('\tPlayer name: %s', playername);
+        console.log('\tMessage: %s', data.message);
+        console.log('\ttime: ' + data.time);
+        console.log('\tbroadcasting to gameID: ' + gameID);
+
+        client.broadcast.to(gameID).emit('player-message', data, playername);
     });
 });
 
@@ -244,7 +298,6 @@ function pickAvatar(game) {
         if (player.avatar == avatar) {
             avatar = pickAvatar(game);
         }
-
     });
 
     return avatar;

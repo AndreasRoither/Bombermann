@@ -18,9 +18,9 @@
     </div>
 
     <div class="topnav" id="topnav1">
-        <a href="#multi" class="active">Multiplayer</a>
+        <a href="index.html" class="active">Multiplayer</a>
         <a href="#single">Singleplayer</a>
-        <a href="#contact">Contact</a>
+        <a href="contact.html">Contact</a>
         <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="make_responsive()">&#9776;</a>
     </div>
 
@@ -29,59 +29,24 @@
             <div class="divheader">
                 <h2>Players</h2>
             </div>
-            <ul id="serveroutput">
-                <li>
-                    <div class="msg-container">
-                        <img src="img/Bomberman/Front/Bman_F_f00_blue.png" alt="Avatar" style="width:10%;">
-                        <p>Andi</p>
-                        <span class="player-status ready">ready!</span>
-                    </div>
-                </li>
-                <li>
-                    <div class="msg-container">
-                        <img src="img/Bomberman/Front/Bman_F_f00_yellow.png" alt="Avatar" style="width:10%;">
-                        <p>Andi</p>
-                        <span class="player-status not-ready">not ready</span>
-                    </div>
-                </li>
-                <li>
-                    <div class="alert info">
-                        <span class="closebtn">&times;</span> Blind Text
-                    </div>
-                </li>
+            <ul id="players">
             </ul>
             <button class="btn success" onclick="start_game()">Start Game</button>
-            <button class="btn info" onclick="show_infobar()">Show Connection Alert</button>
         </div>
         <div class="column middle">
             <canvas class="canvas" id="gamearea" width="665" height="455" style="border:1px solid #000000;">
             </canvas>
         </div>
         <div class="column side">
-            <div class="divheader" id="playermsg">
+            <div class="divheader">
                 <h2>Player messages</h2>
             </div>
-            <ul id="playermsg">
-                <li>
-                    <div class="msg-container">
-                        <img src="img/Bomb/Bomb_f01.png" alt="Avatar" style="width:10%;">
-                        <p>Test1</p>
-                        <span class="time-right">11:10</span>
-                    </div>
-                </li>
-
-                <li>
-                    <div class="msg-container darker">
-                        <img src="img/Bomb/Bomb_f02.png" alt="Avatar" class="right" style="width:10%;">
-                        <p>Test2</p>
-                        <span class="time-left">11:09</span>
-                    </div>
-                </li>
+            <ul id="playermsgcontainer">
             </ul>
             <div class="container">
-                <form action="/action_page.php">
-                    <label for="subject">Message</label>
-                    <textarea id="subject" name="subject" placeholder="Write something.." style="height:80px"></textarea>
+                <form id="chatform" onsubmit="sendChatMsg()">
+                    <label for="text_msg">Message</label>
+                    <textarea id="text_msg" name="text_msg" placeholder="Write something.." style="height:80px"></textarea>
                 </form>
             </div>
         </div>
@@ -92,9 +57,9 @@
                 <button class="tablink" onclick="openPage('join', this, 'gray')">Join</button>
 
                 <div id="create" class="tabcontent">
-                    <form action="#">
-                        <label for="fname">Player name</label>
-                        <input type="text" id="fname" name="firstname" placeholder="Your name..">
+                    <form onsubmit="createGame()">
+                        <label for="playerName1">Player name</label>
+                        <input type="text" id="playerName1" name="playerName" placeholder="Your name.." required>
 
                         <label for="mode">Mode</label>
                         <select id="mode" name="mode">
@@ -103,17 +68,17 @@
                             <option value="Hardmode">Hardmode</option>
                         </select>
 
-                        <input type="submit" value="Join" class="btn success right bottom">
+                        <input type="submit" value="Create" class="btn success right bottom">
                     </form>
                     <button value="Cancel" class="btn danger left bottom" onclick="closePopup()">Cancel</button>
                 </div>
                 <div id="join" class="tabcontent">
-                    <form action="#">
-                        <label for="fname">Player name</label>
-                        <input type="text" id="fname" name="firstname" placeholder="Your name..">
+                    <form onsubmit="joinGame()">
+                        <label for="playerName2">Player name</label>
+                        <input type="text" id="playerName2" name="playerName" placeholder="Your name.." required>
 
-                        <label for="fname">Game id</label>
-                        <input type="text" id="fname" name="firstname" placeholder="Game id..">
+                        <label for="gameId">Game id</label>
+                        <input type="text" id="gameId" name="gameId" placeholder="Game id.." required>
 
                         <input type="submit" value="Join" class="btn success right bottom">
                     </form>
