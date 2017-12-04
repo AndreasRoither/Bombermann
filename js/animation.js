@@ -56,7 +56,7 @@ var myGameArea = {
     this.canvas.height = 500;
     this.context = this.canvas.getContext("2d");
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-    this.interval = setInterval(updateGameArea, 20);
+    this.interval = setInterval(updateGameArea, 40);
     this.keys = [];
 
     // Event listener
@@ -65,7 +65,7 @@ var myGameArea = {
       myGameArea.keys[e.keyCode] = (e.type == "keydown");
   })
   window.addEventListener('keyup', function (e) {
-      myGameArea.keys[e.keyCode] = (e.type == "keydown");            
+      myGameArea.keys[e.keyCode] = (e.type == "keydown");
   })
   },
   clear: function () {
@@ -90,8 +90,8 @@ function component(width, height, color, x, y) {
   };
 
   this.newPos = function () {
-    this.x += this.speedX;
-    this.y += this.speedY;
+    this.x += this.speedX +1;
+    this.y += this.speedY +1;
   };
 }
 
@@ -106,6 +106,7 @@ function player(x, y) {
   this.gamearea = myGameArea;
   this.imageCounter = 0;
   this.currentDirection = directions.down;
+  this.oldDirection = this.currentDirection;
 
   this.dimensions = {
     width: 64,
@@ -140,6 +141,7 @@ function player(x, y) {
 
     switch (this.currentDirection) {
       case directions.left:
+        console.log(this.imageCounter);
         draw_player(this.left[this.imageCounter], this.pos, this.dimensions);
         break;
       case directions.right:
@@ -154,7 +156,19 @@ function player(x, y) {
     }
 
     this.updateImageCounter = function () {
-      
+      console.log("updating image counter");
+      if (this.currentDirection != this.oldDirection){
+        console.log("setting direction 0");
+        imageCounter = 0;
+        this.oldDirection = this.currentDirection;
+      }
+
+      if (this.imageCounter < 7) {
+        this.imageCounter = this.imageCounter + 1;
+      }
+      else {
+        this.imageCounter = 0;
+      }
     }
   };
 
@@ -172,20 +186,23 @@ function updateGameArea() {
 
   if (myGameArea.keys && myGameArea.keys[37]) {
     myGamePiece.currentDirection = directions.left;
-    myGamePiece.im
-    myGamePiece.speed.speedX = -2;
+    myGamePiece.updateImageCounter();
+    myGamePiece.speed.speedX = -4;
   }
   if (myGameArea.keys && myGameArea.keys[39]) {
     myGamePiece.currentDirection = directions.right;
-    myGamePiece.speed.speedX = 2;
+    myGamePiece.updateImageCounter();
+    myGamePiece.speed.speedX = 4;
   }
   if (myGameArea.keys && myGameArea.keys[38]) {
     myGamePiece.currentDirection = directions.up;
-    myGamePiece.speed.speedY = -2;
+    myGamePiece.updateImageCounter();
+    myGamePiece.speed.speedY = -4;
   }
   if (myGameArea.keys && myGameArea.keys[40]) {
     myGamePiece.currentDirection = directions.down;
-    myGamePiece.speed.speedY = 2;
+    myGamePiece.updateImageCounter();
+    myGamePiece.speed.speedY = 4;
   }
 
   myGamePiece.newPos();
