@@ -1,9 +1,5 @@
 /********************/
-
-
 /* basic site style */
-
-
 /********************/
 
 * {
@@ -247,11 +243,7 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*       Tabs       */
-
-
 /********************/
 
 
@@ -281,14 +273,8 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*   Popup Modal    */
-
-
 /*     Overlay      */
-
-
 /********************/
 
 .popup {
@@ -358,11 +344,7 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*     Canvas       */
-
-
 /********************/
 
 .canvas {
@@ -373,11 +355,7 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*     Alerts       */
-
-
 /********************/
 
 .alert {
@@ -418,11 +396,7 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*    infopopup     */
-
-
 /********************/
 
 #infopopup {
@@ -493,14 +467,8 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*     Chat Msg     */
-
-
 /*       Player     */
-
-
 /********************/
 
 .msg-container {
@@ -564,11 +532,7 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*      Button      */
-
-
 /********************/
 
 .btn {
@@ -626,11 +590,7 @@ input[type="text"], select, textarea {
 
 
 /********************/
-
-
 /*   Profile card   */
-
-
 /********************/
 
 .profileCard {
