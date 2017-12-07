@@ -5,83 +5,33 @@
 function startGame() {
   myGameArea.start();
   myBackground = new background(myGameArea.context, 35);
-  myGamePiece = new player(myGameArea.context, 36, 36, 0.5, 4);
+  myPlayer = new player(myGameArea.context, 36, 36, 0.4, 3);
 
   // TODO: start game loop here instead of setinterval from mygamearea
 }
 
 function updateGameArea() {
-  myGameArea.clear();
-
-  myBackground.update();
-  myGamePiece.resetSpeed();
-
-  if (!checkInput()) {
-    myGamePiece.imageCounter = 0;
+  if (movLeft || movRight || movUp || movDown) {
+    myPlayer.tryMove();
+  }
+  else {
+    myPlayer.imageCounter = 0;
   }
 
-  if (myGamePiece.possibleToMove(myBackground.tileSize))
-    myGamePiece.newPos();
-  myGamePiece.update();
-
-  myGameArea.context.rect(myGamePiece.pos.posX, myGamePiece.pos.posY, 1, 1);
-  myGameArea.context.strokeStyle="blue";
-  myGameArea.context.stroke();
-}
-
-/* checks if input is one of the desired keys and
- * updates the direction + image counter
- * also checks if players moves diagonally */
-function checkInput() {
-  var moved = false;
-  var movedDiagonally = false;
-
-  if (myGameArea.keys && myGameArea.keys[37]) {
-    myGamePiece.currentDirection = directions.left;
-    myGamePiece.speed.speedX = -myGamePiece.walkSpeed;
-    moved = true;
-  }
-  if (myGameArea.keys && myGameArea.keys[39]) {
-    myGamePiece.currentDirection = directions.right;
-    myGamePiece.speed.speedX = myGamePiece.walkSpeed;
-    moved = true;
-  }
-  if (myGameArea.keys && myGameArea.keys[38]) {
-    myGamePiece.currentDirection = directions.up;
-    myGamePiece.speed.speedY = -myGamePiece.walkSpeed;
-    if (moved)
-      movedDiagonally = true;
-    else
-      moved = true;
-  }
-  if (myGameArea.keys && myGameArea.keys[40]) {
-    myGamePiece.currentDirection = directions.down;
-    myGamePiece.speed.speedY = myGamePiece.walkSpeed;
-    if (moved)
-      movedDiagonally = true;
-    else
-      moved = true;
+  if (myBackground.layerDirty) {
+    myBackground.update();
+    myBackground.layerDirty = false;
   }
 
-  // move speed is to high if moved diagonally, so we reset it
-  if (movedDiagonally) {
-    myGamePiece.speed.speedX = myGamePiece.speed.speedX / myGamePiece.diagonalMoveDivisior;
-    myGamePiece.speed.speedY = myGamePiece.speed.speedY / myGamePiece.diagonalMoveDivisior;
+  if (myPlayer.layerDirty) {
+    myPlayer.update();
+    myPlayer.layerDirty = false;
   }
-
-  // update image counter and return true if moved
-  if (moved) {
-    myGamePiece.updateImageCounter();
-    return true;
-  }
-  else
-    return false;
 }
 
 /********************/
 /*   Declarations   */
 /********************/
-var myGamePiece;
 
 /* contains all player image paths */
 var playerImages = {
@@ -152,21 +102,12 @@ var createImage = function (src, title) {
 var myGameArea = {
   canvas: document.getElementById("gameCanvas"),
   start: function () {
-    this.canvas.width = 700;
-    this.canvas.height = 500;
+    this.canvas.width = 665;
+    this.canvas.height = 455;
     this.context = this.canvas.getContext("2d");
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-    this.interval = setInterval(updateGameArea, 100);
+    this.interval = setInterval(updateGameArea, 33);
     this.keys = [];
-
-    // Event listener
-    window.addEventListener('keydown', function (e) {
-      myGameArea.keys = (myGameArea.keys || []);
-      myGameArea.keys[e.keyCode] = (e.type == "keydown");
-    })
-    window.addEventListener('keyup', function (e) {
-      myGameArea.keys[e.keyCode] = (e.type == "keydown");
-    })
   },
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -195,6 +136,7 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
   this.playerSizeMultiplier = playerSizeMultiplier;
   this.walkSpeed = walkSpeed;
   this.diagonalMoveDivisior = 1.4;
+  this.layerDirty = true;
 
   this.dimensions = {
     width: 64,
@@ -211,10 +153,21 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     posY: y
   };
 
-  this.drawPosition = {
-    posX: x,
-    posY: y
-  }
+  this.BlockCoord =
+  [[1,1],
+   [1,1],
+   [1,1],
+   [1,1],
+   [1,1],
+   [1,1]];
+
+  this.oldBlockCoord =
+  [[1,1],
+   [1,1],
+   [1,1],
+   [1,1],
+   [1,1],
+   [1,1]];
 
   this.front = [];
   this.back = [];
@@ -228,6 +181,81 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     this.left.push(createImage(playerImages.leftImgs[i], "Bomberman Left"));
     this.right.push(createImage(playerImages.rightImgs[i], "Bomberman Right"));
   }
+
+  /*moves player when possible
+  * updates the direction + image counter
+  * also checks if players moves diagonally */
+  this.tryMove = function() {
+    var moved = false;
+    var movedDiagonally = false;
+
+    if (movLeft) {
+      if (this.possibleMove(this.pos.posX, this.pos.posY+(this.dimensions.height * playerSizeMultiplier)/2, -this.walkSpeed, 0) && 
+          this.possibleMove(this.pos.posX, this.pos.posY+this.dimensions.height * playerSizeMultiplier, -this.walkSpeed, 0)) {
+        this.currentDirection = directions.left;
+        this.speed.speedX = -this.walkSpeed;
+        moved = true;
+      }
+    }
+    if (movRight) {
+      if (this.possibleMove(this.pos.posX+this.dimensions.width * playerSizeMultiplier, this.pos.posY+(this.dimensions.height * playerSizeMultiplier)/2, this.walkSpeed, 0) && 
+          this.possibleMove(this.pos.posX+this.dimensions.width * playerSizeMultiplier, this.pos.posY+this.dimensions.height * playerSizeMultiplier, this.walkSpeed, 0)) {
+        this.currentDirection = directions.right;
+        this.speed.speedX = this.walkSpeed;
+        moved = true;
+      }
+    }
+    if (movUp) {
+      if (this.possibleMove(this.pos.posX, this.pos.posY+(this.dimensions.height * playerSizeMultiplier)/2, 0, -this.walkSpeed) && 
+          this.possibleMove(this.pos.posX+this.dimensions.width * playerSizeMultiplier, this.pos.posY+(this.dimensions.height * playerSizeMultiplier)/2, 0, -this.walkSpeed)) {
+        this.currentDirection = directions.up;
+        this.speed.speedY = -this.walkSpeed;
+        if (moved)
+          movedDiagonally = true;
+        else
+          moved = true;
+      }
+    }
+    if (movDown) {
+      if (this.possibleMove(this.pos.posX, this.pos.posY+this.dimensions.height * playerSizeMultiplier, 0, this.walkSpeed) && 
+          this.possibleMove(this.pos.posX+this.dimensions.width * playerSizeMultiplier, this.pos.posY+this.dimensions.height * playerSizeMultiplier, 0, this.walkSpeed)) {
+        this.currentDirection = directions.down;
+        this.speed.speedY = this.walkSpeed;
+        if (moved)
+          movedDiagonally = true;
+        else
+          moved = true;
+      }
+    }
+
+    // move speed is to high if moved diagonally, so we lower it
+    if (movedDiagonally) {
+      this.speed.speedX = this.speed.speedX / this.diagonalMoveDivisior;
+      this.speed.speedY = this.speed.speedY / this.diagonalMoveDivisior;
+    }
+
+    this.newPos();
+    this.resetSpeed();
+    this.convertPlayerPos();
+    this.layerDirty = true;
+
+    // update image counter and return true if moved
+    if (moved) {
+      this.updateImageCounter();
+      return true;
+    }
+    else
+      return false;
+  }
+
+  //checks if a single Point can be moved
+  this.possibleMove = function (x, y, dx, dy) {
+    if (myBackground.map[Math.trunc((y + dy) / myBackground.tileSize)]
+                        [Math.trunc((x + dx) / myBackground.tileSize)] == 0) {
+      return true;
+    }
+    return false;
+  };
 
   // draws player according to the current looking direction
   this.update = function () {
@@ -245,6 +273,17 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
         this.drawPlayer(this.front[this.imageCounter], this.pos, this.dimensions, this.playerSizeMultiplier);
         break;
     }
+  };
+
+  // draws the player
+  this.drawPlayer = function (img, pos, size, playerSizeMultiplier) {
+    for (var i=0; i<6;++i) { //draw blocks behind player
+      myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
+      console.log(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
+    }
+    this.oldBlockCoord = this.BlockCoord;
+
+    myGameArea.context.drawImage(img, pos.posX, pos.posY, size.width * playerSizeMultiplier, size.height * playerSizeMultiplier);
   };
 
   /* updates image counter
@@ -266,8 +305,6 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
   this.newPos = function () {
     this.pos.posX += this.speed.speedX;
     this.pos.posY += this.speed.speedY;
-    this.drawPosition.posX += this.speed.speedX;
-    this.drawPosition.posY += this.speed.speedY;
   };
 
   // resets the speed; else player won't stop moving ~
@@ -276,36 +313,28 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     this.speed.speedY = 0;
   };
 
-  // check if it is possible to move
-  this.possibleToMove = function (tileSize) {
-    var newPos = {
-      posX: (this.pos.posX + this.speed.speedX),
-      posY: (this.pos.posY + this.speed.speedY)
-    };
+  //gives upper left and lower right corner in background coords
+  this.convertPlayerPos = function() {
+    this.BlockCoord[0][0] = Math.trunc((this.pos.posX)/myBackground.tileSize); //upper left
+    this.BlockCoord[0][1] = Math.trunc((this.pos.posY)/myBackground.tileSize);
 
-    if (this.possible_move(this.pos, newPos, tileSize))
-      return true;
-    else
-      return false;
-  };
+    this.BlockCoord[1][0] = Math.trunc((this.pos.posX)/myBackground.tileSize); //lower left
+    this.BlockCoord[1][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier))/myBackground.tileSize);
+    
+    this.BlockCoord[2][0] = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier))/myBackground.tileSize); //upper right
+    this.BlockCoord[2][1] = Math.trunc((this.pos.posY)/myBackground.tileSize);
+  
+    this.BlockCoord[3][0] = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier))/myBackground.tileSize); //lower right
+    this.BlockCoord[3][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier))/myBackground.tileSize);
 
-  //checks if a single Point can be moved
-  this.possible_move = function (pos, newPos, tileSize) {
-    console.log ("Move Check| x: " + pos.posX + " y: " + pos.posY);
-    if (myBackground.map[Math.trunc((pos.posY + newPos.posY) / tileSize)][Math.trunc((pos.posX + newPos.posX) / tileSize)] == 0) {
-      console.log("Tile: " + myBackground.map[Math.trunc((pos.posY + newPos.posY) / tileSize)][Math.trunc((pos.posX + newPos.posX) / tileSize)]);
-      console.log("X: " + Math.trunc((pos.posY + newPos.posY) / tileSize) + "Y: " + Math.trunc((pos.posX + newPos.posX) / tileSize));
-      return true;
-    }
-    console.log("Tile: " + myBackground.map[Math.trunc((pos.posY + newPos.posY) / tileSize)][Math.trunc((pos.posX + newPos.posX) / tileSize)]);
-    console.log("X: " + Math.trunc((pos.posY + newPos.posY) / tileSize) + "Y: " + Math.trunc((pos.posX + newPos.posX) / tileSize));
-    return false;
-  };
+    this.BlockCoord[4][0] = Math.trunc((this.pos.posX)/myBackground.tileSize); //middle left
+    this.BlockCoord[4][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier)/2)/myBackground.tileSize);
 
-  // draws the player
-  this.drawPlayer = function (img, pos, size, playerSizeMultiplier) {
-    myGameArea.context.drawImage(img, pos.posX, pos.posY, size.width * playerSizeMultiplier, size.height * playerSizeMultiplier);
-  };
+    this.BlockCoord[5][0] = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier))/myBackground.tileSize); //middle right
+    this.BlockCoord[5][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier)/2)/myBackground.tileSize);
+
+  }
+
 }
 
 /* Background Object 
@@ -316,6 +345,7 @@ function background(context, tileSize) {
   this.height = 0;
   this.width = 0;
   this.ctx = context;
+  this.layerDirty = true;
 
   this.dimensions = {
     width: 13,
@@ -345,31 +375,35 @@ function background(context, tileSize) {
 
   // update function draws the background
   this.update = function () {
-    this.draw_background(this.ctx, this.map, this.dimensions, this.tiles, this.tileSize);
+    this.drawBackground();
   };
 
   // draw_background draws background according to the matrix (this.map)
-  this.draw_background = function (ctx, background, dimensions, tiles, tileSize) {
-    for (var y = 0; y < dimensions.width; ++y) {
-      for (var x = 0; x < dimensions.height; ++x) {
-        switch (background[y][x]) {
-          case 0: //background
-            this.draw_block(ctx, tiles[0], x, y, tileSize);
-            break;
-          case 1: //solid
-            this.draw_block(ctx, tiles[1], x, y, tileSize);
-            break;
-          case 2: //explodable
-            this.draw_block(ctx, tiles[2], x, y, tileSize);
-            break;
-        }
+  this.drawBackground = function () {
+    for (var y = 0; y < this.dimensions.width; ++y) {
+      for (var x = 0; x < this.dimensions.height; ++x) {
+        this.drawBlock(x, y);
       }
     }
   };
 
   // draws a block to the context
-  this.draw_block = function (ctx, img, x, y, tileSize) {
-    ctx.drawImage(img, tileSize * x, tileSize * y, tileSize, tileSize);
+  this.drawBlock = function (x, y) {
+    switch (this.map[y][x]) {
+      case 0: //background
+        this.draw_image(this.ctx, this.tiles[0], x, y);
+        break;
+      case 1: //solid
+        this.draw_image(this.ctx, this.tiles[1], x, y);
+        break;
+      case 2: //explodable
+        this.draw_image(this.ctx, this.tiles[2], x, y);
+        break;
+    }
   };
+
+  this.draw_image = function (ctx, img, x, y){
+    ctx.drawImage(img, this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
+  }
 }
 

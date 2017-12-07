@@ -1,14 +1,14 @@
 /* ******************** */
 /*         Site         */
 /* ******************** */
-
+/*
 $(document).ready(function() {
   showModalPopup();
   // Get the element with id="defaultOpen" and click on it
   document.getElementById("defaultOpen").click();
   addListeners();
 });
-
+*/
 function make_responsive() {
   var x = document.getElementById("topnav1");
   if (x.className === "topnav") {
@@ -120,10 +120,10 @@ function add_left_list(msg) {
 /* Keyboard recognition */
 /* ******************** */
 
-var movLeft = 0;
-var movRight = 0;
-var movUp = 0;
-var movDown = 0;
+var movLeft = false;
+var movRight = false;
+var movUp = false;
+var movDown = false;
 
 window.addEventListener("keydown", function(event) {
   if (event.repeat) return;
@@ -133,19 +133,19 @@ window.addEventListener("keydown", function(event) {
   }
   if (event.which == 97 || event.which == 65) {
     // a || A Key
-    movLeft = 1;
+    movLeft = true;
   }
   if (event.which == 115 || event.which == 83) {
     // s || S Key
-    movDown = 1;
+    movDown = true;
   }
   if (event.which == 100 || event.which == 68) {
     // d || D Key
-    movRight = 1;
+    movRight = true;
   }
   if (event.which == 119 || event.which == 87) {
     // w || W Key
-    movUp = 1;
+    movUp = true;
   }
   if (event.which == 32) {
     // space Key
@@ -155,22 +155,22 @@ window.addEventListener("keydown", function(event) {
   //Arrow Keys
   if (event.which == 37) {
     // left key
-    movLeft = 1;
+    movLeft = true;
     event.preventDefault();
   }
   if (event.which == 39) {
     // right key
-    movRight = 1;
+    movRight = true;
     event.preventDefault();
   }
   if (event.which == 38) {
     // up key
-    movUp = 1;
+    movUp = true;
     event.preventDefault();
   }
   if (event.which == 40) {
     // down key
-    movDown = 1;
+    movDown = true;
     event.preventDefault();
   }
   //console.log( event.type + ": " +  event.keyCode ); //debug
@@ -183,19 +183,19 @@ window.addEventListener("keyup", function(event) {
   }
   if (event.which == 97 || event.which == 65) {
     // a || A Key
-    movLeft = 0;
+    movLeft = false;
   }
   if (event.which == 115 || event.which == 83) {
     // s || S Key
-    movDown = 0;
+    movDown = false;
   }
   if (event.which == 100 || event.which == 68) {
     // d || D Key
-    movRight = 0;
+    movRight = false;
   }
   if (event.which == 119 || event.which == 87) {
     // w || W Key
-    movUp = 0;
+    movUp = false;
   }
   if (event.which == 32) {
     // space Key
@@ -204,22 +204,22 @@ window.addEventListener("keyup", function(event) {
   //Arrow Keys
   if (event.which == 37) {
     // left key
-    movLeft = 0;
+    movLeft = false;
     event.preventDefault();
   }
   if (event.which == 39) {
     // right key
-    movRight = 0;
+    movRight = false;
     event.preventDefault();
   }
   if (event.which == 38) {
     // up key
-    movUp = 0;
+    movUp = false;
     event.preventDefault();
   }
   if (event.which == 40) {
     // down key
-    movDown = 0;
+    movDown = false;
     event.preventDefault();
   }
   //console.log( event.type + ": " +  event.keyCode ); //debug

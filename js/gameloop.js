@@ -2,7 +2,7 @@
 /* Decalre Player var */
 /* ****************** */
 var player_pos = [35, 35]; // x, y in Abs coords
-var player_pos_block = [[1,1],[1,1]]; // x, y in Blokc coords
+var player_pos_block = [[1,1],[1,1]]; // x, y in Block coords
 var player_size = [15, 30]; // x, y
 var player_speed = 3; // pixel per tick
 var layer_dirty = true; //draw layer if true
