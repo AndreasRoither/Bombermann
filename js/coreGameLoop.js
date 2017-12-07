@@ -1,3 +1,15 @@
+/*INDEX*/
+/*
+start game
+core game loop
+pictures
+var game area
+player
+background
+bomb
+*/
+
+
 /********************/
 /*     Functions    */
 /********************/
@@ -14,19 +26,27 @@ function updateGameArea() {
   if (movLeft || movRight || movUp || movDown) {
     myPlayer.tryMove();
   }
-  else {
-    myPlayer.imageCounter = 0;
-  }
 
   if (myBackground.layerDirty) {
     myBackground.update();
+    myPlayer.update();
     myBackground.layerDirty = false;
   }
 
   if (myPlayer.layerDirty) {
     myPlayer.update();
     myPlayer.layerDirty = false;
+    myPlayer.layerDirty2 = true;
   }
+  else if (myPlayer.layerDirty2) {
+    myPlayer.imageCounter = 0;
+    myPlayer.layerDirty2 = false;
+    myPlayer.update();
+  }
+
+  myPlayer.updateBomb();
+
+
 }
 
 /********************/
@@ -88,6 +108,14 @@ var tileImages = {
   ]
 };
 
+var bombImages = {
+  bombCount: 2,
+  bombs: [
+    './img/Bomb/Bomb_f01.png',
+    './img/Flame/Flame_f00.png'
+  ]
+};
+
 /* Image factory to create an image
  * returns image; */
 var createImage = function (src, title) {
@@ -105,9 +133,8 @@ var myGameArea = {
     this.canvas.width = 665;
     this.canvas.height = 455;
     this.context = this.canvas.getContext("2d");
-    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+    //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     this.interval = setInterval(updateGameArea, 33);
-    this.keys = [];
   },
   clear: function () {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -137,6 +164,7 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
   this.walkSpeed = walkSpeed;
   this.diagonalMoveDivisior = 1.4;
   this.layerDirty = true;
+  this.layerDirty2 = false;
 
   this.dimensions = {
     width: 64,
@@ -152,6 +180,12 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     posX: x,
     posY: y
   };
+
+  this.bomb = [
+    new bomb(this.ctx, 4000, 500, 2, 1),
+    new bomb(this.ctx, 4000, 500, 2, 0),
+    new bomb(this.ctx, 4000, 500, 2, 0)
+  ];
 
   this.BlockCoord =
   [[1,1],
@@ -279,7 +313,6 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
   this.drawPlayer = function (img, pos, size, playerSizeMultiplier) {
     for (var i=0; i<6;++i) { //draw blocks behind player
       myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
-      console.log(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
     }
     this.oldBlockCoord = this.BlockCoord;
 
@@ -318,12 +351,12 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     this.BlockCoord[0][0] = Math.trunc((this.pos.posX)/myBackground.tileSize); //upper left
     this.BlockCoord[0][1] = Math.trunc((this.pos.posY)/myBackground.tileSize);
 
-    this.BlockCoord[1][0] = Math.trunc((this.pos.posX)/myBackground.tileSize); //lower left
-    this.BlockCoord[1][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier))/myBackground.tileSize);
+    this.BlockCoord[1][0] = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier))/myBackground.tileSize); //upper right
+    this.BlockCoord[1][1] = Math.trunc((this.pos.posY)/myBackground.tileSize);
+
+    this.BlockCoord[2][0] = Math.trunc((this.pos.posX)/myBackground.tileSize); //lower left
+    this.BlockCoord[2][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier))/myBackground.tileSize);
     
-    this.BlockCoord[2][0] = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier))/myBackground.tileSize); //upper right
-    this.BlockCoord[2][1] = Math.trunc((this.pos.posY)/myBackground.tileSize);
-  
     this.BlockCoord[3][0] = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier))/myBackground.tileSize); //lower right
     this.BlockCoord[3][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier))/myBackground.tileSize);
 
@@ -332,7 +365,34 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
 
     this.BlockCoord[5][0] = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier))/myBackground.tileSize); //middle right
     this.BlockCoord[5][1] = Math.trunc((this.pos.posY+(this.dimensions.height * playerSizeMultiplier)/2)/myBackground.tileSize);
+  }
 
+  this.layBomb = async function() {
+    for (var i = 0; i<3; ++i) {
+      if (this.bomb[i].status == 1) {
+        this.bomb[i].pos.posY = Math.trunc((this.pos.posY+((this.dimensions.height * playerSizeMultiplier)/4)*3)/myBackground.tileSize);
+        this.bomb[i].pos.posX = Math.trunc((this.pos.posX+(this.dimensions.width * playerSizeMultiplier)/2)/myBackground.tileSize);
+        this.bomb[i].status = 2;
+        this.bomb[i].layerDirty = true;
+          await sleep(this.bomb[i].bombTimer);
+          this.bomb[i].bombExplode();
+        return;
+      }
+    }
+  }
+
+  this.updateBomb = function() {
+    for (var i = 0; i<3; ++i) {
+      this.bomb[i].drawBomb();
+    }
+  }
+
+  this.killPlayer = function (x, y) {
+    for (var i=2; i<6; ++i) {
+      if (this.BlockCoord[i][0]==x && this.BlockCoord[i][1]==y) { //player dead
+        alert('you dead!');
+      }
+    }
   }
 
 }
@@ -407,3 +467,152 @@ function background(context, tileSize) {
   }
 }
 
+/*everything with bombs*/
+function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
+  this.bombs = [];
+  this.bombTimer = bombTimer;
+  this.explodeTimer = explodeTimer;
+  this.explosionRadius = explosionRadius;
+  this.status = status; //status: 0 dormant, 1 owned, 2 layed, 3 exploding
+  this.ctx = context;
+  this.layerDirty = true;
+
+  this.pos = {
+    posX: 0,
+    posY: 0
+  };
+
+  
+  // create new images and push them into the tiles array
+  for (var i = 0; i < bombImages.bombCount; i++) {
+    this.bombs.push(createImage(bombImages.bombs[i], "Bomb"));
+  }
+
+
+  this.bombExplode = async function() {
+    this.status = 3;
+    this.makeExplosion();
+    myBackground.layerDirty = true;
+    await sleep(this.explodeTimer);
+    this.bombOver();
+  }
+
+  this.bombOver = function() {
+    this.status = 1;
+    myBackground.layerDirty = true;
+    this.layerDirty = false;
+  }
+
+  this.makeExplosion = function() {
+    var enable_x_pos = true;
+    var enable_y_pos = true;
+    var enable_x_neg = true;
+    var enable_y_neg = true;
+    for (var i=1; i<=this.explosionRadius; i++) {
+      if (enable_x_pos) {
+        if (myBackground.map[this.pos.posY][this.pos.posX+i] == 2) { //remove block
+          myBackground.map[this.pos.posY][this.pos.posX+i] = 0;
+          enable_x_pos = false;
+        }
+        else if (myBackground.map[this.pos.posY][this.pos.posX+i] == 1) { //solid block
+          enable_x_pos = false;
+        }
+      }
+      if (enable_y_pos) {
+        if (myBackground.map[this.pos.posY+i][this.pos.posX] == 2) { //remove block
+          myBackground.map[this.pos.posY+i][this.pos.posX] = 0;
+          enable_y_pos = false;
+        }
+        else if (myBackground.map[this.pos.posY+i][this.pos.posX] == 1) { //solid block
+          enable_y_pos = false;
+        }
+      }
+  
+      if (enable_x_neg) {
+        if (myBackground.map[this.pos.posY][this.pos.posX-i] == 2) { //remove block
+          myBackground.map[this.pos.posY][this.pos.posX-i] = 0;
+          enable_x_neg = false;
+        }
+        else if (myBackground.map[this.pos.posY][this.pos.posX-i] == 1) { //solid block
+          enable_x_neg = false;
+        }
+      }
+      if (enable_y_neg) {
+        if (myBackground.map[this.pos.posY-i][this.pos.posX] == 2) { //remove block
+          myBackground.map[this.pos.posY-i][this.pos.posX] = 0;
+          enable_y_neg = false;
+        }
+        else if (myBackground.map[this.pos.posY-i][this.pos.posX] == 1) { //solid block
+          enable_y_neg = false;
+        }
+      }
+    }
+  }
+
+
+  this.drawBomb = function() {
+    if (this.status == 2) {
+      this.drawBlock(this.ctx, this.bombs[0], this.pos.posX, this.pos.posY);
+    }
+    else if (this.status == 3) {
+      this.drawBlock(this.ctx, this.bombs[0], this.pos.posX, this.pos.posY);
+      //kill_player(this.pos.posX,this.pos.posY);
+      for (var i=1; i<=this.explosionRadius; i++) {
+        var enable_x_pos = true;
+        var enable_y_pos = true;
+        var enable_x_neg = true;
+        var enable_y_neg = true;
+        for (var i=1; i<=this.explosionRadius; i++) {
+          if (enable_x_pos) {
+            if (myBackground.map[this.pos.posY][this.pos.posX+i] == 0) { //flames
+              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX+i, this.pos.posY);
+              myPlayer.killPlayer(this.pos.posX+i, this.pos.posY);
+            }
+            else if (myBackground.map[this.pos.posY][this.pos.posX+i] == 1) { //solid block
+              enable_x_pos = false;
+            }
+          }
+          if (enable_y_pos) {
+            if (myBackground.map[this.pos.posY+i][this.pos.posX] == 0) { //flames
+              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX, this.pos.posY+i);
+              myPlayer.killPlayer(this.pos.posX, this.pos.posY+i);
+            }
+            else if (myBackground.map[this.pos.posY+i][this.pos.posX] == 1) { //solid block
+              enable_y_pos = false;
+            }
+          }
+      
+          if (enable_x_neg) {
+            if (myBackground.map[this.pos.posY][this.pos.posX-i] == 0) { //flames
+              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX-i, this.pos.posY);
+              myPlayer.killPlayer(this.pos.posX-i, this.pos.posY);
+            }
+            else if (myBackground.map[this.pos.posY][this.pos.posX-i] == 1) { //solid block
+              enable_x_neg = false;
+            }
+          }
+          if (enable_y_neg) {
+            if (myBackground.map[this.pos.posY-i][this.pos.posX] == 0) { //flames
+              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX, this.pos.posY-i);
+              myPlayer.killPlayer(this.pos.posX, this.pos.posY-i);
+            }
+            else if (myBackground.map[this.pos.posY-i][this.pos.posX] == 1) { //solid block
+              enable_y_neg = false;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  this.drawBlock = function (ctx, img, x, y){
+    ctx.drawImage(img, myBackground.tileSize * x, myBackground.tileSize * y, myBackground.tileSize, myBackground.tileSize);
+  }
+}
+
+
+//helper
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

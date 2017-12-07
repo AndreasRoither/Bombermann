@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
-<body>
+<body onload="startGame()">
 
     <div class="header">
         <div class="image">
@@ -34,7 +34,8 @@
             <button class="btn success" onclick="start_game()">Start Game</button>
         </div>
         <div class="column middle">
-            <canvas class="canvas" id="gamearea" width="665" height="455" style="border:1px solid #000000;">
+            <canvas id="gameCanvas">
+                Please upgrade your browser to support HTML5
             </canvas>
         </div>
         <div class="column side">
@@ -96,8 +97,7 @@
     <script src="js/site.js"></script>
     <script src="js/io.js"></script>
     <script src="js/functions.js"></script>
-    <script src="js/draw_canvas.js"></script>
-    <script src="js/gameloop.js"></script>
+    <script src="js/coreGameLoop.js"></script>
 </body>
 
 </html>

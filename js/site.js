@@ -149,7 +149,7 @@ window.addEventListener("keydown", function(event) {
   }
   if (event.which == 32) {
     // space Key
-    lay_bomb();
+    myPlayer.layBomb();
     event.preventDefault();
   }
   //Arrow Keys
