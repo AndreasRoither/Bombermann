@@ -126,52 +126,56 @@ var movUp = false;
 var movDown = false;
 
 window.addEventListener("keydown", function(event) {
-  if (event.repeat) return;
-  if (event.which == 13) {
-    // Enter Key
-    event.preventDefault();
-  }
-  if (event.which == 97 || event.which == 65) {
-    // a || A Key
-    movLeft = true;
-  }
-  if (event.which == 115 || event.which == 83) {
-    // s || S Key
-    movDown = true;
-  }
-  if (event.which == 100 || event.which == 68) {
-    // d || D Key
-    movRight = true;
-  }
-  if (event.which == 119 || event.which == 87) {
-    // w || W Key
-    movUp = true;
-  }
-  if (event.which == 32) {
-    // space Key
-    myPlayer.layBomb();
-    event.preventDefault();
-  }
-  //Arrow Keys
-  if (event.which == 37) {
-    // left key
-    movLeft = true;
-    event.preventDefault();
-  }
-  if (event.which == 39) {
-    // right key
-    movRight = true;
-    event.preventDefault();
-  }
-  if (event.which == 38) {
-    // up key
-    movUp = true;
-    event.preventDefault();
-  }
-  if (event.which == 40) {
-    // down key
-    movDown = true;
-    event.preventDefault();
+  var target = event.target || event.srcElement;
+  var targetTagName = (target.nodeType == 1) ? target.nodeName.toUpperCase() : "";
+  if ( !/INPUT|SELECT|TEXTAREA/.test(targetTagName) ) {
+    if (event.repeat) return;
+    if (event.which == 13) {
+      // Enter Key
+      event.preventDefault();
+    }
+    if (event.which == 97 || event.which == 65) {
+      // a || A Key
+      movLeft = true;
+    }
+    if (event.which == 115 || event.which == 83) {
+      // s || S Key
+      movDown = true;
+    }
+    if (event.which == 100 || event.which == 68) {
+      // d || D Key
+      movRight = true;
+    }
+    if (event.which == 119 || event.which == 87) {
+      // w || W Key
+      movUp = true;
+    }
+    if (event.which == 32) {
+      // space Key
+      myPlayer.layBomb();
+      //event.preventDefault();
+    }
+    //Arrow Keys
+    if (event.which == 37) {
+      // left key
+      movLeft = true;
+      event.preventDefault();
+    }
+    if (event.which == 39) {
+      // right key
+      movRight = true;
+      event.preventDefault();
+    }
+    if (event.which == 38) {
+      // up key
+      movUp = true;
+      event.preventDefault();
+    }
+    if (event.which == 40) {
+      // down key
+      movDown = true;
+      event.preventDefault();
+    }
   }
   //console.log( event.type + ": " +  event.keyCode ); //debug
 });

@@ -116,6 +116,8 @@ var bombImages = {
   ]
 };
 
+var explosion = new Audio('./sound/Bomb1.mp3');
+
 /* Image factory to create an image
  * returns image; */
 var createImage = function (src, title) {
@@ -182,9 +184,9 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
   };
 
   this.bomb = [
-    new bomb(this.ctx, 4000, 500, 2, 1),
-    new bomb(this.ctx, 4000, 500, 2, 0),
-    new bomb(this.ctx, 4000, 500, 2, 0)
+    new bomb(this.ctx, 4000, 1000, 2, 1),
+    new bomb(this.ctx, 4000, 1000, 2, 0),
+    new bomb(this.ctx, 4000, 1000, 2, 0)
   ];
 
   this.BlockCoord =
@@ -492,6 +494,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
   this.bombExplode = async function() {
     this.status = 3;
     this.makeExplosion();
+    explosion.play();
     myBackground.layerDirty = true;
     await sleep(this.explodeTimer);
     this.bombOver();
