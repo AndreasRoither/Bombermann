@@ -109,10 +109,20 @@ var tileImages = {
 };
 
 var bombImages = {
-  bombCount: 2,
+  bombCount: 1,
   bombs: [
     './img/Bomb/Bomb_f01.png',
-    './img/Flame/Flame_f00.png'
+  ]
+};
+
+var flameImages = {
+  flameCount: 5,
+  flames: [
+    './img/Flame/Flame_f00.png',
+    './img/Flame/Flame_f01.png',
+    './img/Flame/Flame_f02.png',
+    './img/Flame/Flame_f03.png',
+    './img/Flame/Flame_f04.png',
   ]
 };
 
@@ -471,7 +481,9 @@ function background(context, tileSize) {
 
 /*everything with bombs*/
 function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
+  this.flameCounter = 0;
   this.bombs = [];
+  this.flames = [];
   this.bombTimer = bombTimer;
   this.explodeTimer = explodeTimer;
   this.explosionRadius = explosionRadius;
@@ -485,9 +497,14 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
   };
 
   
-  // create new images and push them into the tiles array
+  // create new images and push them into the bomb array
   for (var i = 0; i < bombImages.bombCount; i++) {
     this.bombs.push(createImage(bombImages.bombs[i], "Bomb"));
+  }
+
+  // create new images and push them into the flame array
+  for (var i = 0; i < flameImages.flameCount; i++) {
+    this.flames.push(createImage(flameImages.flames[i], "Flame"));
   }
 
 
@@ -559,7 +576,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
     }
     else if (this.status == 3) {
       this.drawBlock(this.ctx, this.bombs[0], this.pos.posX, this.pos.posY);
-      //kill_player(this.pos.posX,this.pos.posY);
+      myPlayer.killPlayer(this.pos.posX,this.pos.posY);
+      this.updateFlameCounter();
+      //flames
       for (var i=1; i<=this.explosionRadius; i++) {
         var enable_x_pos = true;
         var enable_y_pos = true;
@@ -568,7 +587,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
         for (var i=1; i<=this.explosionRadius; i++) {
           if (enable_x_pos) {
             if (myBackground.map[this.pos.posY][this.pos.posX+i] == 0) { //flames
-              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX+i, this.pos.posY);
+              myBackground.drawBlock(this.pos.posX+i, this.pos.posY);
+              this.drawBlock(this.ctx, this.flames[this.flameCounter], this.pos.posX+i, this.pos.posY);
               myPlayer.killPlayer(this.pos.posX+i, this.pos.posY);
             }
             else if (myBackground.map[this.pos.posY][this.pos.posX+i] == 1) { //solid block
@@ -577,7 +597,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
           }
           if (enable_y_pos) {
             if (myBackground.map[this.pos.posY+i][this.pos.posX] == 0) { //flames
-              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX, this.pos.posY+i);
+              myBackground.drawBlock(this.pos.posX, this.pos.posY+i);
+              this.drawBlock(this.ctx, this.flames[this.flameCounter], this.pos.posX, this.pos.posY+i);
               myPlayer.killPlayer(this.pos.posX, this.pos.posY+i);
             }
             else if (myBackground.map[this.pos.posY+i][this.pos.posX] == 1) { //solid block
@@ -587,7 +608,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
       
           if (enable_x_neg) {
             if (myBackground.map[this.pos.posY][this.pos.posX-i] == 0) { //flames
-              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX-i, this.pos.posY);
+              myBackground.drawBlock(this.pos.posX-i, this.pos.posY);
+              this.drawBlock(this.ctx, this.flames[this.flameCounter], this.pos.posX-i, this.pos.posY);
               myPlayer.killPlayer(this.pos.posX-i, this.pos.posY);
             }
             else if (myBackground.map[this.pos.posY][this.pos.posX-i] == 1) { //solid block
@@ -596,7 +618,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
           }
           if (enable_y_neg) {
             if (myBackground.map[this.pos.posY-i][this.pos.posX] == 0) { //flames
-              this.drawBlock(this.ctx, this.bombs[1], this.pos.posX, this.pos.posY-i);
+              myBackground.drawBlock(this.pos.posX, this.pos.posY-i);
+              this.drawBlock(this.ctx, this.flames[this.flameCounter], this.pos.posX, this.pos.posY-i);
               myPlayer.killPlayer(this.pos.posX, this.pos.posY-i);
             }
             else if (myBackground.map[this.pos.posY-i][this.pos.posX] == 1) { //solid block
@@ -611,6 +634,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
   this.drawBlock = function (ctx, img, x, y){
     ctx.drawImage(img, myBackground.tileSize * x, myBackground.tileSize * y, myBackground.tileSize, myBackground.tileSize);
   }
+
+    /* updates image counter
+   * determines which frame of the player should be drawn*/
+  this.updateFlameCounter = function () {
+    if (this.flameCounter < 5) {
+      this.flameCounter++;
+    } else {
+      this.flameCounter = 0;
+    }
+  };
 }
 
 
