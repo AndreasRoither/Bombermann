@@ -17,7 +17,7 @@ bomb
 function startGame() {
     myGameArea.start();
     myBackground = new background(myGameArea.context, 35);
-    myPlayer = new player(myGameArea.context, 36, 36, 0.4, 3);
+    myPlayer = new player(myGameArea.context, 36, 36, 0.5, 3);
 
     // TODO: start game loop here instead of setinterval from mygamearea
 }
@@ -27,12 +27,14 @@ function updateGameArea() {
         myPlayer.tryMove();
     }
 
+    // redraw background if sth changed
     if (myBackground.layerDirty) {
         myBackground.update();
         myPlayer.update();
         myBackground.layerDirty = false;
     }
 
+    // redraw player if sth changed
     if (myPlayer.layerDirty) {
         myPlayer.update();
         myPlayer.layerDirty = false;
@@ -162,7 +164,7 @@ var directions = {
 /*     Objects      */
 /********************/
 
-/* Player Object 
+/* Player Object
  * Contains vars and funcitons to move and draw the player + check functions*/
 function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     this.imageCounter = 0;
@@ -174,10 +176,17 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     this.diagonalMoveDivisior = 1.4;
     this.layerDirty = true;
     this.layerDirty2 = false;
+    this.collsionCorrection = 10 * playerSizeMultiplier;
+
+    this.stats = {
+        kills: 0,
+        bombPowerup: 0,
+        speedPowerup: 0
+    };
 
     this.dimensions = {
-        width: 64,
-        height: 100
+        width: 64 * playerSizeMultiplier,
+        height: 100 * playerSizeMultiplier
     };
 
     this.speed = {
@@ -219,7 +228,7 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     this.left = [];
     this.right = [];
 
-    // crreate and initialize images from the image paths and push it into the arrays
+    // create and initialize images from the image paths and push it into the arrays
     for (var i = 0; i < playerImages.tileCount; i++) {
         this.front.push(createImage(playerImages.frontImgs[i], "Bomberman Front"));
         this.back.push(createImage(playerImages.backImgs[i], "Bomberman Back"));
@@ -235,42 +244,42 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
         var movedDiagonally = false;
 
         if (movLeft) {
-            if (this.possibleMove(this.pos.posX, this.pos.posY + (this.dimensions.height * playerSizeMultiplier) / 2, -this.walkSpeed, 0) &&
-                this.possibleMove(this.pos.posX, this.pos.posY + this.dimensions.height * playerSizeMultiplier, -this.walkSpeed, 0)) {
-                this.currentDirection = directions.left;
+            if (this.possibleMove(this.pos.posX + this.collsionCorrection, this.pos.posY + this.dimensions.height / 2, -this.walkSpeed, 0) &&
+                this.possibleMove(this.pos.posX + this.collsionCorrection, this.pos.posY + this.dimensions.height, -this.walkSpeed, 0)) {
                 this.speed.speedX = -this.walkSpeed;
                 moved = true;
             }
+            this.currentDirection = directions.left;
         }
         if (movRight && !movLeft) {
-            if (this.possibleMove(this.pos.posX + this.dimensions.width * playerSizeMultiplier, this.pos.posY + (this.dimensions.height * playerSizeMultiplier) / 2, this.walkSpeed, 0) &&
-                this.possibleMove(this.pos.posX + this.dimensions.width * playerSizeMultiplier, this.pos.posY + this.dimensions.height * playerSizeMultiplier, this.walkSpeed, 0)) {
-                this.currentDirection = directions.right;
+            if (this.possibleMove(this.pos.posX + this.dimensions.width - this.collsionCorrection, this.pos.posY + this.dimensions.height / 2, this.walkSpeed, 0) &&
+                this.possibleMove(this.pos.posX + this.dimensions.width - this.collsionCorrection, this.pos.posY + this.dimensions.height, this.walkSpeed, 0)) {
                 this.speed.speedX = this.walkSpeed;
                 moved = true;
             }
+            this.currentDirection = directions.right;
         }
         if (movUp) {
-            if (this.possibleMove(this.pos.posX, this.pos.posY + (this.dimensions.height * playerSizeMultiplier) / 2, 0, -this.walkSpeed) &&
-                this.possibleMove(this.pos.posX + this.dimensions.width * playerSizeMultiplier, this.pos.posY + (this.dimensions.height * playerSizeMultiplier) / 2, 0, -this.walkSpeed)) {
-                this.currentDirection = directions.up;
+            if (this.possibleMove(this.pos.posX + this.collsionCorrection, this.pos.posY + this.dimensions.height / 2, 0, -this.walkSpeed) &&
+                this.possibleMove(this.pos.posX + this.dimensions.width - this.collsionCorrection, this.pos.posY + this.dimensions.height / 2, 0, -this.walkSpeed)) {
                 this.speed.speedY = -this.walkSpeed;
                 if (moved)
                     movedDiagonally = true;
                 else
                     moved = true;
             }
+            this.currentDirection = directions.up;
         }
         if (movDown) {
-            if (this.possibleMove(this.pos.posX, this.pos.posY + this.dimensions.height * playerSizeMultiplier, 0, this.walkSpeed) &&
-                this.possibleMove(this.pos.posX + this.dimensions.width * playerSizeMultiplier, this.pos.posY + this.dimensions.height * playerSizeMultiplier, 0, this.walkSpeed)) {
-                this.currentDirection = directions.down;
+            if (this.possibleMove(this.pos.posX + this.collsionCorrection, this.pos.posY + this.dimensions.height, 0, this.walkSpeed) &&
+                this.possibleMove(this.pos.posX + this.dimensions.width - this.collsionCorrection, this.pos.posY + this.dimensions.height, 0, this.walkSpeed)) {
                 this.speed.speedY = this.walkSpeed;
                 if (moved)
                     movedDiagonally = true;
                 else
                     moved = true;
             }
+            this.currentDirection = directions.down;
         }
 
         // move speed is to high if moved diagonally, so we lower it
@@ -290,7 +299,7 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
             return true;
         } else
             return false;
-    }
+    };
 
     //checks if a single Point can be moved
     this.possibleMove = function(x, y, dx, dy) {
@@ -305,28 +314,28 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
     this.update = function() {
         switch (this.currentDirection) {
             case directions.left:
-                this.drawPlayer(this.left[this.imageCounter], this.pos, this.dimensions, this.playerSizeMultiplier);
+                this.drawPlayer(this.left[this.imageCounter], this.pos, this.dimensions);
                 break;
             case directions.right:
-                this.drawPlayer(this.right[this.imageCounter], this.pos, this.dimensions, this.playerSizeMultiplier);
+                this.drawPlayer(this.right[this.imageCounter], this.pos, this.dimensions);
                 break;
             case directions.up:
-                this.drawPlayer(this.back[this.imageCounter], this.pos, this.dimensions, this.playerSizeMultiplier);
+                this.drawPlayer(this.back[this.imageCounter], this.pos, this.dimensions);
                 break;
             case directions.down:
-                this.drawPlayer(this.front[this.imageCounter], this.pos, this.dimensions, this.playerSizeMultiplier);
+                this.drawPlayer(this.front[this.imageCounter], this.pos, this.dimensions);
                 break;
         }
     };
 
     // draws the player
-    this.drawPlayer = function(img, pos, size, playerSizeMultiplier) {
+    this.drawPlayer = function(img, pos, size) {
         for (var i = 0; i < 6; ++i) { //draw blocks behind player
             myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
         }
         this.oldBlockCoord = this.BlockCoord;
 
-        myGameArea.context.drawImage(img, pos.posX, pos.posY, size.width * playerSizeMultiplier, size.height * playerSizeMultiplier);
+        myGameArea.context.drawImage(img, pos.posX, pos.posY, size.width, size.height);
     };
 
     /* updates image counter
@@ -361,27 +370,27 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
         this.BlockCoord[0][0] = Math.trunc((this.pos.posX) / myBackground.tileSize); //upper left
         this.BlockCoord[0][1] = Math.trunc((this.pos.posY) / myBackground.tileSize);
 
-        this.BlockCoord[1][0] = Math.trunc((this.pos.posX + (this.dimensions.width * playerSizeMultiplier)) / myBackground.tileSize); //upper right
+        this.BlockCoord[1][0] = Math.trunc((this.pos.posX + this.dimensions.width) / myBackground.tileSize); //upper right
         this.BlockCoord[1][1] = Math.trunc((this.pos.posY) / myBackground.tileSize);
 
         this.BlockCoord[2][0] = Math.trunc((this.pos.posX) / myBackground.tileSize); //lower left
-        this.BlockCoord[2][1] = Math.trunc((this.pos.posY + (this.dimensions.height * playerSizeMultiplier)) / myBackground.tileSize);
+        this.BlockCoord[2][1] = Math.trunc((this.pos.posY + this.dimensions.height) / myBackground.tileSize);
 
-        this.BlockCoord[3][0] = Math.trunc((this.pos.posX + (this.dimensions.width * playerSizeMultiplier)) / myBackground.tileSize); //lower right
-        this.BlockCoord[3][1] = Math.trunc((this.pos.posY + (this.dimensions.height * playerSizeMultiplier)) / myBackground.tileSize);
+        this.BlockCoord[3][0] = Math.trunc((this.pos.posX + this.dimensions.width) / myBackground.tileSize); //lower right
+        this.BlockCoord[3][1] = Math.trunc((this.pos.posY + this.dimensions.height) / myBackground.tileSize);
 
         this.BlockCoord[4][0] = Math.trunc((this.pos.posX) / myBackground.tileSize); //middle left
-        this.BlockCoord[4][1] = Math.trunc((this.pos.posY + (this.dimensions.height * playerSizeMultiplier) / 2) / myBackground.tileSize);
+        this.BlockCoord[4][1] = Math.trunc((this.pos.posY + this.dimensions.height / 2) / myBackground.tileSize);
 
-        this.BlockCoord[5][0] = Math.trunc((this.pos.posX + (this.dimensions.width * playerSizeMultiplier)) / myBackground.tileSize); //middle right
-        this.BlockCoord[5][1] = Math.trunc((this.pos.posY + (this.dimensions.height * playerSizeMultiplier) / 2) / myBackground.tileSize);
-    }
+        this.BlockCoord[5][0] = Math.trunc((this.pos.posX + this.dimensions.width) / myBackground.tileSize); //middle right
+        this.BlockCoord[5][1] = Math.trunc((this.pos.posY + this.dimensions.height / 2) / myBackground.tileSize);
+    };
 
     this.layBomb = async function() {
         for (var i = 0; i < 3; ++i) {
             if (this.bomb[i].status == 1) {
-                this.bomb[i].pos.posY = Math.trunc((this.pos.posY + ((this.dimensions.height * playerSizeMultiplier) / 4) * 3) / myBackground.tileSize);
-                this.bomb[i].pos.posX = Math.trunc((this.pos.posX + (this.dimensions.width * playerSizeMultiplier) / 2) / myBackground.tileSize);
+                this.bomb[i].pos.posY = Math.trunc((this.pos.posY + (this.dimensions.height / 4) * 3) / myBackground.tileSize);
+                this.bomb[i].pos.posX = Math.trunc((this.pos.posX + this.dimensions.width / 2) / myBackground.tileSize);
                 this.bomb[i].status = 2;
                 this.bomb[i].layerDirty = true;
                 await sleep(this.bomb[i].bombTimer);
@@ -389,13 +398,13 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
                 return;
             }
         }
-    }
+    };
 
     this.updateBomb = function() {
         for (var i = 0; i < 3; ++i) {
             this.bomb[i].drawBomb();
         }
-    }
+    };
 
     this.killPlayer = function(x, y) {
         for (var i = 2; i < 6; ++i) {
@@ -403,7 +412,24 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
                 alert('you dead!');
             }
         }
-    }
+    };
+}
+
+/* Multiplayer player object
+ * */
+function playerObject() {
+    this.pos = {
+        posX: x,
+        posY: y
+    };
+
+    this.stats = {
+        kills: 0
+    };
+}
+
+function otherPlayers() {
+
 }
 
 /* Background Object
@@ -473,7 +499,7 @@ function background(context, tileSize) {
 
     this.draw_image = function(ctx, img, x, y) {
         ctx.drawImage(img, this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
-    }
+    };
 }
 
 /*everything with bombs*/
@@ -493,7 +519,6 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
         posY: 0
     };
 
-
     // create new images and push them into the bomb array
     for (var i = 0; i < bombImages.bombCount; i++) {
         this.bombs.push(createImage(bombImages.bombs[i], "Bomb"));
@@ -512,13 +537,13 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
         myBackground.layerDirty = true;
         await sleep(this.explodeTimer);
         this.bombOver();
-    }
+    };
 
     this.bombOver = function() {
         this.status = 1;
         myBackground.layerDirty = true;
         this.layerDirty = false;
-    }
+    };
 
     this.makeExplosion = function() {
         var enable_x_pos = true;
@@ -542,7 +567,6 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
                     enable_y_pos = false;
                 }
             }
-
             if (enable_x_neg) {
                 if (myBackground.map[this.pos.posY][this.pos.posX - i] == 2) { //remove block
                     myBackground.map[this.pos.posY][this.pos.posX - i] = 0;
@@ -560,7 +584,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
                 }
             }
         }
-    }
+    };
 
 
     this.drawBomb = function() {
@@ -617,11 +641,11 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
                 }
             }
         }
-    }
+    };
 
     this.drawBlock = function(ctx, img, x, y) {
         ctx.drawImage(img, myBackground.tileSize * x, myBackground.tileSize * y, myBackground.tileSize, myBackground.tileSize);
-    }
+    };
 
     /* updates image counter
      * determines which frame of the player should be drawn*/
@@ -635,7 +659,6 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
 }
 
 //helper
-
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
