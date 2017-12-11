@@ -39,8 +39,6 @@ function newGame(player_name) {}
 
 function endGame(player_name) {}
 
-function generateGameID() {}
-
 function playerReady(isReady) {
   if(isReady) {
     socket.emit("ready", gameId, true);
@@ -51,14 +49,15 @@ function playerReady(isReady) {
 }
 
 function copyGameId() {
-
   var aux = document.createElement("input");
   aux.setAttribute("value", gameId);
   document.body.appendChild(aux);
   aux.select();
   document.execCommand("copy");
-
   document.body.removeChild(aux);
+
+  change_infobar("Game Id " + gameId + " copied");
+  show_infobar();
 }
 
 // menu

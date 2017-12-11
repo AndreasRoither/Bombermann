@@ -124,7 +124,6 @@ socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
      });
 
      client.on('ready', function(id, isReady) {
-
         console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
         console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
         console.log('\tid: ' + id);
@@ -132,9 +131,12 @@ socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
         
          var game = games[id];
 
-         if (!game) return;
+         if (!game) {
+            console.log('\tgame not found');
+            console.log('\tgameId: ' + id);
+            return;
+         }
 
-         console.log('\tgame found');
          var totalReady = 0;
 
          game.players.forEach(function(player, index) {
@@ -147,11 +149,13 @@ socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
              if (player.ready) totalReady++;
          });
 
-         if (totalReady > 1 && totalReady == game.players.length) {
+         if (totalReady >= 1 && totalReady == game.players.length) {
              game.started = true;
              game.matrix = createMatrix();
 
-             client.to(id).emit('start', game.matrix);
+             client.emit('game-start', game.matrix)
+             client.broadcast.to(id).emit('game-start', game.matrix);
+             console.log('\tgame started');
          }
      });
 
@@ -272,7 +276,6 @@ socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
 
          var playername;
 
-         console.log('\tclient foreach');
          game.players.forEach(function(player, index) {
              console.log('\tPlayer ID: %s', player.id);
              if (player.id == socketId) {
@@ -364,6 +367,16 @@ socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
      var tile = matrix[x][y];
 
      return tile && (tile.type == 'pillar' ? false : true);
+ }
+
+ function getTotalReadyPlayers (game) {
+    var totalReady = 0;
+
+    game.players.forEach(function(player, index) {
+        if (player.ready) totalReady++;
+    });
+
+    return totalReady;
  }
 
  //	cleanup

@@ -56,16 +56,18 @@ function addListeners() {
 *********************/
 
 function onSwitchToggle() {
-  if (playerRdy) {
-    $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
-    playerRdy = false;
-  }
-  else {
-    $("#playerReady").removeClass("not-ready").addClass("ready").text("ready");
-    playerRdy = true;
-  }
+  if (!gameStarted) {
+    if (playerRdy) {
+      $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
+      playerRdy = false;
+    }
+    else {
+      $("#playerReady").removeClass("not-ready").addClass("ready").text("ready");
+      playerRdy = true;
+    }
 
-  playerReady(playerRdy);
+    playerReady(playerRdy);
+  }
 }
 
 /********************
