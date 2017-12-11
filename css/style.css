@@ -1,6 +1,8 @@
-/********************/
-/* basic site style */
-/********************/
+
+
+/********************
+* basic site style  *
+*********************/
 
 * {
     box-sizing: border-box;
@@ -27,7 +29,8 @@ body {
     font: x-large sans-serif;
 }
 
-.header .image, .header .text {
+.header .image,
+.header .text {
     display: inline-block;
     vertical-align: middle;
 }
@@ -125,7 +128,8 @@ ul li {
   the three columns stack on top of each other instead of next to each other */
 
 @media screen and (max-width: 600px) {
-    .column.side, .column.middle {
+    .column.side,
+    .column.middle {
         width: 100%;
     }
 }
@@ -174,7 +178,6 @@ ul li {
     position: fixed;
     bottom: 0;
     width: 100%;
-    text-align: center;
 }
 
 .bomb:hover {
@@ -219,7 +222,9 @@ ul li {
     }
 }
 
-input[type="text"], select, textarea {
+input[type="text"],
+select,
+textarea {
     width: 100%;
     padding: 12px;
     border: 1px solid #ccc;
@@ -242,9 +247,9 @@ input[type="text"], select, textarea {
 }
 
 
-/********************/
-/*       Tabs       */
-/********************/
+/********************
+*       Tabs        *
+*********************/
 
 
 /* tab links */
@@ -271,11 +276,10 @@ input[type="text"], select, textarea {
     height: 100%;
 }
 
-
-/********************/
-/*   Popup Modal    */
-/*     Overlay      */
-/********************/
+/********************
+*    Popup Modal     *
+*      Overlay       *
+*********************/
 
 .popup {
     visibility: hidden;
@@ -342,10 +346,9 @@ input[type="text"], select, textarea {
     }
 }
 
-
-/********************/
-/*     Canvas       */
-/********************/
+/********************
+*       Canvas      *
+*********************/
 
 .canvas {
     padding: 0;
@@ -353,10 +356,9 @@ input[type="text"], select, textarea {
     display: block;
 }
 
-
-/********************/
-/*     Alerts       */
-/********************/
+/********************
+*       Alerts      *
+*********************/
 
 .alert {
     padding: 20px;
@@ -395,9 +397,10 @@ input[type="text"], select, textarea {
 }
 
 
-/********************/
-/*    infopopup     */
-/********************/
+/********************
+*     infopopup     *
+*********************/
+
 
 #infopopup {
     visibility: hidden;
@@ -465,11 +468,11 @@ input[type="text"], select, textarea {
     }
 }
 
+/********************
+*      Chat Msg      *
+*       Player       *
+*********************/
 
-/********************/
-/*     Chat Msg     */
-/*       Player     */
-/********************/
 
 .msg-container {
     border: 2px solid #dedede;
@@ -530,10 +533,9 @@ input[type="text"], select, textarea {
     color: #f44336;
 }
 
-
-/********************/
-/*      Button      */
-/********************/
+/********************
+*      Button       *
+*********************/
 
 .btn {
     border: none;
@@ -588,10 +590,15 @@ input[type="text"], select, textarea {
     float: left;
 }
 
+.center {
+    margin: auto;
+    display: block;
+}
 
-/********************/
-/*   Profile card   */
-/********************/
+
+/********************
+*   Profile card    *
+*********************/
 
 .profileCard {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
@@ -682,3 +689,63 @@ input[type="text"], select, textarea {
         margin: 0 auto;
     }
 }
+
+/********************
+*   Toogle Switch   *
+*********************/
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 70px;
+    height: 34px;
+  }
+  
+  .switch input {display:none;}
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(36px);
+    -ms-transform: translateX(36px);
+    transform: translateX(36px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }

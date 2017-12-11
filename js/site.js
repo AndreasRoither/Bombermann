@@ -1,14 +1,17 @@
-/* ******************** */
-/*         Site         */
-/* ******************** */
-/*
+
+/********************
+*       Site        *
+*********************/
+
+var playerRdy = false;
+
 $(document).ready(function() {
-  showModalPopup();
+   showModalPopup();
   // Get the element with id="defaultOpen" and click on it
   document.getElementById("defaultOpen").click();
   addListeners();
 });
-*/
+
 function make_responsive() {
   var x = document.getElementById("topnav1");
   if (x.className === "topnav") {
@@ -41,12 +44,31 @@ function addListeners() {
 
   $("#chatform").submit(function(e) {
     e.preventDefault();
-});
+  });
+
+  $("#checkbox").on("click", function(e) {
+    //alert("hello");
+  });
 }
 
-/* ******************** */
-/*        Popup         */
-/* ******************** */
+/********************
+*      Toogle       *
+*********************/
+
+function onSwitchToggle() {
+  if (playerRdy) {
+    $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
+    playerRdy = false;
+  }
+  else {
+    $("#playerReady").removeClass("not-ready").addClass("ready").text("ready");
+    playerRdy = true;
+  }
+}
+
+/********************
+*       Popup       *
+*********************/
 
 function showModalPopup() {
   $(".popup").css({
@@ -67,9 +89,9 @@ function closePopup() {
   $("body").removeClass("overlay");
 }
 
-/* ******************** */
-/*         Alert        */
-/* ******************** */
+/********************
+*       Alert       *
+*********************/
 
 $(document).ready(update_alerts());
 
@@ -116,9 +138,9 @@ function add_left_list(msg) {
   update_alerts();
 }
 
-/* ******************** */
-/* Keyboard recognition */
-/* ******************** */
+/***********************
+* Keyboard recognition *
+************************/
 
 var movLeft = false;
 var movRight = false;

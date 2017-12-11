@@ -7,7 +7,8 @@ var socket = io.connect('http://localhost:4200');
 socket.on('game-server-created', function(id, playerInfo) {
 
     var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
-    player_container += "<p>" + encodeURIComponent(playerInfo.name) + "<p><span class=\"player-status not-ready\">not ready</span></div></li>";
+    player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
+    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(playerInfo.name) + "</div></li>";
     $("#players").append(player_container).load();
 
     botmsg = {
@@ -15,7 +16,7 @@ socket.on('game-server-created', function(id, playerInfo) {
         message2: "Game Server ID: " + id
     };
 
-    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_yellow.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
+    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
     bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
 
     $("#playermsgcontainer").append(bot_message_container).load();
@@ -41,8 +42,15 @@ socket.on('player-joined', function(playerInfo) {
 });
 
 socket.on('joined', function(player, game) {
+
+    var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
+    player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
+    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
+    $("#players").append(player_container);
+
     game.players.forEach(element => {
-        addPlayerToBox(element);
+        if (player.id != element.id)
+            addPlayerToBox(element);
     });
 
     botmsg = {
@@ -50,7 +58,7 @@ socket.on('joined', function(player, game) {
         message2: "Game Server ID: " + game.id
     };
 
-    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_yellow.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
+    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
     bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
 
     $("#playermsgcontainer").append(bot_message_container).load();
@@ -95,7 +103,7 @@ socket.on('left', function(playerId, playerName) {
 
 socket.on('player-message', function(data, playerName) {
     var message_container = "<li><div class=\"msg-container\"><img src=\"img/Bomb/Bomb_f01.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
-    message_container += "<p>" + playerName + "</p><p>" + data.message + "</p><span class=\"time-right\">" + data.time + "</span></div></li>";
+    message_container += "<p>" + playerName + "</p><p>" + decodeURIComponent(data.message) + "</p><span class=\"time-right\">" + data.time + "</span></div></li>";
 
     $("#playermsgcontainer").prepend(message_container).load();
 
@@ -103,6 +111,6 @@ socket.on('player-message', function(data, playerName) {
 
 function addPlayerToBox(player) {
     var player_container = "<li id=\"" + player.id + "\"><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
-    player_container += "<p>" + player.name + "<p><span class=\"player-status not-ready\">not ready</span></div></li>";
+    player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container).load();
 }

@@ -429,7 +429,7 @@ function playerObject() {
 }
 
 function otherPlayers() {
-
+    
 }
 
 /* Background Object
