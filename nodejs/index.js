@@ -359,7 +359,7 @@ socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
      }
 
      return matrix;
- }
+}
 
  function canExplode(matrix, x, y) {
      if (!matrix[x]) return;

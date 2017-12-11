@@ -529,7 +529,6 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
         this.flames.push(createImage(flameImages.flames[i], "Flame"));
     }
 
-
     this.bombExplode = async function() {
         this.status = 3;
         this.makeExplosion();
