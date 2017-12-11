@@ -1,6 +1,12 @@
 
 // connect
 var socket = io.connect('http://localhost:4200');
+
+socket.io.on("connect_error", function(){
+    closePopup();
+    change_infobar("Server not available");
+});
+
 var gameId = 0;
 var gameStarted = false;
 

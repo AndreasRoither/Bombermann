@@ -5,8 +5,8 @@
 
 var playerRdy = false;
 
-$(document).ready(function() {
-   showModalPopup();
+$(document).ready(function () {
+  showModalPopup();
   // Get the element with id="defaultOpen" and click on it
   document.getElementById("defaultOpen").click();
   addListeners();
@@ -36,17 +36,17 @@ function openPage(pageName, elmnt, color) {
 }
 
 function addListeners() {
-  $("#text_msg").on("keyup", function(e) {
+  $("#text_msg").on("keyup", function (e) {
     if (e.keyCode == 13) {
-      $( "#chatform" ).submit().preventDefault;
+      $("#chatform").submit().preventDefault;
     }
   });
 
-  $("#chatform").submit(function(e) {
+  $("#chatform").submit(function (e) {
     e.preventDefault();
   });
 
-  $("#checkbox").on("click", function(e) {
+  $("#checkbox").on("click", function (e) {
     //alert("hello");
   });
 }
@@ -104,10 +104,10 @@ function update_alerts() {
   var i;
 
   for (i = 0; i < close.length; i++) {
-    close[i].onclick = function() {
+    close[i].onclick = function () {
       var div = this.parentElement;
       div.style.opacity = "0";
-      setTimeout(function() {
+      setTimeout(function () {
         div.style.display = "none";
       }, 600);
     };
@@ -123,7 +123,7 @@ function showinfopopup() {
 function show_infobar() {
   var x = document.getElementById("infopopup");
   x.className = "show";
-  setTimeout(function() {
+  setTimeout(function () {
     x.className = x.className.replace("show", "");
   }, 5000);
 }
@@ -134,10 +134,10 @@ function change_infobar(msg) {
 }
 
 function add_left_list(msg) {
-  $("#left-list").append(
+  $("#players").prepend(
     "<li><div class=alert><span class=closebtn>&times;</span>" +
-      msg +
-      "</div></li> "
+    msg +
+    "</div></li> "
   );
   update_alerts();
 }
@@ -151,10 +151,10 @@ var movRight = false;
 var movUp = false;
 var movDown = false;
 
-window.addEventListener("keydown", function(event) {
+window.addEventListener("keydown", function (event) {
   var target = event.target || event.srcElement;
   var targetTagName = (target.nodeType == 1) ? target.nodeName.toUpperCase() : "";
-  if ( !/INPUT|SELECT|TEXTAREA/.test(targetTagName) ) {
+  if (!/INPUT|SELECT|TEXTAREA/.test(targetTagName)) {
     if (event.repeat) return;
     if (event.which == 13) {
       // Enter Key
@@ -206,7 +206,7 @@ window.addEventListener("keydown", function(event) {
   //console.log( event.type + ": " +  event.keyCode ); //debug
 });
 
-window.addEventListener("keyup", function(event) {
+window.addEventListener("keyup", function (event) {
   if (event.which == 13) {
     // Enter Key
     event.preventDefault();
