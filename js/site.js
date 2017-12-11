@@ -64,6 +64,8 @@ function onSwitchToggle() {
     $("#playerReady").removeClass("not-ready").addClass("ready").text("ready");
     playerRdy = true;
   }
+
+  playerReady(playerRdy);
 }
 
 /********************

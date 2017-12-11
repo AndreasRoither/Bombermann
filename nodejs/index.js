@@ -1,26 +1,26 @@
  /*// sending to sender-client only
-            socket.emit('message', "this is a test");
-            
-             // sending to all clients, include sender
-             io.emit('message', "this is a test");
-            
-             // sending to all clients except sender
-             socket.broadcast.emit('message', "this is a test");
-            
-             // sending to all clients in 'game' room(channel) except sender
-             socket.broadcast.to('game').emit('message', 'nice game');
-            
-             // sending to all clients in 'game' room(channel), include sender
-             io.in('game').emit('message', 'cool game');
-            
-             // sending to sender client, only if they are in 'game' room(channel)
-             socket.to('game').emit('message', 'enjoy the game');
-            
-             // sending to all clients in namespace 'myNamespace', include sender
-             io.of('myNamespace').emit('message', 'gg');
-            
-             // sending to individual socketid
-             socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
+socket.emit('message', "this is a test");
+
+// sending to all clients, include sender
+io.emit('message', "this is a test");
+
+// sending to all clients except sender
+socket.broadcast.emit('message', "this is a test");
+
+// sending to all clients in 'game' room(channel) except sender
+socket.broadcast.to('game').emit('message', 'nice game');
+
+// sending to all clients in 'game' room(channel), include sender
+io.in('game').emit('message', 'cool game');
+
+// sending to sender client, only if they are in 'game' room(channel)
+socket.to('game').emit('message', 'enjoy the game');
+
+// sending to all clients in namespace 'myNamespace', include sender
+io.of('myNamespace').emit('message', 'gg');
+
+// sending to individual socketid
+socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
 
  // load
 
@@ -124,21 +124,27 @@
      });
 
      client.on('ready', function(id, isReady) {
+
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
+        console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
+        console.log('\tid: ' + id);
+        console.log('\tready: ' + isReady);
+        
          var game = games[id];
 
          if (!game) return;
 
+         console.log('\tgame found');
          var totalReady = 0;
 
          game.players.forEach(function(player, index) {
              if (player.id == socketId) {
                  player.ready = isReady ? true : false;
 
-                 io.to(id).emit('ready', player.id, player.ready);
+                 client.to(id).emit('ready', player.id, player.ready);
              }
 
              if (player.ready) totalReady++;
-
          });
 
          if (totalReady > 1 && totalReady == game.players.length) {
@@ -164,7 +170,7 @@
      });
 
      client.on('bomb', function(id, position) {
-         io.to(id).emit('bomb', position);
+        client.to(id).emit('bomb', position);
 
          var game = games[id];
 
@@ -203,7 +209,7 @@
                      game.players.forEach(function(player) {
                          if (player.position.x == spot.x && player.position.y == spot.y) {
                              player.alive = false;
-                             io.to(id).emit('death', player.id);
+                             client.to(id).emit('death', player.id);
                          }
 
                      });
@@ -232,13 +238,18 @@
 
      client.on('disconnect', function() {
          if (!gameID) return;
-         var game = games[gameID];
 
          console.log(ConsoleColor.Bright + ConsoleColor.FgRed + '\nClient' + ConsoleColor.Reset);
+         var game = games[gameID];
+         if (game == undefined)
+         {
+            console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgRed + 'game undefined' + ConsoleColor.Reset);
+            return;
+         }
          console.log('\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'disconnected' + ConsoleColor.Reset);
 
          game.players.forEach(function(player, index) {
-             if (player.id == socketId) {
+             if (player != undefined && player.id == socketId) {
                  this.splice(index, 1);
 
                  console.log('\tplayer name: ' + player.name);
@@ -248,7 +259,6 @@
              }
          }, game.players);
      });
-
 
      client.on('messages', function(data) {
          console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);

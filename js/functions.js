@@ -41,6 +41,26 @@ function endGame(player_name) {}
 
 function generateGameID() {}
 
+function playerReady(isReady) {
+  if(isReady) {
+    socket.emit("ready", gameId, true);
+  }
+  else {
+    socket.emit("ready", gameId, false);
+  }
+}
+
+function copyGameId() {
+
+  var aux = document.createElement("input");
+  aux.setAttribute("value", gameId);
+  document.body.appendChild(aux);
+  aux.select();
+  document.execCommand("copy");
+
+  document.body.removeChild(aux);
+}
+
 // menu
 
 // loading

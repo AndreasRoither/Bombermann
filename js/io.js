@@ -1,10 +1,14 @@
 // connect
 
 var socket = io.connect('http://localhost:4200');
+var gameId = 0;
 
 // event listeners
 
 socket.on('game-server-created', function(id, playerInfo) {
+
+    // set game id
+    gameId = id;
 
     var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
     player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
@@ -67,8 +71,18 @@ socket.on('joined', function(player, game) {
     show_infobar();
 });
 
-socket.on('ready', function(id, playerInfo) {
+socket.on('ready', function(id, ready) {
+    alert("ready");
+    var id = id + "playerReady";
 
+    if (ready) {
+        $('#' + id).removeClass("ready").addClass("not-ready").text("not ready");
+        playerRdy = false;
+      }
+      else {
+        $('#' + id).removeClass("not-ready").addClass("ready").text("ready");
+        playerRdy = true;
+      }
 });
 
 socket.on('start', function(id, playerInfo) {
