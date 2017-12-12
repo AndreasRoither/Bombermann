@@ -83,7 +83,7 @@ function playerReady(isReady) {
   }
 }
 
-function playerMoved(position, imageCounter) {
-  socket.emit("move", gameId, socket.id, position, imageCounter);
+function playerMoved(position, imageCounter, currentDirection) {
+  socket.emit("move", gameId, socket.id, position, imageCounter, currentDirection);
 }
 //

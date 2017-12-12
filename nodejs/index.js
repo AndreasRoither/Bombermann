@@ -61,8 +61,8 @@ app.get('/', function (req, res, next) {
 });
 
 io.on('connection', function (client) {
-    console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\nServer' + ConsoleColor.Reset);
-    console.log('\tClient connected...\n\tid: %s', client.id);
+    console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\r\nServer' + ConsoleColor.Reset);
+    console.log('\r\n\tClient connected...\r\n\r\n\tid: %s', client.id);
 
     // socket id for connecting player
     var socketId = client.id;
@@ -70,10 +70,10 @@ io.on('connection', function (client) {
         userName;
 
     client.on('create', function (id, name, avatar, matrix) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
-        console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to create game server' + ConsoleColor.Reset);
-        console.log('\tplayer name ' + name);
-        console.log('\tGame Server ID ' + id);
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
+        console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to create game server' + ConsoleColor.Reset);
+        console.log('\r\n\tplayer name ' + name);
+        console.log('\r\n\tGame Server ID ' + id);
 
         var player = {
             id: socketId,
@@ -82,10 +82,11 @@ io.on('connection', function (client) {
             index: 0,
             ready: false,
             alive: true,
-            position: playerStartPosition(0)
+            startPosition: playerStartPosition(0),
+            position: {x:0,y:0}
         };
 
-        console.log('\tplayer pos: ' + player.position.x + " ", player.position.y);
+        console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
 
         games[id] = {
             id: id,
@@ -103,10 +104,10 @@ io.on('connection', function (client) {
     });
 
     client.on('join', function (data) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
-        console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to join game server' + ConsoleColor.Reset);
-        console.log('\tplayer name: ' + data.name);
-        console.log('\tgame id: ' + data.id);
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
+        console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to join game server' + ConsoleColor.Reset);
+        console.log('\r\n\tplayer name: ' + data.name);
+        console.log('\r\n\tgame id: ' + data.id);
 
         var game = games[data.id];
 
@@ -124,10 +125,11 @@ io.on('connection', function (client) {
                     index: playerIndex,
                     ready: false,
                     alive: true,
-                    position: playerStartPosition(playerIndex)
+                    startPosition: playerStartPosition(playerIndex),
+                    position: {x:0,y:0}
                 };
             
-            console.log('\tplayer pos: ' + player.position.x + " ", player.position.y);
+            console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
 
             game.players.push(player);
 
@@ -136,22 +138,23 @@ io.on('connection', function (client) {
 
             client.join(data.id);
             client.emit('joined', player, game);
+            console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
 
             client.broadcast.to(data.id).emit('player-joined', player);
         }
     });
 
     client.on('ready', function (id, isReady) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
-        console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
-        console.log('\tid: ' + id);
-        console.log('\tready: ' + isReady);
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
+        console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
+        console.log('\r\n\tid: ' + id);
+        console.log('\r\n\tready: ' + isReady);
 
         var game = games[id];
 
         if (!game) {
-            console.log('\tgame not found');
-            console.log('\tgameId: ' + id);
+            console.log('\r\n\tgame not found');
+            console.log('\r\n\tgameId: ' + id);
             return;
         }
 
@@ -173,22 +176,24 @@ io.on('connection', function (client) {
 
             client.emit('game-start', game.matrix)
             client.broadcast.to(id).emit('game-start', game.matrix);
-            console.log('\tgame started');
+            console.log('\r\n\tgame started');
         }
     });
 
-    client.on('move', function (gameId, playerId, position, imageCounter) {
+    client.on('move', function (gameId, playerId, position, imageCounter, currentDirection) {
         var game = games[gameId];
+        var thePlayer;
 
         if (!game) return;
 
         game.players.forEach(function (player) {
             if (player.id == socketId) {
                 player.position = position;
+                thePlayer = player;
             }
-
         });
-        client.broadcast.to(id).emit('move', playerId, position, imageCounter);
+
+        client.broadcast.to(gameId).emit('player-move', thePlayer, position, imageCounter, currentDirection);
     });
 
     client.on('bomb', function (id, position) {
@@ -257,20 +262,20 @@ io.on('connection', function (client) {
     client.on('disconnect', function () {
         if (!gameID) return;
 
-        console.log(ConsoleColor.Bright + ConsoleColor.FgRed + '\nClient' + ConsoleColor.Reset);
+        console.log(ConsoleColor.Bright + ConsoleColor.FgRed + '\r\nClient' + ConsoleColor.Reset);
         var game = games[gameID];
         if (game == undefined) {
-            console.log('\t' + ConsoleColor.BgWhite + ConsoleColor.FgRed + 'game undefined' + ConsoleColor.Reset);
+            console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgRed + 'game undefined' + ConsoleColor.Reset);
             return;
         }
-        console.log('\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'disconnected' + ConsoleColor.Reset);
+        console.log('\r\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'disconnected' + ConsoleColor.Reset);
 
         game.players.forEach(function (player, index) {
             if (player != undefined && player.id == socketId) {
                 this.splice(index, 1);
 
-                console.log('\tplayer name: ' + player.name);
-                console.log('\tgame id: ' + player.id);
+                console.log('\r\n\tplayer name: ' + player.name);
+                console.log('\r\n\tgame id: ' + player.id);
 
                 client.broadcast.to(gameID).emit('left', client.id, player.name);
             }
@@ -278,28 +283,28 @@ io.on('connection', function (client) {
     });
 
     client.on('messages', function (data) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\nClient' + ConsoleColor.Reset);
-        console.log('\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'message' + ConsoleColor.Reset);
-        console.log('\tclient game: ' + gameID);
+        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
+        console.log('\r\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'message' + ConsoleColor.Reset);
+        console.log('\r\n\tclient game: ' + gameID);
         var game = games[gameID];
         if (!game) {
-            console.log('\tclient has no game sesion, not broadcasting message');
+            console.log('\r\n\tclient has no game sesion, not broadcasting message');
             return;
         }
 
         var playername;
 
         game.players.forEach(function (player, index) {
-            console.log('\tPlayer ID: %s', player.id);
+            console.log('\r\n\tPlayer ID: %s', player.id);
             if (player.id == socketId) {
                 playername = player.name
             }
         }, game.players);
 
-        console.log('\tPlayer name: %s', playername);
-        console.log('\tMessage: %s', data.message);
-        console.log('\ttime: ' + data.time);
-        console.log('\tbroadcasting to gameID: ' + gameID);
+        console.log('\r\n\tPlayer name: %s', playername);
+        console.log('\r\n\tMessage: %s', data.message);
+        console.log('\r\n\ttime: ' + data.time);
+        console.log('\r\n\tbroadcasting to gameID: ' + gameID);
         
         client.broadcast.to(gameID).emit('player-message', data, playername);
     });
@@ -309,9 +314,9 @@ server.listen(port_to_listen, function () {
     var host = server.address().address;
     var port = server.address().port;
 
-    console.log('\n-- Server listening --');
+    console.log('\r\n-- Server listening --');
     console.log(datetime);
-    console.log('\nApp listening at http://%s:%s', host, port);
+    console.log('\r\nApp listening at http://%s:%s', host, port);
 });
 
 /////////////

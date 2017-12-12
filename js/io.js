@@ -12,13 +12,13 @@ var gameStarted = false;
 
 // event listeners
 
-socket.on('game-server-created', function(id, playerInfo) {
+socket.on('game-server-created', function(id, player) {
 
     gameId = id;
 
     var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
     player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
-    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(playerInfo.name) + "</div></li>";
+    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container).load();
 
     botmsg = {
@@ -35,6 +35,8 @@ socket.on('game-server-created', function(id, playerInfo) {
 
     $("#playermsgcontainer").append(bot_message_container).append(bot_message_container2).load();
 
+    startGame(player.startPosition);
+
     change_infobar("Created Game Server, Game ID: " + id);
     show_infobar();
 });
@@ -49,7 +51,11 @@ socket.on('player-joined', function(player) {
     change_infobar("Player " + player.name + " joined");
     show_infobar();
 
-    // add player to the multiplayer object
+    var newPlayer = new playerObject(player.startPosition, player.id);
+    players.players.push(newPlayer);
+    players.playerCount += 1;
+
+    myPlayer.layerDirty = true;
 });
 
 socket.on('joined', function(player, game) {
@@ -59,11 +65,17 @@ socket.on('joined', function(player, game) {
     player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container);
 
+    startGame(player.startPosition);
+
     gameId = game.id;
 
     game.players.forEach(element => {
-        if (player.id != element.id)
+        if (player.id != element.id) {
             addPlayerToBox(element);
+            var newPlayer = new playerObject(element.startPosition, element.id);
+            players.players.push(newPlayer);
+            players.playerCount += 1;
+        }
     });
 
     botmsg = {
@@ -106,8 +118,15 @@ socket.on('game-stop', function(id, playerInfo) {
 
 });
 
-socket.on('move', function(id, playerInfo) {
-
+socket.on('player-move', function(player, position, imageCounter, currentDirection) {
+    players.players.forEach(element => {
+        if (element.id == player.id) {
+            element.pos = position;
+            element.imageCounter = imageCounter;
+            element.currentDirection = currentDirection;
+            element.layerDirty = true;
+        }
+    });
 });
 
 socket.on('bomb', function(id, playerInfo) {
@@ -126,6 +145,22 @@ socket.on('left', function(playerId, playerName) {
     $("#" + playerId).remove();
     change_infobar("Player " + playerName + " left");
     show_infobar();
+
+    var i = 0;
+    var index = -1;
+    players.players.forEach(element => {
+        if (element.id == playerId) {
+            index = i;
+        }
+        i++;
+    });
+
+    if (index > -1) {
+        players.players.splice(index, 1);
+    }
+
+    players.players.playerCount -= 1;
+    myBackground.layerDirty = true;
 });
 
 socket.on('player-message', function(data, playerName) {
