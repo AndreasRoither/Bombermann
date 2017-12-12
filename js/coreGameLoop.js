@@ -39,10 +39,12 @@ function updateGameArea() {
         myPlayer.update();
         myPlayer.layerDirty = false;
         myPlayer.layerDirty2 = true;
+        playerMoved(myPlayer.pos, myPlayer.imageCounter);
     } else if (myPlayer.layerDirty2) {
         myPlayer.imageCounter = 0;
         myPlayer.layerDirty2 = false;
         myPlayer.update();
+        playerMoved(myPlayer.pos, myPlayer.imageCounter);
     }
 
     myPlayer.updateBomb();
@@ -444,8 +446,8 @@ function background(context, tileSize) {
     this.layerDirty = true;
 
     this.dimensions = {
-        width: 13,
-        height: 19
+        width: 19,
+        height: 13
     };
 
     this.map = [
@@ -476,8 +478,8 @@ function background(context, tileSize) {
 
     // draw_background draws background according to the matrix (this.map)
     this.drawBackground = function() {
-        for (var y = 0; y < this.dimensions.width; ++y) {
-            for (var x = 0; x < this.dimensions.height; ++x) {
+        for (var y = 0; y < this.dimensions.height; ++y) {
+            for (var x = 0; x < this.dimensions.width; ++x) {
                 this.drawBlock(x, y);
             }
         }

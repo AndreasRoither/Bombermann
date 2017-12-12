@@ -39,15 +39,6 @@ function newGame(player_name) {}
 
 function endGame(player_name) {}
 
-function playerReady(isReady) {
-  if(isReady) {
-    socket.emit("ready", gameId, true);
-  }
-  else {
-    socket.emit("ready", gameId, false);
-  }
-}
-
 function copyGameId() {
   var aux = document.createElement("input");
   aux.setAttribute("value", gameId);
@@ -83,4 +74,16 @@ function sendChatMsg() {
   $("#playermsgcontainer").prepend(message_container).load();
 }
 
+function playerReady(isReady) {
+  if(isReady) {
+    socket.emit("ready", gameId, true);
+  }
+  else {
+    socket.emit("ready", gameId, false);
+  }
+}
+
+function playerMoved(position, imageCounter) {
+  socket.emit("move", gameId, socket.id, position, imageCounter);
+}
 //

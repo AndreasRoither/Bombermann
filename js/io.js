@@ -44,10 +44,12 @@ socket.on('game-not-found', function(id, playerInfo) {
     show_infobar();
 });
 
-socket.on('player-joined', function(playerInfo) {
+socket.on('player-joined', function(player) {
     addPlayerToBox(playerInfo);
     change_infobar("Player " + playerInfo.name + " joined");
     show_infobar();
+
+    // add player to the multiplayer object
 });
 
 socket.on('joined', function(player, game) {
@@ -92,6 +94,11 @@ socket.on('ready', function(id, ready) {
 socket.on('game-start', function(id, matrix) {
     gameStarted = true;
     change_infobar("Game started");
+    show_infobar();
+});
+
+socket.on('game-started', function() {
+    change_infobar("Sorry, Game already started");
     show_infobar();
 });
 
