@@ -126,6 +126,7 @@ var flameImages = {
 };
 
 var explosion = new Audio('./sound/Bomb1.mp3');
+explosion.volume = 0.2;
 
 /* Image factory to create an image
  * returns image; */
@@ -270,7 +271,7 @@ function player(context, x, y, playerSizeMultiplier, walkSpeed) {
             }
             this.currentDirection = directions.up;
         }
-        if (movDown) {
+        if (movDown && !movUp) {
             if (this.possibleMove(this.pos.posX + this.collsionCorrection, this.pos.posY + this.dimensions.height, 0, this.walkSpeed) &&
                 this.possibleMove(this.pos.posX + this.dimensions.width - this.collsionCorrection, this.pos.posY + this.dimensions.height, 0, this.walkSpeed)) {
                 this.speed.speedY = this.walkSpeed;
