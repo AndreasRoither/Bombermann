@@ -45,8 +45,8 @@ socket.on('game-not-found', function(id, playerInfo) {
 });
 
 socket.on('player-joined', function(player) {
-    addPlayerToBox(playerInfo);
-    change_infobar("Player " + playerInfo.name + " joined");
+    addPlayerToBox(player);
+    change_infobar("Player " + player.name + " joined");
     show_infobar();
 
     // add player to the multiplayer object
