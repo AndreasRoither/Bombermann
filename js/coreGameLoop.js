@@ -38,8 +38,14 @@ var directions = {
     down: 4
 };
 
+var bombHandler = {
+    bombCounter : 0,
+    bombs : []
+};
+
 var globalPlayerSizeMultiplier = 0.5;
 var globalTileSize = 35;
+var gameStarted = false;
 
 /********************
 *     Functions     *
@@ -47,12 +53,11 @@ var globalTileSize = 35;
 
 function startGame(position) {
     myImageFactory = new ImageFactory();
-    players = new otherPlayers();
-
     myGameArea.start();
 
     myBackground = new background(myGameArea.context, globalTileSize);
     myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 3);
+    players = new otherPlayers();
 }
 
 function updateGameArea() {
@@ -163,6 +168,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
      * updates the direction + image counter
      * also checks if players moves diagonally */
     this.tryMove = function () {
+        if (!gameStarted) return;
         var moved = false;
         var movedDiagonally = false;
 
@@ -336,6 +342,8 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             }
         }
     };
+
+    this.convertPlayerPos();
 }
 
 /* Multiplayer player object
@@ -436,6 +444,8 @@ function playerObject(position, id) {
         this.BlockCoord[5][0] = Math.trunc((this.pos.x + this.dimensions.width) / myBackground.tileSize); //middle right
         this.BlockCoord[5][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
     };
+
+    this.convertPlayerPos();
 }
 
 function otherPlayers() {

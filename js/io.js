@@ -8,7 +8,6 @@ socket.io.on("connect_error", function () {
 });
 
 var gameId = 0;
-var gameStarted = false;
 
 // event listeners
 
@@ -67,8 +66,6 @@ socket.on('joined', function (player, game) {
 
     startGame(player.startPosition);
 
-    gameId = game.id;
-
     game.players.forEach(element => {
         if (player.id != element.id) {
             addPlayerToBox(element);
@@ -77,6 +74,8 @@ socket.on('joined', function (player, game) {
             players.playerCount += 1;
         }
     });
+
+    gameId = game.id;
 
     botmsg = {
         message: "You successfully joined the game server, have fun playing!",
