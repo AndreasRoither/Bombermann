@@ -535,3 +535,8 @@ Server[0m
 	Client connected...
 
 	id: mIK6yfOVXYUAIVYgAAAW
+
+-- Server listening --
+Start time: 13/12/2017 @ 12:34:29
+
+App listening at http://:::4200
