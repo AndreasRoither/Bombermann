@@ -2,7 +2,7 @@
 // connect
 var socket = io.connect('http://localhost:4200');
 
-socket.io.on("connect_error", function(){
+socket.io.on("connect_error", function () {
     closePopup();
     change_infobar("Server not available");
 });
@@ -12,7 +12,7 @@ var gameStarted = false;
 
 // event listeners
 
-socket.on('game-server-created', function(id, player) {
+socket.on('game-server-created', function (id, player) {
 
     gameId = id;
 
@@ -41,12 +41,12 @@ socket.on('game-server-created', function(id, player) {
     show_infobar();
 });
 
-socket.on('game-not-found', function(id, playerInfo) {
+socket.on('game-not-found', function (id, playerInfo) {
     change_infobar("Game not found");
     show_infobar();
 });
 
-socket.on('player-joined', function(player) {
+socket.on('player-joined', function (player) {
     addPlayerToBox(player);
     change_infobar("Player " + player.name + " joined");
     show_infobar();
@@ -58,7 +58,7 @@ socket.on('player-joined', function(player) {
     myPlayer.layerDirty = true;
 });
 
-socket.on('joined', function(player, game) {
+socket.on('joined', function (player, game) {
 
     var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
     player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
@@ -92,7 +92,7 @@ socket.on('joined', function(player, game) {
     show_infobar();
 });
 
-socket.on('ready', function(id, ready) {
+socket.on('ready', function (id, ready) {
     var id = id + "playerReady";
 
     if (ready) {
@@ -103,22 +103,22 @@ socket.on('ready', function(id, ready) {
     }
 });
 
-socket.on('game-start', function(id, matrix) {
+socket.on('game-start', function (id, matrix) {
     gameStarted = true;
     change_infobar("Game started");
     show_infobar();
 });
 
-socket.on('game-started', function() {
+socket.on('game-started', function () {
     change_infobar("Sorry, Game already started");
     show_infobar();
 });
 
-socket.on('game-stop', function(id, playerInfo) {
+socket.on('game-stop', function (id, playerInfo) {
 
 });
 
-socket.on('player-move', function(player, position, imageCounter, currentDirection) {
+socket.on('player-move', function (player, position, imageCounter, currentDirection) {
     players.players.forEach(element => {
         if (element.id == player.id) {
             element.pos = position;
@@ -129,19 +129,19 @@ socket.on('player-move', function(player, position, imageCounter, currentDirecti
     });
 });
 
-socket.on('bomb', function(id, playerInfo) {
+socket.on('bomb', function (id, playerInfo) {
 
 });
 
-socket.on('death', function(id, playerInfo) {
+socket.on('death', function (id, playerInfo) {
 
 });
 
-socket.on('win', function(id, playerInfo) {
+socket.on('win', function (id, playerInfo) {
 
 });
 
-socket.on('left', function(playerId, playerName) {
+socket.on('left', function (playerId, playerName) {
     $("#" + playerId).remove();
     change_infobar("Player " + playerName + " left");
     show_infobar();
@@ -163,7 +163,7 @@ socket.on('left', function(playerId, playerName) {
     myBackground.layerDirty = true;
 });
 
-socket.on('player-message', function(data, playerName) {
+socket.on('player-message', function (data, playerName) {
     var message_container = "<li><div class=\"msg-container\"><img src=\"img/Bomb/Bomb_f01.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
     message_container += "<p>" + playerName + "</p><p>" + decodeURIComponent(data.message) + "</p><span class=\"time-right\">" + data.time + "</span></div></li>";
 

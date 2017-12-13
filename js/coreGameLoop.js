@@ -18,14 +18,14 @@ explosion.volume = 0.2;
 /* Game Area (Canvas) */
 var myGameArea = {
     canvas: document.getElementById("gameCanvas"),
-    start: function() {
+    start: function () {
         this.canvas.width = 665;
         this.canvas.height = 455;
         this.context = this.canvas.getContext("2d");
         //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.interval = setInterval(updateGameArea, 33);
     },
-    clear: function() {
+    clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 };
@@ -48,7 +48,7 @@ var globalTileSize = 35;
 function startGame(position) {
     myImageFactory = new ImageFactory();
     players = new otherPlayers();
-    
+
     myGameArea.start();
 
     myBackground = new background(myGameArea.context, globalTileSize);
@@ -162,7 +162,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     /*moves player when possible
      * updates the direction + image counter
      * also checks if players moves diagonally */
-    this.tryMove = function() {
+    this.tryMove = function () {
         var moved = false;
         var movedDiagonally = false;
 
@@ -225,16 +225,16 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     //checks if a single Point can be moved
-    this.possibleMove = function(x, y, dx, dy) {
+    this.possibleMove = function (x, y, dx, dy) {
         if (myBackground.map[Math.trunc((y + dy) / myBackground.tileSize)]
-            [Math.trunc((x + dx) / myBackground.tileSize)] == 0) {
+        [Math.trunc((x + dx) / myBackground.tileSize)] == 0) {
             return true;
         }
         return false;
     };
 
     // draws player according to the current looking direction
-    this.update = function() {
+    this.update = function () {
         switch (this.currentDirection) {
             case directions.left:
                 this.drawPlayer(myImageFactory.left[this.imageCounter]);
@@ -252,7 +252,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     // draws the player
-    this.drawPlayer = function(img) {
+    this.drawPlayer = function (img) {
         for (var i = 0; i < 6; ++i) { //draw blocks behind player
             myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
         }
@@ -263,7 +263,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
     /* updates image counter
      * determines which frame of the player should be drawn*/
-    this.updateImageCounter = function() {
+    this.updateImageCounter = function () {
         if (this.currentDirection != this.oldDirection) {
             imageCounter = 0;
             this.oldDirection = this.currentDirection;
@@ -277,19 +277,19 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     // set new position of the player
-    this.newPos = function() {
+    this.newPos = function () {
         this.pos.x += this.speed.speedX;
         this.pos.y += this.speed.speedY;
     };
 
     // resets the speed; else player won't stop moving ~
-    this.resetSpeed = function() {
+    this.resetSpeed = function () {
         this.speed.speedX = 0;
         this.speed.speedY = 0;
     };
 
     //gives upper left and lower right corner in background coords
-    this.convertPlayerPos = function() {
+    this.convertPlayerPos = function () {
         this.BlockCoord[0][0] = Math.trunc((this.pos.x) / myBackground.tileSize); //upper left
         this.BlockCoord[0][1] = Math.trunc((this.pos.y) / myBackground.tileSize);
 
@@ -309,7 +309,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         this.BlockCoord[5][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
     };
 
-    this.layBomb = async function() {
+    this.layBomb = async function () {
         for (var i = 0; i < 3; ++i) {
             if (this.bomb[i].status == 1) {
                 this.bomb[i].pos.y = Math.trunc((this.pos.y + (this.dimensions.height / 4) * 3) / myBackground.tileSize);
@@ -323,13 +323,13 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
     };
 
-    this.updateBomb = function() {
+    this.updateBomb = function () {
         for (var i = 0; i < 3; ++i) {
             this.bomb[i].drawBomb();
         }
     };
 
-    this.killPlayer = function(x, y) {
+    this.killPlayer = function (x, y) {
         for (var i = 2; i < 6; ++i) {
             if (this.BlockCoord[i][0] == x && this.BlockCoord[i][1] == y) { //player dead
                 alert('you dead!');
@@ -383,7 +383,7 @@ function playerObject(position, id) {
         kills: 0
     };
 
-    this.update = function() {
+    this.update = function () {
         // draw block behind player and draw player
         this.convertPlayerPos();
         this.drawBlockCoords();
@@ -405,11 +405,11 @@ function playerObject(position, id) {
         this.layerDirty = false;
     };
 
-    this.drawPlayer = function(img) {
+    this.drawPlayer = function (img) {
         myGameArea.context.drawImage(img, this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
     };
 
-    this.drawBlockCoords = function() {
+    this.drawBlockCoords = function () {
         for (var i = 0; i < 6; ++i) { //draw blocks behind player
             myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
         }
@@ -417,7 +417,7 @@ function playerObject(position, id) {
     };
 
     //gives upper left and lower right corner in background coords
-    this.convertPlayerPos = function() {
+    this.convertPlayerPos = function () {
         this.BlockCoord[0][0] = Math.trunc((this.pos.x) / myBackground.tileSize); //upper left
         this.BlockCoord[0][1] = Math.trunc((this.pos.y) / myBackground.tileSize);
 
@@ -474,12 +474,12 @@ function background(context, tileSize) {
     ];
 
     // update function draws the background
-    this.update = function() {
+    this.update = function () {
         this.drawBackground();
     };
 
     // draw_background draws background according to the matrix (this.map)
-    this.drawBackground = function() {
+    this.drawBackground = function () {
         for (var y = 0; y < this.dimensions.height; ++y) {
             for (var x = 0; x < this.dimensions.width; ++x) {
                 this.drawBlock(x, y);
@@ -488,7 +488,7 @@ function background(context, tileSize) {
     };
 
     // draws a block to the context
-    this.drawBlock = function(x, y) {
+    this.drawBlock = function (x, y) {
         switch (this.map[y][x]) {
             case 0: //background
                 this.draw_image(this.ctx, myImageFactory.tiles[0], x, y);
@@ -502,7 +502,7 @@ function background(context, tileSize) {
         }
     };
 
-    this.draw_image = function(ctx, img, x, y) {
+    this.draw_image = function (ctx, img, x, y) {
         ctx.drawImage(img, this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
     };
 }
@@ -522,7 +522,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
         y: 0
     };
 
-    this.bombExplode = async function() {
+    this.bombExplode = async function () {
         this.status = 3;
         this.makeExplosion();
         explosion.play();
@@ -531,13 +531,13 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
         this.bombOver();
     };
 
-    this.bombOver = function() {
+    this.bombOver = function () {
         this.status = 1;
         myBackground.layerDirty = true;
         this.layerDirty = false;
     };
 
-    this.makeExplosion = function() {
+    this.makeExplosion = function () {
         var enable_x_pos = true;
         var enable_y_pos = true;
         var enable_x_neg = true;
@@ -579,7 +579,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
     };
 
 
-    this.drawBomb = function() {
+    this.drawBomb = function () {
         if (this.status == 2) {
             this.drawBlock(this.ctx, myImageFactory.bombs[0], this.pos.x, this.pos.y);
         } else if (this.status == 3) {
@@ -643,13 +643,13 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status) {
         }
     };
 
-    this.drawBlock = function(ctx, img, x, y) {
+    this.drawBlock = function (ctx, img, x, y) {
         ctx.drawImage(img, myBackground.tileSize * x, myBackground.tileSize * y, myBackground.tileSize, myBackground.tileSize);
     };
 
     /* updates image counter
      * determines which frame of the player should be drawn*/
-    this.updateFlameCounter = function() {
+    this.updateFlameCounter = function () {
         if (this.flameCounter < 4) {
             this.flameCounter++;
         } else {

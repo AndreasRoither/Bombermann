@@ -83,7 +83,7 @@ io.on('connection', function (client) {
             ready: false,
             alive: true,
             startPosition: playerStartPosition(0),
-            position: {x:0,y:0}
+            position: { x: 0, y: 0 }
         };
 
         console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
@@ -126,9 +126,9 @@ io.on('connection', function (client) {
                     ready: false,
                     alive: true,
                     startPosition: playerStartPosition(playerIndex),
-                    position: {x:0,y:0}
+                    position: { x: 0, y: 0 }
                 };
-            
+
             console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
 
             game.players.push(player);
@@ -305,7 +305,7 @@ io.on('connection', function (client) {
         console.log('\r\n\tMessage: %s', data.message);
         console.log('\r\n\ttime: ' + data.time);
         console.log('\r\n\tbroadcasting to gameID: ' + gameID);
-        
+
         client.broadcast.to(gameID).emit('player-message', data, playername);
     });
 });
@@ -414,19 +414,19 @@ function playerStartPosition(index) {
             break;
         case 2:
             pos.x = 1;
-            pos.y = maxMatrixDimensions.height -2;
+            pos.y = maxMatrixDimensions.height - 2;
             break
         case 3:
             pos.x = maxMatrixDimensions.width - 2;
-            pos.y = maxMatrixDimensions.height -2;
+            pos.y = maxMatrixDimensions.height - 2;
             break
         case 4:
             pos.x = (maxMatrixDimensions.width - 2) / 2;
-            pos.y = (maxMatrixDimensions.height -2) / 2;
+            pos.y = (maxMatrixDimensions.height - 2) / 2;
             break;
         case 5:
             pos.x = (maxMatrixDimensions.width - 2) / 4;
-            pos.y = (maxMatrixDimensions.height -2) / 2;
+            pos.y = (maxMatrixDimensions.height - 2) / 2;
             break;
     }
     return pos;

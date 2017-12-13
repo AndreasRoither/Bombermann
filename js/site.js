@@ -1,7 +1,6 @@
-
 /********************
-*       Site        *
-*********************/
+ *       Site        *
+ *********************/
 
 var playerRdy = false;
 
@@ -52,16 +51,15 @@ function addListeners() {
 }
 
 /********************
-*      Toogle       *
-*********************/
+ *      Toogle       *
+ *********************/
 
 function onSwitchToggle() {
   if (!gameStarted) {
     if (playerRdy) {
       $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
       playerRdy = false;
-    }
-    else {
+    } else {
       $("#playerReady").removeClass("not-ready").addClass("ready").text("ready");
       playerRdy = true;
     }
@@ -71,8 +69,8 @@ function onSwitchToggle() {
 }
 
 /********************
-*       Popup       *
-*********************/
+ *       Popup       *
+ *********************/
 
 function showModalPopup() {
   $(".popup").css({
@@ -94,8 +92,8 @@ function closePopup() {
 }
 
 /********************
-*       Alert       *
-*********************/
+ *       Alert       *
+ *********************/
 
 $(document).ready(update_alerts());
 
@@ -143,8 +141,8 @@ function add_left_list(msg) {
 }
 
 /***********************
-* Keyboard recognition *
-************************/
+ * Keyboard recognition *
+ ************************/
 
 var movLeft = false;
 var movRight = false;
