@@ -1023,3 +1023,38 @@ Server[0m
 	Client connected...
 
 	id: 0w6CuYi01QCuPz84AAAA
+
+-- Server listening --
+Start time: 14/12/2017 @ 18:3:51
+
+App listening at http://:::4200
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 9ni7KVl1ydsgpuQPAAAA
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asdf
+
+	Game Server ID 3003444
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: asdf
+
+	game id: 9ni7KVl1ydsgpuQPAAAA
