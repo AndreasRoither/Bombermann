@@ -11,7 +11,7 @@ var gameId = 0;
 
 // event listeners
 
-socket.on('game-server-created', function (id, player) {
+socket.on('game-server-created', function (id, player, matrix) {
 
     gameId = id;
 
@@ -35,20 +35,18 @@ socket.on('game-server-created', function (id, player) {
     $("#playermsgcontainer").append(bot_message_container).append(bot_message_container2).load();
 
     startGame(player.startPosition);
+    myBackground.map = matrix;
 
     change_infobar("Created Game Server, Game ID: " + id);
-    show_infobar();
 });
 
 socket.on('game-not-found', function (id, playerInfo) {
     change_infobar("Game not found");
-    show_infobar();
 });
 
 socket.on('player-joined', function (player) {
     addPlayerToBox(player);
     change_infobar("Player " + player.name + " joined");
-    show_infobar();
 
     var newPlayer = new playerObject(player.startPosition, player.id);
     players.players.push(newPlayer);
@@ -64,7 +62,19 @@ socket.on('joined', function (player, game) {
     player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container);
 
+    botmsg = {
+        message: "You successfully joined the game server, have fun playing!",
+        message2: "Game Server ID: " + game.id
+    };
+
+    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
+    bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
+
+    $("#playermsgcontainer").append(bot_message_container).load();
+
     startGame(player.startPosition);
+
+    myBackground.map = game.matrix;
 
     game.players.forEach(element => {
         if (player.id != element.id) {
@@ -77,18 +87,7 @@ socket.on('joined', function (player, game) {
 
     gameId = game.id;
 
-    botmsg = {
-        message: "You successfully joined the game server, have fun playing!",
-        message2: "Game Server ID: " + game.id
-    };
-
-    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
-    bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
-
-    $("#playermsgcontainer").append(bot_message_container).load();
-
     change_infobar("Sucessfully joined the game");
-    show_infobar();
 });
 
 socket.on('ready', function (id, ready) {
@@ -105,12 +104,10 @@ socket.on('ready', function (id, ready) {
 socket.on('game-start', function (id, matrix) {
     gameStarted = true;
     change_infobar("Game started");
-    show_infobar();
 });
 
 socket.on('game-started', function () {
     change_infobar("Sorry, Game already started");
-    show_infobar();
 });
 
 socket.on('game-stop', function (id, playerInfo) {
@@ -128,8 +125,8 @@ socket.on('player-move', function (player, position, imageCounter, currentDirect
     });
 });
 
-socket.on('bomb', function (id, playerInfo) {
-
+socket.on('bomb', function (enemyBomb) {
+    myBombHandler.addBombFin(enemyBomb);
 });
 
 socket.on('death', function (id, playerInfo) {
@@ -143,7 +140,6 @@ socket.on('win', function (id, playerInfo) {
 socket.on('left', function (playerId, playerName) {
     $("#" + playerId).remove();
     change_infobar("Player " + playerName + " left");
-    show_infobar();
 
     var i = 0;
     var index = -1;

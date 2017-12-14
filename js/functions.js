@@ -17,15 +17,12 @@ String.prototype.hashCode = function () {
 function createGame() {
   var playerName = encodeURIComponent($("#playerName1").val());
   var hashcode = playerName.hashCode();
-  console.log("Connecting to server..");
 
   socket.emit("create", hashcode, playerName, "Test", matrix);
   closePopup();
 }
 
 function joinGame() {
-  console.log("Connecting to server..");
-
   var data = {
     name: encodeURIComponent($("#playerName2").val()),
     id: encodeURIComponent($("#gameId").val())
@@ -54,6 +51,16 @@ function copyGameId() {
 // menu
 
 // loading
+
+function setAllDirty() {
+  myPlayer.layerDirty = true;
+  myBackground.layerDirty = true;
+  players.players.forEach(element => {
+    element.layerDirty = true;
+  });
+
+  updateGameArea();
+}
 
 // players
 
@@ -86,4 +93,11 @@ function playerReady(isReady) {
 function playerMoved(position, imageCounter, currentDirection) {
   socket.emit("move", gameId, socket.id, position, imageCounter, currentDirection);
 }
-//
+
+function playerBombSet(bomb) {
+  socket.emit("bomb",gameId, bomb);
+}
+
+
+
+

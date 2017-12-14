@@ -85,13 +85,14 @@ io.on('connection', function (client) {
             startPosition: playerStartPosition(0),
             position: { x: 0, y: 0 }
         };
+        
 
         console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
 
         games[id] = {
             id: id,
             players: [player],
-            matrix: matrix,
+            matrix: createMatrix(),
             started: false,
             created: Date.now()
         };
@@ -100,7 +101,7 @@ io.on('connection', function (client) {
         userName = name;
 
         client.join(id);
-        client.emit('game-server-created', id, player);
+        client.emit('game-server-created', id, player, games[id].matrix);
     });
 
     client.on('join', function (data) {
@@ -129,8 +130,6 @@ io.on('connection', function (client) {
                     position: { x: 0, y: 0 }
                 };
 
-            console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
-
             game.players.push(player);
 
             gameID = data.id;
@@ -138,8 +137,6 @@ io.on('connection', function (client) {
 
             client.join(data.id);
             client.emit('joined', player, game);
-            console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
-
             client.broadcast.to(data.id).emit('player-joined', player);
         }
     });
@@ -147,8 +144,6 @@ io.on('connection', function (client) {
     client.on('ready', function (id, isReady) {
         console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
         console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
-        console.log('\r\n\tid: ' + id);
-        console.log('\r\n\tready: ' + isReady);
 
         var game = games[id];
 
@@ -172,7 +167,7 @@ io.on('connection', function (client) {
 
         if (totalReady >= 1 && totalReady == game.players.length) {
             game.started = true;
-            game.matrix = createMatrix();
+            
 
             client.emit('game-start', game.matrix)
             client.broadcast.to(id).emit('game-start', game.matrix);
@@ -196,14 +191,12 @@ io.on('connection', function (client) {
         client.broadcast.to(gameId).emit('player-move', thePlayer, position, imageCounter, currentDirection);
     });
 
-    client.on('bomb', function (id, position) {
-        client.to(id).emit('bomb', position);
-
+    client.on('bomb', function (id, bomb) {
         var game = games[id];
-
         if (!game) return;
-
         if (!game.started) return;
+
+        client.to(id).emit('bomb', bomb); /*
 
         var bombTimer = 2000,
             strength = 1;
@@ -256,13 +249,13 @@ io.on('connection', function (client) {
             if (totalAlive == 1) {
                 client.to(id).emit('win', winner);
             }
-        }, bombTimer);
+        }, bombTimer); */
     });
 
     client.on('disconnect', function () {
         if (!gameID) return;
-
         console.log(ConsoleColor.Bright + ConsoleColor.FgRed + '\r\nClient' + ConsoleColor.Reset);
+
         var game = games[gameID];
         if (game == undefined) {
             console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgRed + 'game undefined' + ConsoleColor.Reset);
@@ -283,28 +276,18 @@ io.on('connection', function (client) {
     });
 
     client.on('messages', function (data) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
-        console.log('\r\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'message' + ConsoleColor.Reset);
-        console.log('\r\n\tclient game: ' + gameID);
         var game = games[gameID];
         if (!game) {
-            console.log('\r\n\tclient has no game sesion, not broadcasting message');
             return;
         }
 
         var playername;
 
         game.players.forEach(function (player, index) {
-            console.log('\r\n\tPlayer ID: %s', player.id);
             if (player.id == socketId) {
                 playername = player.name
             }
         }, game.players);
-
-        console.log('\r\n\tPlayer name: %s', playername);
-        console.log('\r\n\tMessage: %s', data.message);
-        console.log('\r\n\ttime: ' + data.time);
-        console.log('\r\n\tbroadcasting to gameID: ' + gameID);
 
         client.broadcast.to(gameID).emit('player-message', data, playername);
     });
@@ -349,30 +332,44 @@ function pickIndex(game) {
 }
 
 function createMatrix() {
-    var matrix = {},
-        matrixSize = 9;
+    var dimensions = {
+        width: 19,
+        height: 13
+    };
 
-    var upperLimit = matrixSize - 1,
-        upperLimitMinusOne = upperLimit - 1,
-        empty = ['0 0', upperLimit + ' 0', '0 ' + upperLimit, upperLimit + ' ' + upperLimit, '1 0', upperLimitMinusOne + ' 0', '0 ' + upperLimitMinusOne, upperLimit + ' ' + upperLimitMinusOne, '0 1', upperLimit + ' 1', '1 ' + upperLimit, upperLimitMinusOne + ' ' + upperLimit];
+    var matrix = new Array();;
+    
+    for (var i = 0; i < dimensions.height; i++) {
+        matrix[i] = new Array();
+        for (var j = 0; j < dimensions.width; j++) {
+            matrix[i][j] = 1;
+        }
+    }
 
-    for (var x = 0; x < matrixSize; x++) {
-        matrix[x] = {};
+    // top & bottom wall
+    for (var i = 0; i < dimensions.width; i++) {
+        matrix[0][i] = 0;
+        matrix[dimensions.height-1][i] = 0;
+    }
 
-        for (var y = 0; y < matrixSize; y++) {
-            var type;
+    // side wall
+    for (var i = 0; i < dimensions.height; i++) {
+        matrix[i][0] = 0;
+        matrix[i][dimensions.width-1] = 0;
+    }
 
-            if (x % 2 == 1 && y % 2 == 1) {
-                type = 'pillar';
-            } else {
-                type = Math.floor(Math.random() * 10) > 1 ? 'normal' : 'empty';
-            }
 
-            if (empty.indexOf(x + ' ' + y) > -1) {
-                type = 'empty';
-            }
-
-            matrix[x][y] = { type: type };
+    // wall every two pos
+    for (var i = 2; i < dimensions.height-2; i+=2) {
+        for (var j = 2; j < dimensions.width-2; j+=2) {
+            matrix[i][j] = 0;
+        }
+    }
+ 
+    // random walls
+    for (var i = 1; i < dimensions.height-1; i++) {
+        for (var j = 2; j < dimensions.width-2; j++) {
+            if (matrix[i][j] != 0) matrix[i][j] = Math.floor((Math.random() * 2) + 1);
         }
     }
 

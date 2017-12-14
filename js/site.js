@@ -45,8 +45,22 @@ function addListeners() {
     e.preventDefault();
   });
 
-  $("#checkbox").on("click", function (e) {
-    //alert("hello");
+  // check if tab is active
+  $(window).on("blur focus", function(e) {
+    var prevType = $(this).data("prevType");
+
+    if (prevType != e.type) {   //  reduce double fire issues
+        switch (e.type) {
+            case "blur":
+                // when tab is not focused, but seen
+                break;
+            case "focus":
+                if (gameLoaded) setAllDirty();
+                break;
+        }
+    }
+
+    $(this).data("prevType", e.type);
   });
 }
 

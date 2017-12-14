@@ -1,16 +1,6 @@
 
 -- Server listening --
-Start time: 13/12/2017 @ 10:9:15
-
-App listening at http://:::4200
-
--- Server listening --
-Start time: 13/12/2017 @ 10:10:41
-
-App listening at http://:::4200
-
--- Server listening --
-Start time: 13/12/2017 @ 10:11:39
+Start time: 14/12/2017 @ 13:48:23
 
 App listening at http://:::4200
 [1m[32m
@@ -18,279 +8,19 @@ Server[0m
 
 	Client connected...
 
-	id: aXeTK7P1l1J7kpsEAAAA
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to create game server[0m
-
-	player name asdf
-
-	Game Server ID 3003444
-
-	player pos: 0  0
+	id: CP-UsoqAxJ7sVr9CAAAA
 [1m[32m
 Server[0m
 
 	Client connected...
 
-	id: b4-VF0gtNDOoTnq9AAAB
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: ASdf
-
-	game id: 3003444
-
-	player pos: 0  0
-
-	player pos: 0  0
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: ASdf
-
-	game id: b4-VF0gtNDOoTnq9AAAB
+	id: ZOPM5dVzznjb6pX9AAAB
 [1m[32m
 Server[0m
 
 	Client connected...
 
-	id: QXKYFxhB3GwMVRl6AAAC
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: asdf
-
-	game id: aXeTK7P1l1J7kpsEAAAA
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: KCLuI4hvmEmuhKEqAAAD
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to create game server[0m
-
-	player name ASdf
-
-	Game Server ID 2019380
-
-	player pos: 0  0
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: 2019380
-
-	game id: 2019380
-
-	player pos: 0  0
-
-	player pos: 0  0
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: 2019380
-
-	game id: QXKYFxhB3GwMVRl6AAAC
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: dODz5ULGysKBgpZIAAAE
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: 2019380
-
-	game id: 2019380
-
-	player pos: 0  0
-
-	player pos: 0  0
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: 2019380
-
-	game id: dODz5ULGysKBgpZIAAAE
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: wc04K_aOVk2tId__AAAF
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: AF7Qazbv7WqRBivdAAAG
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: ASdf
-
-	game id: KCLuI4hvmEmuhKEqAAAD
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: yVSrYpoYhA2muh4VAAAH
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to create game server[0m
-
-	player name ASDf
-
-	Game Server ID 2018388
-
-	player pos: 0  0
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: 2018388
-
-	game id: 2018388
-
-	player pos: 0  0
-
-	player pos: 0  0
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: 2018388
-
-	game id: AF7Qazbv7WqRBivdAAAG
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: 3c-cGLTzmKNxdSQxAAAI
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: 2018388
-
-	game id: 2018388
-
-	player pos: 0  0
-
-	player pos: 0  0
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: 2018388
-
-	game id: 3c-cGLTzmKNxdSQxAAAI
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: isDjQZwykJ0kVIhmAAAJ
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: -o4ZRDz6AVencEvvAAAK
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: asdf
-
-	game id: 2018388
-
-	player pos: 0  0
-
-	player pos: 0  0
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: asdf
-
-	game id: -o4ZRDz6AVencEvvAAAK
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: mxZDqFEgr-k32-QAAAAL
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: 2018388
-
-	game id: 2018388
-
-	player pos: 0  0
-
-	player pos: 0  0
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: ASDf
-
-	game id: yVSrYpoYhA2muh4VAAAH
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: kY5Y3r4twfDbpIUrAAAM
-[1m[31m
-Client[0m
-
-	client [47m[32mdisconnected[0m
-
-	player name: 2018388
-
-	game id: mxZDqFEgr-k32-QAAAAL
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: UHbg29y-Irmo8lo5AAAN
+	id: DGEKVH1eEI21wBkHAAAC
 [1m[36m
 Client[0m
 
@@ -313,54 +43,12 @@ Client[0m
 	player pos: 0  0
 
 	player pos: 0  0
-[1m[31m
-Client[0m
-
-	[47m[31mgame undefined[0m
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: F5R2u9q-eUfpP1XzAAAO
-[1m[31m
-Client[0m
-
-	[47m[31mgame undefined[0m
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: lWbJkj9fR5IT-s5yAAAP
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to create game server[0m
-
-	player name ASDf
-
-	Game Server ID 2018388
-
-	player pos: 0  0
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to join game server[0m
-
-	player name: 2018388
-
-	game id: 2018388
-
-	player pos: 0  0
-
-	player pos: 0  0
 [1m[36m
 Client[0m
 
 	[47m[32mplayer ready call[0m
 
-	id: 2018388
+	id: 2045330
 
 	ready: true
 [1m[36m
@@ -368,7 +56,7 @@ Client[0m
 
 	[47m[32mplayer ready call[0m
 
-	id: 2018388
+	id: 2045330
 
 	ready: true
 
@@ -378,29 +66,29 @@ Client[0m
 
 	client [47m[32mdisconnected[0m
 
-	player name: 2018388
+	player name: 2045330
 
-	game id: F5R2u9q-eUfpP1XzAAAO
+	game id: DGEKVH1eEI21wBkHAAAC
 [1m[32m
 Server[0m
 
 	Client connected...
 
-	id: SL7IBtUiBp4cjO3hAAAQ
+	id: pUqjZESyqtrK3MDSAAAD
 [1m[31m
 Client[0m
 
 	client [47m[32mdisconnected[0m
 
-	player name: ASDf
+	player name: Andi
 
-	game id: lWbJkj9fR5IT-s5yAAAP
+	game id: ZOPM5dVzznjb6pX9AAAB
 [1m[32m
 Server[0m
 
 	Client connected...
 
-	id: ct4JZSMp88V_caE-AAAR
+	id: ByhvS3FwwdPhj8OKAAAE
 [1m[36m
 Client[0m
 
@@ -423,20 +111,24 @@ Client[0m
 	player pos: 0  0
 
 	player pos: 0  0
-[1m[31m
+[1m[36m
 Client[0m
 
-	client [47m[32mdisconnected[0m
+	[47m[32mplayer ready call[0m
 
-	player name: 2019380
+	id: 2019380
 
-	game id: ct4JZSMp88V_caE-AAAR
-[1m[32m
-Server[0m
+	ready: true
+[1m[36m
+Client[0m
 
-	Client connected...
+	[47m[32mplayer ready call[0m
 
-	id: qvMJgqhoZuojNEBKAAAS
+	id: 2019380
+
+	ready: true
+
+	game started
 [1m[31m
 Client[0m
 
@@ -444,13 +136,101 @@ Client[0m
 
 	player name: ASdf
 
-	game id: SL7IBtUiBp4cjO3hAAAQ
+	game id: pUqjZESyqtrK3MDSAAAD
 [1m[32m
 Server[0m
 
 	Client connected...
 
-	id: jjyzBPKfD_Hs07kCAAAT
+	id: aIr_9JXBk4se7ZBaAAAF
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 2019380
+
+	game id: ByhvS3FwwdPhj8OKAAAE
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: fwCgvUdWpNm7lCCKAAAG
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name ASdf
+
+	Game Server ID 2019380
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 2019380
+
+	game id: 2019380
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2019380
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2019380
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: ASdf
+
+	game id: aIr_9JXBk4se7ZBaAAAF
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: x0wUFzvQCS80_EeKAAAH
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 2019380
+
+	game id: fwCgvUdWpNm7lCCKAAAG
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: WUkJRZDcrjyACwOAAAAI
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: A5bMpuOdMcdWpfltAAAJ
 [1m[36m
 Client[0m
 
@@ -494,49 +274,741 @@ Client[0m
 [1m[31m
 Client[0m
 
-	[47m[31mgame undefined[0m
+	client [47m[32mdisconnected[0m
+
+	player name: asdf
+
+	game id: x0wUFzvQCS80_EeKAAAH
 [1m[32m
 Server[0m
 
 	Client connected...
 
-	id: 6IQRZDbQ5-fPkZ7YAAAU
-[1m[31m
-Client[0m
-
-	[47m[31mgame undefined[0m
-[1m[32m
-Server[0m
-
-	Client connected...
-
-	id: d-Keu_V3WWEaf3s1AAAV
-[1m[36m
-Client[0m
-
-	[47m[32mrequest to create game server[0m
-
-	player name ASdf
-
-	Game Server ID 2019380
-
-	player pos: 0  0
+	id: 5OJ2SkuefQZ7cnm1AAAK
 [1m[31m
 Client[0m
 
 	client [47m[32mdisconnected[0m
 
-	player name: ASdf
+	player name: 3003444
 
-	game id: 6IQRZDbQ5-fPkZ7YAAAU
+	game id: A5bMpuOdMcdWpfltAAAJ
 [1m[32m
 Server[0m
 
 	Client connected...
 
-	id: mIK6yfOVXYUAIVYgAAAW
+	id: i9s0FIwdj2p4yaPeAAAL
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asD
+
+	Game Server ID 96850
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 96850
+
+	game id: 96850
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 96850
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 96850
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: asD
+
+	game id: 5OJ2SkuefQZ7cnm1AAAK
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: HWYQiCKgWTHIVaTgAAAM
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 96850
+
+	game id: i9s0FIwdj2p4yaPeAAAL
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: i4Fij9h7wSRXEQEcAAAN
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: EUlWHoMV4MDKBzoOAAAO
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 5DkwKYX_hV12b5dqAAAP
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asdf
+
+	Game Server ID 3003444
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 3003444
+
+	game id: 3003444
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: asdf
+
+	game id: 5DkwKYX_hV12b5dqAAAP
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: KkM4Ta5DUKd79VR9AAAQ
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 3003444
+
+	game id: EUlWHoMV4MDKBzoOAAAO
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: VNVmU3iyTMmSPcY7AAAR
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Asdf
+
+	Game Server ID 2050132
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 2050132
+
+	game id: 2050132
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2050132
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2050132
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	[47m[31mgame undefined[0m
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: LpQYcMyniWI4NVNcAAAS
+[1m[31m
+Client[0m
+
+	[47m[31mgame undefined[0m
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: YhN50vJqbCqxEjOUAAAT
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asdf
+
+	Game Server ID 3003444
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 3003444
+
+	game id: 3003444
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: asdf
+
+	game id: LpQYcMyniWI4NVNcAAAS
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: TDOmOIUGAQGlDfwCAAAU
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 3003444
+
+	game id: YhN50vJqbCqxEjOUAAAT
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: W7CM7GsD4VuZaDw8AAAV
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asdf
+
+	Game Server ID 3003444
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 3003444
+
+	game id: 3003444
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: asdf
+
+	game id: TDOmOIUGAQGlDfwCAAAU
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: ChSitYRDiz9PVgKaAAAW
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 3003444
+
+	game id: W7CM7GsD4VuZaDw8AAAV
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: wPKYJYHAVqj7gVUDAAAX
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 2045330
+
+	game id: 2045330
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2045330
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2045330
+
+	ready: true
+
+	game started
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: Hg8YWZWCWWoQu8bpAAAY
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: q6UmrDrs2nQydVVxAAAZ
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: ChSitYRDiz9PVgKaAAAW
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 4zyqjl1-_0n4xqXzAAAa
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 2045330
+
+	game id: wPKYJYHAVqj7gVUDAAAX
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: kNjQidB_aDRi_d5NAAAb
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 97
+
+	game id: 97
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: ss
+
+	game id: 97
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: sssssss
+
+	game id: 97
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 97
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 97
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 97
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 97
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	[47m[31mgame undefined[0m
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: rUmTiSs_q25ceg2VAAAc
+[1m[31m
+Client[0m
+
+	[47m[31mgame undefined[0m
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: WDogtlUGUMPBQh--AAAd
+[1m[31m
+Client[0m
+
+	[47m[31mgame undefined[0m
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: rEKA6F_SxTkapmVSAAAe
+[1m[31m
+Client[0m
+
+	[47m[31mgame undefined[0m
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 7h99rvCRFh2PI9vZAAAf
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: s
+
+	game id: 2045330
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: d
+
+	game id: 2045330
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: f
+
+	game id: 2045330
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2045330
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2045330
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2045330
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 2045330
+
+	ready: true
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: 7h99rvCRFh2PI9vZAAAf
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: s
+
+	game id: rEKA6F_SxTkapmVSAAAe
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: d
+
+	game id: rUmTiSs_q25ceg2VAAAc
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: f
+
+	game id: WDogtlUGUMPBQh--AAAd
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: qj89eQQI1QPp47r0AAAg
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: sZiUDJKedM0ee8MlAAAh
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asdf
+
+	Game Server ID 3003444
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 3003444
+
+	game id: 3003444
+
+	player pos: 0  0
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	id: 3003444
+
+	ready: true
+
+	game started
 
 -- Server listening --
-Start time: 13/12/2017 @ 12:34:29
+Start time: 14/12/2017 @ 14:40:59
 
 App listening at http://:::4200
