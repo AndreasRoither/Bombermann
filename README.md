@@ -16,3 +16,7 @@ Bombermann is undergoing constant changing.
 Built with
 [Visual Studio Code](https://code.visualstudio.com/)
 [Node JS](https://nodejs.org/en/)
+
+### Credits
+Images used from [gamedevelopment.tutsplus.com](https://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-bomberman-inspired-sprites--gamedev-8541).
+The images belong [Jacob Zinman-Jeanes](http://jeanes.co/)
