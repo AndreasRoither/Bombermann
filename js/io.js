@@ -1,6 +1,6 @@
 
 // connect
-var socket = io.connect('http://localhost:4200');
+var socket = io.connect('http://178.114.243.208:4200/');
 
 socket.io.on("connect_error", function () {
     closePopup();

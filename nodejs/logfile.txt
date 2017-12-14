@@ -1012,3 +1012,14 @@ Client[0m
 Start time: 14/12/2017 @ 14:40:59
 
 App listening at http://:::4200
+
+-- Server listening --
+Start time: 14/12/2017 @ 16:12:54
+
+App listening at http://:::4200
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 0w6CuYi01QCuPz84AAAA
