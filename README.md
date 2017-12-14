@@ -19,4 +19,4 @@ Built with
 
 ### Credits
 Images used from [gamedevelopment.tutsplus.com](https://gamedevelopment.tutsplus.com/articles/enjoy-these-totally-free-bomberman-inspired-sprites--gamedev-8541).
-The images belong [Jacob Zinman-Jeanes](http://jeanes.co/)
+The images belong to [Jacob Zinman-Jeanes](http://jeanes.co/).
