@@ -97,7 +97,3 @@ function playerMoved(position, imageCounter, currentDirection) {
 function playerBombSet(bomb) {
   socket.emit("bomb",gameId, bomb);
 }
-
-
-
-

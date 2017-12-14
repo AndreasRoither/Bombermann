@@ -638,47 +638,47 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 var enable_y_neg = true;
                 for (var i = 1; i <= this.explosionRadius; i++) {
                     if (enable_x_pos) {
-                        if (myBackground.map[this.pos.y][this.pos.x + i] == 0) { //flames
+                        if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x + i, this.pos.y);
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x + i, this.pos.y);
 
                             myPlayer.killPlayer(this.pos.x + i, this.pos.y);
-                        } else if (myBackground.map[this.pos.y][this.pos.x + i] == 1) { //solid block
+                        } else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                             enable_x_pos = false;
                         }
                     }
                     if (enable_y_pos) {
-                        if (myBackground.map[this.pos.y + i][this.pos.x] == 0) { //flames
+                        if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y + i);
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y + i);
 
                             myPlayer.killPlayer(this.pos.x, this.pos.y + i);
-                        } else if (myBackground.map[this.pos.y + i][this.pos.x] == 1) { //solid block
+                        } else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_pos = false;
                         }
                     }
 
                     if (enable_x_neg) {
-                        if (myBackground.map[this.pos.y][this.pos.x - i] == 0) { //flames
+                        if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x - i, this.pos.y);
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x - i, this.pos.y);
 
                             myPlayer.killPlayer(this.pos.x - i, this.pos.y);
-                        } else if (myBackground.map[this.pos.y][this.pos.x - i] == 1) { //solid block
+                        } else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                             enable_x_neg = false;
                         }
                     }
                     if (enable_y_neg) {
-                        if (myBackground.map[this.pos.y - i][this.pos.x] == 0) { //flames
+                        if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y - i);
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y - i);
 
                             myPlayer.killPlayer(this.pos.x, this.pos.y - i);
-                        } else if (myBackground.map[this.pos.y - i][this.pos.x] == 1) { //solid block
+                        } else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_neg = false;
                         }
                     }
