@@ -137,7 +137,8 @@ function updateGameArea() {
 
     if (players.playerCount != 0) {
         players.players.forEach(element => {
-            if (element.layerDirty) element.update();
+            if (element.layerDirty) 
+            element.update();
         });
     }
 
