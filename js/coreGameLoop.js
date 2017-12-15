@@ -23,7 +23,7 @@ var myGameArea = {
         this.canvas.height = 455;
         this.context = this.canvas.getContext("2d");
         //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.interval = setInterval(updateGameArea, 33);
+        this.interval = setInterval(updateGameArea, 16);
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -99,7 +99,7 @@ function startGame(position) {
     myGameArea.start();
 
     myBackground = new background(myGameArea.context, globalTileSize);
-    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 3);
+    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
     players = new otherPlayers();
     gameLoaded = true;
 }
@@ -166,6 +166,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.layerDirty = true;
     this.layerDirty2 = false;
     this.collsionCorrection = 10 * playerSizeMultiplier;
+    this.delay = true;
 
     this.stats = {
         kills: 0,
@@ -319,7 +320,13 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
 
         if (this.imageCounter < 7) {
-            this.imageCounter = this.imageCounter + 1;
+            if (this.delay = true) {
+                this.imageCounter = this.imageCounter + 1;
+                this.delay = false;
+            }
+            else {
+                this.delay = true;
+            }
         } else {
             this.imageCounter = 0;
         }

@@ -1058,3 +1058,274 @@ Client[0m
 	player name: asdf
 
 	game id: 9ni7KVl1ydsgpuQPAAAA
+
+-- Server listening --
+Start time: 15/12/2017 @ 14:21:58
+
+App listening at http://:::4200
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 5LFixt0jdsn2bhI4AAAA
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asdf
+
+	Game Server ID 3003444
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: asdf
+
+	game id: 5LFixt0jdsn2bhI4AAAA
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 2gHHCICM-grzO8_DAAAB
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name asdf
+
+	Game Server ID 3003444
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: asdf
+
+	game id: 2gHHCICM-grzO8_DAAAB
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: ATOoYjVPpuLEvH5sAAAC
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: ATOoYjVPpuLEvH5sAAAC
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: gLsoHhCWGlLGn8efAAAD
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: gLsoHhCWGlLGn8efAAAD
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: MwN0zpj97k6MZy-8AAAE
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: MwN0zpj97k6MZy-8AAAE
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: ggsIkr0eyZSrNCBLAAAF
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: ggsIkr0eyZSrNCBLAAAF
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 7TbLWMjLqGVB2PsxAAAG
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: 7TbLWMjLqGVB2PsxAAAG
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: nzFHz9XIY3wV062wAAAH
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name Andi
+
+	Game Server ID 2045330
+
+	player pos: 0  0
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: RCS3oLP-iCtcRLISAAAI
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 2045330
+
+	game id: 2045330
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: Andi
+
+	game id: nzFHz9XIY3wV062wAAAH
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 2045330
+
+	game id: RCS3oLP-iCtcRLISAAAI
