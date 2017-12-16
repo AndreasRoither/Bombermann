@@ -177,7 +177,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.layerDirty = true;
     this.layerDirty2 = false;
     this.collsionCorrection = 10 * playerSizeMultiplier;
-    this.delay = true;
+    this.delay = 0;
 
     this.stats = {
         kills: 0,
@@ -333,12 +333,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
 
         if (this.imageCounter < 7) {
-            if (this.delay = true) {
+            if (this.delay == 2) {
                 this.imageCounter = this.imageCounter + 1;
-                this.delay = false;
+                this.delay = 0;
             }
             else {
-                this.delay = true;
+                this.delay++;
             }
         } else {
             this.imageCounter = 0;

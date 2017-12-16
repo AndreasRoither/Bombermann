@@ -1329,3 +1329,150 @@ Client[0m
 	player name: 2045330
 
 	game id: RCS3oLP-iCtcRLISAAAI
+
+-- Server listening --
+Start time: 16/12/2017 @ 16:26:42
+
+App listening at http://:::4200
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 74sSxxr2SDQ6aD7IAAAA
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: a
+
+	game id: 74sSxxr2SDQ6aD7IAAAA
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: KXGFFw8x87SFp5WiAAAB
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: a
+
+	game id: KXGFFw8x87SFp5WiAAAB
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: Xa43Kl6rHTq5qvynAAAC
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: a
+
+	game id: Xa43Kl6rHTq5qvynAAAC
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: K6dEHGxD9wfEm1XqAAAD
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: a
+
+	game id: K6dEHGxD9wfEm1XqAAAD
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: _F676fSQN70HUUZWAAAE
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
