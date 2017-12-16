@@ -585,6 +585,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
     this.status = status; //status: 0 dormant, 1 owned, 2 layed, 3 exploding
     this.ctx = context;
     this.layerDirty = true;
+    this.delay = 0;
 
     this.pos = {
         x: position.x,
@@ -718,10 +719,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
     /* updates image counter
      * determines which frame of the player should be drawn*/
     this.updateFlameCounter = function () {
-        if (this.flameCounter < 4) {
-            this.flameCounter++;
-        } else {
-            this.flameCounter = 0;
+        if (this.delay == 4){
+            if (this.flameCounter < 3) {
+                    this.flameCounter++;
+            } else {
+                this.flameCounter = 0;
+            }
+            this.delay=0;
+        }
+        else {
+            this.delay++;
         }
     };
 

@@ -1476,3 +1476,135 @@ Client[0m
 	[47m[32mplayer ready call[0m
 
 	game started
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: jLgFxpVjijeGmFa1AAAF
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 97
+
+	game id: 97
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: a
+
+	game id: _F676fSQN70HUUZWAAAE
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: 1XXkVWnQyrn6VabKAAAG
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: RPDuSjJSj7zY8qLJAAAH
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to join game server[0m
+
+	player name: 97
+
+	game id: 97
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: 97
+
+	game id: RPDuSjJSj7zY8qLJAAAH
+[1m[31m
+Client[0m
+
+	[47m[31mgame undefined[0m
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: ero584CWFM1uCpwQAAAI
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: cM52vmorZf3symRBAAAJ
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
+[1m[31m
+Client[0m
+
+	client [47m[32mdisconnected[0m
+
+	player name: a
+
+	game id: cM52vmorZf3symRBAAAJ
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: TEnHwflaF1gA4okbAAAK
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started
