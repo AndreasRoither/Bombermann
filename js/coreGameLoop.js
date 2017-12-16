@@ -124,33 +124,20 @@ function updateGameArea() {
 
     // redraw player if sth changed
     if (myPlayer.layerDirty) {
-        myPlayer.update(true);
-        //draw other players
-        if (players.playerCount != 0) {
-            players.players.forEach(element => {
-                element.update(false);
-            });
-        }
-        myPlayer.layerDirty = false;
+        myPlayer.update(true, true);
         myPlayer.layerDirty2 = true;
         playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
     } else if (myPlayer.layerDirty2) {
         myPlayer.imageCounter = 0;
         myPlayer.layerDirty2 = false;
-        myPlayer.update(true);
-        //draw other players
-        if (players.playerCount != 0) {
-            players.players.forEach(element => {
-                element.update(false);
-            });
-        }
+        myPlayer.update(true, true);
         playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
     }
 
     if (players.playerCount != 0) {
         players.players.forEach(element => {
             if (element.layerDirty) 
-            element.update(true);
+            element.update(true, true);
         });
     }
 
@@ -295,33 +282,36 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     // draws player according to the current looking direction
-    this.update = function (draw_bg) {
+    this.update = function (draw_bg, draw_others) {
         if (draw_bg) {
             for (var i = 0; i < 6; ++i) { //draw blocks behind player
                 myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
             }
             this.oldBlockCoord = this.BlockCoord;
         }
+        if (draw_others) {
+            if (players.playerCount != 0) {
+                players.players.forEach(element => {
+                    element.update(false, false);
+                });
+            }
+        }
         //draw Player
         switch (this.currentDirection) {
             case directions.left:
-                this.drawPlayer(myImageFactory.left[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.left[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
             case directions.right:
-                this.drawPlayer(myImageFactory.right[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.right[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
             case directions.up:
-                this.drawPlayer(myImageFactory.back[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.back[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
             case directions.down:
-                this.drawPlayer(myImageFactory.front[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.front[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
         }
-    };
-
-    // draws the player
-    this.drawPlayer = function (img) {
-        myGameArea.context.drawImage(img, this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
+        myPlayer.layerDirty = false;
     };
 
     /* updates image counter
@@ -446,33 +436,31 @@ function playerObject(position, id) {
         kills: 0
     };
 
-    this.update = function (draw_bg) {
+    this.update = function (draw_bg, draw_others) {
         // draw block behind player and draw player
         if (draw_bg) {
             this.convertPlayerPos();
             this.drawBlockCoords();
         }
-        myPlayer.update(false);
+
         switch (this.currentDirection) {
             case directions.left:
-                this.drawPlayer(myImageFactory.left[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.left[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
             case directions.right:
-                this.drawPlayer(myImageFactory.right[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.right[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
             case directions.up:
-                this.drawPlayer(myImageFactory.back[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.back[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
             case directions.down:
-                this.drawPlayer(myImageFactory.front[this.imageCounter]);
+                myGameArea.context.drawImage(myImageFactory.front[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
         }
-
+        if (draw_others) {
+            myPlayer.update(false, false);
+        }
         this.layerDirty = false;
-    };
-
-    this.drawPlayer = function (img) {
-        myGameArea.context.drawImage(img, this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
     };
 
     this.drawBlockCoords = function () {
