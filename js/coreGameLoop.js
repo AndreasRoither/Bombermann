@@ -622,6 +622,13 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
         y: position.y
     };
 
+    this.size = {
+        x_pos: -1,
+        x_neg: -1,
+        y_pos: -1,
+        y_neg: -1
+    }
+
     this.bombExplode = async function () {
         this.status = 3;
         this.makeExplosion();
@@ -638,12 +645,17 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
     };
 
     this.makeExplosion = function () {
+        this.size.x_pos = 0;
+        this.size.x_neg = 0;
+        this.size.y_pos = 0;
+        this.size.y_neg = 0;
         var enable_x_pos = true;
         var enable_y_pos = true;
         var enable_x_neg = true;
         var enable_y_neg = true;
         for (var i = 1; i <= this.explosionRadius; i++) {
             if (enable_x_pos) {
+                this.size.x_pos++;
                 if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x + i] = tileBlocks.background;
                     enable_x_pos = false;
@@ -661,6 +673,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 }
             }
             if (enable_y_pos) {
+                this.size.y_pos++;
                 if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y + i][this.pos.x] = tileBlocks.background;
                     enable_y_pos = false;
@@ -679,6 +692,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
             }
 
             if (enable_x_neg) {
+                this.size.x_neg++;
                 if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x - i] = tileBlocks.background;
                     enable_x_neg = false;
@@ -696,6 +710,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 }
             }
             if (enable_y_neg) {
+                this.size.y_neg++;
                 if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y - i][this.pos.x] = tileBlocks.background;
                     enable_y_neg = false;
@@ -729,7 +744,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 var enable_x_neg = true;
                 var enable_y_neg = true;
                 for (var i = 1; i <= this.explosionRadius; i++) {
-                    if (enable_x_pos) {
+                    if (enable_x_pos && this.size.x_pos>=i) {
                         if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x + i, this.pos.y);
 
@@ -740,7 +755,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                             enable_x_pos = false;
                         }
                     }
-                    if (enable_y_pos) {
+                    if (enable_y_pos && this.size.y_pos>=i) {
                         if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y + i);
 
@@ -752,7 +767,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                         }
                     }
 
-                    if (enable_x_neg) {
+                    if (enable_x_neg && this.size.x_neg>=i) {
                         if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x - i, this.pos.y);
 
@@ -763,7 +778,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                             enable_x_neg = false;
                         }
                     }
-                    if (enable_y_neg) {
+                    if (enable_y_neg && this.size.y_neg>=i) {
                         if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y - i);
 
