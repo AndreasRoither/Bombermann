@@ -41,7 +41,13 @@ var directions = {
 var tileBlocks = {
     solid: 0,
     background: 1,
-    explodeable: 2
+    explodeable: 2,
+    BombUp: 3,
+    FlameUp: 4,
+    SpeedUp: 5,
+    hiddenBombUp: 6,
+    hiddenFlameUp: 7,
+    hiddenSpeedUp: 8
 };
 
 function bombHandler() {
@@ -102,6 +108,9 @@ function startGame(position) {
     myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
     players = new otherPlayers();
     gameLoaded = true;
+
+    myBackground.update();
+    myPlayer.update(false);
 }
 
 function updateGameArea() {
@@ -554,6 +563,24 @@ function background(context, tileSize) {
                 break;
             case tileBlocks.explodeable: //explodeable
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
+                break;
+            case tileBlocks.hiddenBombUp:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
+                break;
+            case tileBlocks.BombUp:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.BombUp], x, y);
+                break;
+            case tileBlocks.hiddenFlameUp:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
+                break;
+            case tileBlocks.FlameUp:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.FlameUp], x, y);
+                break;
+            case tileBlocks.hiddenSpeedUp:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
+                break;
+            case tileBlocks.SpeedUp:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.SpeedUp], x, y);
                 break;
         }
     };
