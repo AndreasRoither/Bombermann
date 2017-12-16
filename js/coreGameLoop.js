@@ -49,8 +49,8 @@ function bombHandler() {
     this.myBombsCounter = 0;
     this.bombs = [];
 
-    this.addBomb = function (position) {
-        var playerBomb = new bomb(myPlayer.ctx, 4000, 1000, 2, 2, position);
+    this.addBomb = function (position, radius) {
+        var playerBomb = new bomb(myPlayer.ctx, 4000, 1000, radius, 2, position);
         this.bombs.push(playerBomb);
         this.myBombsCounter += 1;
         this.bombsCounter += 1;
@@ -69,7 +69,7 @@ function bombHandler() {
     };
 
     this.addBombFin = function (enemyBomb) {
-        var playerBomb = new bomb(myPlayer.ctx, enemyBomb.bombTimer, enemyBomb.explodeTimer, 2, 2, enemyBomb.pos);
+        var playerBomb = new bomb(myPlayer.ctx, enemyBomb.bombTimer, enemyBomb.explodeTimer, enemyBomb.explosionRadius, 2, enemyBomb.pos);
         playerBomb.id = enemyBomb.id
         this.bombs.push(playerBomb);
         this.bombsCounter += 1;
@@ -169,7 +169,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.stats = {
         kills: 0,
         bombs: 1,
-        bombPowerup: 0,
+        bombRadius: 2,
         speedPowerup: 0
     };
 
@@ -376,7 +376,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                 y: Math.trunc((this.pos.y + (this.dimensions.height / 4) * 3) / myBackground.tileSize),
                 x: Math.trunc((this.pos.x + this.dimensions.width / 2) / myBackground.tileSize)
             };
-            myBombHandler.addBomb(pos);
+            myBombHandler.addBomb(pos, this.stats.bombRadius);
         };
     };
 
