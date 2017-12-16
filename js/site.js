@@ -178,6 +178,9 @@ window.addEventListener("keydown", function (event) {
       myBackground.map[4][1]=6;
       myBackground.map[5][1]=7;
       myBackground.map[6][1]=8;
+      myBackground.update();
+      myPlayer.update(false);
+      //debug end
     }
     if (event.which == 97 || event.which == 65) {
       // a || A Key

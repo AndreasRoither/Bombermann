@@ -108,9 +108,6 @@ function startGame(position) {
     myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
     players = new otherPlayers();
     gameLoaded = true;
-
-    myBackground.update();
-    myPlayer.update(false);
 }
 
 function updateGameArea() {
@@ -224,25 +221,25 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         var movedDiagonally = false;
 
         if (movLeft) {
-            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, -this.walkSpeed, 0) &&
-                this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height, -this.walkSpeed, 0)) {
-                this.speed.speedX = -this.walkSpeed;
+            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, -this.walkSpeed - this.stats.speedPowerup/2, 0) &&
+                this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, -this.walkSpeed - this.stats.speedPowerup/2, 0)) {
+                this.speed.speedX = -this.walkSpeed - this.stats.speedPowerup/2;
                 moved = true;
             }
             this.currentDirection = directions.left;
         }
         if (movRight && !movLeft) {
-            if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, this.walkSpeed, 0) &&
-                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height, this.walkSpeed, 0)) {
-                this.speed.speedX = this.walkSpeed;
+            if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, this.walkSpeed + this.stats.speedPowerup/2, 0) &&
+                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, this.walkSpeed + this.stats.speedPowerup/2, 0)) {
+                this.speed.speedX = this.walkSpeed + this.stats.speedPowerup/2;
                 moved = true;
             }
             this.currentDirection = directions.right;
         }
         if (movUp) {
-            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, 0, -this.walkSpeed) &&
-                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, 0, -this.walkSpeed)) {
-                this.speed.speedY = -this.walkSpeed;
+            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, 0, -this.walkSpeed - this.stats.speedPowerup/2) &&
+                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, 0, -this.walkSpeed - this.stats.speedPowerup/2)) {
+                this.speed.speedY = -this.walkSpeed - this.stats.speedPowerup/2;
                 if (moved)
                     movedDiagonally = true;
                 else
@@ -251,9 +248,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.currentDirection = directions.up;
         }
         if (movDown && !movUp) {
-            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height, 0, this.walkSpeed) &&
-                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height, 0, this.walkSpeed)) {
-                this.speed.speedY = this.walkSpeed;
+            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, 0, this.walkSpeed + this.stats.speedPowerup/2) &&
+                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, 0, this.walkSpeed + this.stats.speedPowerup/2)) {
+                this.speed.speedY = this.walkSpeed + this.stats.speedPowerup/2;
                 if (moved)
                     movedDiagonally = true;
                 else
@@ -271,6 +268,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         this.newPos();
         this.resetSpeed();
         this.convertPlayerPos();
+        this.getPowerUp();
         this.layerDirty = true;
 
         // update image counter and return true if moved
@@ -283,8 +281,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
     //checks if a single Point can be moved
     this.possibleMove = function (x, y, dx, dy) {
-        if (myBackground.map[Math.trunc((y + dy) / myBackground.tileSize)]
-        [Math.trunc((x + dx) / myBackground.tileSize)] == tileBlocks.background) {
+        var y = Math.trunc((y + dy) / myBackground.tileSize);
+        var x = Math.trunc((x + dx) / myBackground.tileSize);
+        if (myBackground.map[y][x] == tileBlocks.background || myBackground.map[y][x] == tileBlocks.BombUp || myBackground.map[y][x] == tileBlocks.FlameUp || myBackground.map[y][x] == tileBlocks.SpeedUp) {
             return true;
         }
         return false;
@@ -389,6 +388,26 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         };
     };
 
+    this.getPowerUp = function () {
+        for (var i = 2; i < 6; ++i) {
+            if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.BombUp) {
+                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+                this.stats.bombs++;
+                change_infobar("+Bomb");
+            }
+            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.FlameUp) {
+                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+                this.stats.bombRadius++;
+                change_infobar("+Flame");
+            }
+            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.SpeedUp) {
+                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+                this.stats.speedPowerup++;
+                change_infobar("+Speed");
+            }
+        }
+    };
+
     this.killPlayer = function (x, y) {
         for (var i = 2; i < 6; ++i) {
             if (this.BlockCoord[i][0] == x && this.BlockCoord[i][1] == y) { //player dead
@@ -396,8 +415,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             }
         }
     };
-
-    this.convertPlayerPos();
 }
 
 /* Multiplayer player object
@@ -499,8 +516,6 @@ function playerObject(position, id) {
         this.BlockCoord[5][0] = Math.trunc((this.pos.x + this.dimensions.width) / myBackground.tileSize); //middle right
         this.BlockCoord[5][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
     };
-
-    this.convertPlayerPos();
 }
 
 function otherPlayers() {
@@ -632,7 +647,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x + i] = tileBlocks.background;
                     enable_x_pos = false;
-                } else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
+                } 
+                else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
+                    enable_x_pos = false;
+                }
+                else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.SpeedUp) {
+                    myBackground.map[this.pos.y][this.pos.x + i] -= 3;
+                    enable_x_pos = false;
+                }
+                else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.explodeable) {
+                    myBackground.map[this.pos.y][this.pos.x + i] = 1;
                     enable_x_pos = false;
                 }
             }
@@ -640,15 +664,34 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y + i][this.pos.x] = tileBlocks.background;
                     enable_y_pos = false;
-                } else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
+                } 
+                else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
+                    enable_y_pos = false;
+                }
+                else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.SpeedUp) {
+                    myBackground.map[this.pos.y + i][this.pos.x] -= 3;
+                    enable_y_pos = false;
+                }
+                else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.explodeable) {
+                    myBackground.map[this.pos.y + i][this.pos.x] = 1;
                     enable_y_pos = false;
                 }
             }
+
             if (enable_x_neg) {
                 if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x - i] = tileBlocks.background;
                     enable_x_neg = false;
-                } else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
+                } 
+                else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
+                    enable_x_neg = false;
+                }
+                else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.SpeedUp) {
+                    myBackground.map[this.pos.y][this.pos.x - i] -= 3;
+                    enable_x_neg = false;
+                }
+                else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.explodeable) {
+                    myBackground.map[this.pos.y][this.pos.x - i] = 1;
                     enable_x_neg = false;
                 }
             }
@@ -656,7 +699,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y - i][this.pos.x] = tileBlocks.background;
                     enable_y_neg = false;
-                } else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
+                } 
+                else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
+                    enable_y_neg = false;
+                }
+                else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.SpeedUp) {
+                    myBackground.map[this.pos.y - i][this.pos.x] -= 3;
+                    enable_y_neg = false;
+                }
+                else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.explodeable) {
+                    myBackground.map[this.pos.y - i][this.pos.x] = 1;
                     enable_y_neg = false;
                 }
             }
