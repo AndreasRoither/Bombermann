@@ -52,6 +52,18 @@ var maxMatrixDimensions = {
     height: 13
 };
 
+var tileBlocks = {
+    solid: 0,
+    background: 1,
+    explodeable: 2,
+    BombUp: 3,
+    FlameUp: 4,
+    SpeedUp: 5,
+    hiddenBombUp: 6,
+    hiddenFlameUp: 7,
+    hiddenSpeedUp: 8
+};
+
 const ConsoleColor = require('./colorcodes.js');
 
 app.use(express.static(__dirname + '/node_modules'));
@@ -332,6 +344,7 @@ function pickIndex(game) {
 }
 
 function createMatrix() {
+    
     var dimensions = {
         width: 19,
         height: 13
@@ -342,27 +355,26 @@ function createMatrix() {
     for (var i = 0; i < dimensions.height; i++) {
         matrix[i] = new Array();
         for (var j = 0; j < dimensions.width; j++) {
-            matrix[i][j] = 1;
+            matrix[i][j] = tileBlocks.background;
         }
     }
 
     // top & bottom wall
     for (var i = 0; i < dimensions.width; i++) {
         matrix[0][i] = 0;
-        matrix[dimensions.height-1][i] = 0;
+        matrix[dimensions.height-1][i] = tileBlocks.solid;
     }
 
     // side wall
     for (var i = 0; i < dimensions.height; i++) {
         matrix[i][0] = 0;
-        matrix[i][dimensions.width-1] = 0;
+        matrix[i][dimensions.width-1] = tileBlocks.solid;
     }
-
 
     // wall every two pos
     for (var i = 2; i < dimensions.height-2; i+=2) {
         for (var j = 2; j < dimensions.width-2; j+=2) {
-            matrix[i][j] = 0;
+            matrix[i][j] = tileBlocks.solid;
         }
     }
 
@@ -371,47 +383,53 @@ function createMatrix() {
     var speed = 0;
     var explo = 0;
     var empty = 0;
+
     // random blocks
     for (var i = 1; i < dimensions.height-1; i++) {
         for (var j = 1; j < dimensions.width-1; j++) {
             if (matrix[i][j] != 0){
                 var block = Math.random();
                 if (block > 0.92) {
-                    matrix[i][j] = 8;
+                    matrix[i][j] = tileBlocks.hiddenSpeedUp;
                    speed++;
                 }
                 else if (block > 0.84) {
-                    matrix[i][j] = 7;
+                    matrix[i][j] = tileBlocks.hiddenFlameUp;
                     flame++;
                 }
                 else if (block > 0.76) {
-                    matrix[i][j] = 6;
+                    matrix[i][j] = tileBlocks.hiddenBombUp;
                     bomb++;
                 }
                 else if (block > 0.1) {
-                    matrix[i][j] = 2;
+                    matrix[i][j] = tileBlocks.explodeable;
                     explo++;
                 }
                 else {
-                    matrix[i][j] = 1;
+                    matrix[i][j] = tileBlocks.background;
                     empty++;
                 }
             }
         }
     }
-    //player 1
+
+    // make sure players can actually move
+    // player 1
     matrix[1][1]=1;
     matrix[1][2]=1;
     matrix[2][1]=1;
-    //player 2
+
+    // player 2
     matrix[1][16]=1;
     matrix[1][17]=1;
     matrix[2][17]=1;
-    //player 3
+
+    // player 3
     matrix[10][1]=1;
     matrix[11][1]=1;
     matrix[11][2]=1;
-    //palyer 4
+
+    // player 4
     matrix[11][16]=1;
     matrix[11][17]=1;
     matrix[10][17]=1;
