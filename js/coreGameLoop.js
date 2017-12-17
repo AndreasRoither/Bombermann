@@ -118,7 +118,7 @@ function updateGameArea() {
     // redraw background if sth changed
     if (myBackground.layerDirty) {
         myBackground.update();
-        myPlayer.update(false);
+        myPlayer.update(false, true);
         myBackground.layerDirty = false;
 
         if (players.playerCount != 0) {
@@ -411,9 +411,22 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.killPlayer = function (x, y) {
         for (var i = 2; i < 6; ++i) {
             if (this.BlockCoord[i][0] == x && this.BlockCoord[i][1] == y) { //player dead
-                change_infobar("You died");
+                if (this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, x, y) ||
+                    this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, x, y) ||
+                    this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y) ||
+                    this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y))
+                        change_infobar("You died");
             }
         }
+    };
+
+    this.inFlames = function (plx, ply, x, y) {
+        var px = Math.trunc(plx / myBackground.tileSize);
+        var py = Math.trunc(ply / myBackground.tileSize);
+        if (py==y && px==x) {
+            return true;
+        }
+        return false;
     };
 }
 
