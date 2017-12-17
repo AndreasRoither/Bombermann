@@ -59,9 +59,11 @@ var tileBlocks = {
     BombUp: 3,
     FlameUp: 4,
     SpeedUp: 5,
-    hiddenBombUp: 6,
-    hiddenFlameUp: 7,
-    hiddenSpeedUp: 8
+    Virus: 6,
+    hiddenBombUp: 7,
+    hiddenFlameUp: 8,
+    hiddenSpeedUp: 9,
+    hiddenVirus: 10
 };
 
 var difficulty = {
@@ -69,7 +71,7 @@ var difficulty = {
     hardmode: 2
 };
 
-var mode = {
+var modeTypes = {
     deathmatch: 1,
     closingin: 2,
     fogofwar: 3,
@@ -111,12 +113,12 @@ io.on('connection', function (client) {
             position: { x: 0, y: 0 }
         };
 
-        console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
+        console.log('\r\n\tmode: ' + mode);
 
         games[id] = {
             id: id,
             players: [player],
-            matrix: createMatrix(),
+            matrix: createMatrix(mode),
             started: false,
             created: Date.now(),
             difficulty: difficulty,
@@ -357,7 +359,7 @@ function pickIndex(game) {
     return index;
 }
 
-function createMatrix() {
+function createMatrix(gamemode) {
     
     var dimensions = {
         width: 19,
@@ -397,31 +399,53 @@ function createMatrix() {
     var speed = 0;
     var explo = 0;
     var empty = 0;
+    var virus = 0;
 
     // random blocks
     for (var i = 1; i < dimensions.height-1; i++) {
         for (var j = 1; j < dimensions.width-1; j++) {
             if (matrix[i][j] != 0){
                 var block = Math.random();
-                if (block > 0.92) {
-                    matrix[i][j] = tileBlocks.hiddenSpeedUp;
-                   speed++;
-                }
-                else if (block > 0.84) {
-                    matrix[i][j] = tileBlocks.hiddenFlameUp;
-                    flame++;
-                }
-                else if (block > 0.76) {
-                    matrix[i][j] = tileBlocks.hiddenBombUp;
-                    bomb++;
-                }
-                else if (block > 0.1) {
-                    matrix[i][j] = tileBlocks.explodeable;
-                    explo++;
+
+                if (gamemode == modeTypes.virusonly) {
+                    if (block > 0.70) {
+                        matrix[i][j] = tileBlocks.hiddenVirus;
+                        virus++;
+                    }
+                    else if (block > 0.1) {
+                        matrix[i][j] = tileBlocks.explodeable;
+                        explo++;
+                    }
+                    else {
+                        matrix[i][j] = tileBlocks.background;
+                        empty++;
+                    }
                 }
                 else {
-                    matrix[i][j] = tileBlocks.background;
-                    empty++;
+                    if (block > 0.93) {
+                        matrix[i][j] = tileBlocks.hiddenSpeedUp;
+                        speed++;
+                    }
+                    else if (block > 0.92) {
+                        matrix[i][j] = tileBlocks.hiddenSpeedUp;
+                        speed++;
+                    }
+                    else if (block > 0.76) {
+                        matrix[i][j] = tileBlocks.hiddenFlameUp;
+                        flame++;
+                    }
+                    else if (block > 0.68) {
+                        matrix[i][j] = tileBlocks.hiddenBombUp;
+                        bomb++;
+                    }
+                    else if (block > 0.1) {
+                        matrix[i][j] = tileBlocks.explodeable;
+                        explo++;
+                    }
+                    else {
+                        matrix[i][j] = tileBlocks.background;
+                        empty++;
+                    }
                 }
             }
         }
@@ -448,7 +472,7 @@ function createMatrix() {
     matrix[11][17]=1;
     matrix[10][17]=1;
 
-    console.log('\nrandomly generated:\nbombs: ', bomb, '\nflame: ', flame, '\nspeed: ', speed, '\nexplo: ', explo, '\nempty: ', empty);
+    console.log('\nrandomly generated:\nbombs: ', bomb, '\nflame: ', flame, '\nspeed: ', speed, '\nexplo: ', explo, '\nvirus: ', virus, '\nempty: ', empty);
     return matrix;
 }
 

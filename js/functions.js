@@ -1,7 +1,6 @@
 // game
-var matrix = {},
-  matrixSize = 9,
-  brickSize = 64;
+var difficulty;
+var mode;
 
 String.prototype.hashCode = function () {
   var hash = 0, i, chr;
@@ -17,8 +16,8 @@ String.prototype.hashCode = function () {
 function createGame() {
   if (currentlyConnected) {
     var playerName = encodeURIComponent($("#playerName1").val());
-    var difficulty = $("#difficulty").val();
-    var mode = $("#mode").val();
+    difficulty = $("#difficulty").val();
+    mode = $("#mode").val();
     var hashcode = playerName.hashCode();
 
     socket.emit("create", hashcode, playerName, "Test", difficulty, mode);

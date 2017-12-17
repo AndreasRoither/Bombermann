@@ -54,14 +54,15 @@ function ImageFactory() {
 
   /* contains all tile image paths */
   this.tileImages = {
-    tileCount: 6,
+    tileCount: 7,
     tiles: [
       './img/Blocks/SolidBlock.png',
       './img/Blocks/BackgroundTile.png',
       './img/Blocks/ExplodableBlock.png',
       './img/Powerups/BombPowerup.png',
       './img/Powerups/FlamePowerup.png',
-      './img/Powerups/SpeedPowerup.png'
+      './img/Powerups/SpeedPowerup.png',
+      './img/Powerups/VirusPowerup.png'
     ]
   };
 

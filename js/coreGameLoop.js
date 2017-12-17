@@ -50,10 +50,25 @@ var tileBlocks = {
     BombUp: 3,
     FlameUp: 4,
     SpeedUp: 5,
-    hiddenBombUp: 6,
-    hiddenFlameUp: 7,
-    hiddenSpeedUp: 8
+    Virus: 6,
+    hiddenBombUp: 7,
+    hiddenFlameUp: 8,
+    hiddenSpeedUp: 9,
+    hiddenVirus: 10
 };
+
+var difficulty = {
+    normal: 1,
+    hardmode: 2
+};
+
+var mode = {
+    deathmatch: 1,
+    closingin: 2,
+    fogofwar: 3,
+    virusonly: 4,
+    destroytheblock: 5
+}
 
 function bombHandler() {
     this.bombCounter = 0;
@@ -416,6 +431,10 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                 this.walkStep += 0.1;
                 change_infobar("+Speed");
             }
+            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.Virus) {
+                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+                change_infobar("Virus!");
+            }
         }
     };
 
@@ -609,33 +628,30 @@ function background(context, tileSize) {
     // draws a block to the context
     this.drawBlock = function (x, y) {
         switch (this.map[y][x]) {
-            case tileBlocks.solid: //solid
-                //this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.solid], x, y);
+            case tileBlocks.explodeable:
+            case tileBlocks.hiddenFlameUp:
+            case tileBlocks.hiddenBombUp:
+            case tileBlocks.hiddenSpeedUp:
+            case tileBlocks.hiddenVirus:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
+                break;
+            case tileBlocks.solid:
                 this.ctx.drawImage(myImageFactory.tiles[tileBlocks.solid], this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
                 break;
-            case tileBlocks.background: //background
+            case tileBlocks.background:
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.background], x, y);
-                break;
-            case tileBlocks.explodeable: //explodeable
-                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
-                break;
-            case tileBlocks.hiddenBombUp:
-                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
                 break;
             case tileBlocks.BombUp:
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.BombUp], x, y);
                 break;
-            case tileBlocks.hiddenFlameUp:
-                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
-                break;
             case tileBlocks.FlameUp:
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.FlameUp], x, y);
                 break;
-            case tileBlocks.hiddenSpeedUp:
-                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
-                break;
             case tileBlocks.SpeedUp:
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.SpeedUp], x, y);
+                break;
+            case tileBlocks.Virus:
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.Virus], x, y);
                 break;
         }
     };
@@ -703,8 +719,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                     enable_x_pos = false;
                 }
-                else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.SpeedUp) {
-                    myBackground.map[this.pos.y][this.pos.x + i] -= 3;
+                else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.Virus) {
+                    myBackground.map[this.pos.y][this.pos.x + i] -= 4;
                     enable_x_pos = false;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.explodeable) {
@@ -721,8 +737,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_pos = false;
                 }
-                else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.SpeedUp) {
-                    myBackground.map[this.pos.y + i][this.pos.x] -= 3;
+                else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.Virus) {
+                    myBackground.map[this.pos.y + i][this.pos.x] -= 4;
                     enable_y_pos = false;
                 }
                 else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.explodeable) {
@@ -740,8 +756,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                     enable_x_neg = false;
                 }
-                else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.SpeedUp) {
-                    myBackground.map[this.pos.y][this.pos.x - i] -= 3;
+                else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.Virus) {
+                    myBackground.map[this.pos.y][this.pos.x - i] -= 4;
                     enable_x_neg = false;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.explodeable) {
@@ -758,8 +774,8 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_neg = false;
                 }
-                else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.SpeedUp) {
-                    myBackground.map[this.pos.y - i][this.pos.x] -= 3;
+                else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.Virus) {
+                    myBackground.map[this.pos.y - i][this.pos.x] -= 4;
                     enable_y_neg = false;
                 }
                 else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.explodeable) {
