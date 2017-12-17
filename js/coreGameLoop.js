@@ -503,6 +503,7 @@ function playerObject(position, id) {
         }
         if (draw_others) {
             myPlayer.update(false, false);
+            this.removePowerUp();
         }
         this.layerDirty = false;
     };
@@ -533,6 +534,20 @@ function playerObject(position, id) {
 
         this.BlockCoord[5][0] = Math.trunc((this.pos.x + this.dimensions.width) / myBackground.tileSize); //middle right
         this.BlockCoord[5][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
+    };
+
+    this.removePowerUp = function () {
+        for (var i = 2; i < 6; ++i) {
+            if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.BombUp) {
+                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            }
+            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.FlameUp) {
+                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            }
+            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.SpeedUp) {
+                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            }
+        }
     };
 }
 
