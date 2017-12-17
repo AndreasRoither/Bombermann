@@ -165,7 +165,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.oldDirection = this.currentDirection;
     this.ctx = context;
     this.playerSizeMultiplier = playerSizeMultiplier;
-    this.walkSpeed = walkSpeed;
+    this.walkSpeed = 1;
     this.diagonalMoveDivisior = 1.4;
     this.layerDirty = true;
     this.layerDirty2 = false;
@@ -176,7 +176,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         kills: 0,
         bombs: 1,
         bombRadius: 2,
-        speedPowerup: 0
+        speedPowerup: walkSpeed
     };
 
     this.dimensions = {
@@ -220,43 +220,45 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         var moved = false;
         var movedDiagonally = false;
 
-        if (movLeft) {
-            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, -this.walkSpeed - this.stats.speedPowerup/2, 0) &&
-                this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, -this.walkSpeed - this.stats.speedPowerup/2, 0)) {
-                this.speed.speedX = -this.walkSpeed - this.stats.speedPowerup/2;
-                moved = true;
-            }
-            this.currentDirection = directions.left;
-        }
-        if (movRight && !movLeft) {
-            if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, this.walkSpeed + this.stats.speedPowerup/2, 0) &&
-                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, this.walkSpeed + this.stats.speedPowerup/2, 0)) {
-                this.speed.speedX = this.walkSpeed + this.stats.speedPowerup/2;
-                moved = true;
-            }
-            this.currentDirection = directions.right;
-        }
-        if (movUp) {
-            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, 0, -this.walkSpeed - this.stats.speedPowerup/2) &&
-                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, 0, -this.walkSpeed - this.stats.speedPowerup/2)) {
-                this.speed.speedY = -this.walkSpeed - this.stats.speedPowerup/2;
-                if (moved)
-                    movedDiagonally = true;
-                else
+        for (var i=0; i<=this.stats.speedPowerup; ++i) {
+            if (movLeft) {
+                if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, -this.walkSpeed, 0) &&
+                    this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, -this.walkSpeed, 0)) {
+                    this.speed.speedX -= this.walkSpeed;
                     moved = true;
+                }
+                this.currentDirection = directions.left;
             }
-            this.currentDirection = directions.up;
-        }
-        if (movDown && !movUp) {
-            if (this.possibleMove(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, 0, this.walkSpeed + this.stats.speedPowerup/2) &&
-                this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, 0, this.walkSpeed + this.stats.speedPowerup/2)) {
-                this.speed.speedY = this.walkSpeed + this.stats.speedPowerup/2;
-                if (moved)
-                    movedDiagonally = true;
-                else
+            if (movRight && !movLeft) {
+                if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, this.walkSpeed, 0) &&
+                    this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, this.walkSpeed, 0)) {
+                    this.speed.speedX += this.walkSpeed;
                     moved = true;
+                }
+                this.currentDirection = directions.right;
             }
-            this.currentDirection = directions.down;
+            if (movUp) {
+                if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkSpeed) &&
+                    this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkSpeed)) {
+                    this.speed.speedY -= this.walkSpeed;
+                    if (moved)
+                        movedDiagonally = true;
+                    else
+                        moved = true;
+                }
+                this.currentDirection = directions.up;
+            }
+            if (movDown && !movUp) {
+                if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkSpeed) &&
+                    this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkSpeed)) {
+                    this.speed.speedY += this.walkSpeed;
+                    if (moved)
+                        movedDiagonally = true;
+                    else
+                        moved = true;
+                }
+                this.currentDirection = directions.down;
+            }
         }
 
         // move speed is to high if moved diagonally, so we lower it
