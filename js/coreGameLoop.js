@@ -149,6 +149,7 @@ function updateGameArea() {
 
     myBombHandler.bombs.forEach(element => {
         if (element.layerDirty) element.drawBomb();
+        myPlayer.update(false, true);
     });
 }
 
@@ -747,8 +748,10 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
 
     this.drawBomb = function () {
         if (this.status == 2) {
+            myBackground.drawBlock(this.pos.x, this.pos.y);
             this.drawBlock(this.ctx, myImageFactory.bombs[0], this.pos.x, this.pos.y);
         } else if (this.status == 3) {
+            myBackground.drawBlock(this.pos.x, this.pos.y);
             this.drawBlock(this.ctx, myImageFactory.bombs[0], this.pos.x, this.pos.y);
             myPlayer.killPlayer(this.pos.x, this.pos.y);
             this.updateFlameCounter();
