@@ -1608,3 +1608,36 @@ Client[0m
 	[47m[32mplayer ready call[0m
 
 	game started
+
+-- Server listening --
+Start time: 17/12/2017 @ 9:42:19
+
+App listening at http://:::4200
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: kgxpU_QIGVz4-Uk9AAAA
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: mUfw2JSs548ruf3ZAAAB
+[1m[36m
+Client[0m
+
+	[47m[32mrequest to create game server[0m
+
+	player name a
+
+	Game Server ID 97
+
+	player pos: 0  0
+[1m[36m
+Client[0m
+
+	[47m[32mplayer ready call[0m
+
+	game started

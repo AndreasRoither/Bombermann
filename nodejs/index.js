@@ -365,14 +365,58 @@ function createMatrix() {
             matrix[i][j] = 0;
         }
     }
- 
-    // random walls
+
+    var bomb  = 0;
+    var flame = 0;
+    var speed = 0;
+    var explo = 0;
+    var empty = 0;
+    // random blocks
     for (var i = 1; i < dimensions.height-1; i++) {
-        for (var j = 2; j < dimensions.width-2; j++) {
-            if (matrix[i][j] != 0) matrix[i][j] = Math.floor((Math.random() * 2) + 1);
+        for (var j = 1; j < dimensions.width-1; j++) {
+            if (matrix[i][j] != 0){
+                var block = Math.random();
+                if (block > 0.92) {
+                    matrix[i][j] = 8;
+                   speed++;
+                }
+                else if (block > 0.84) {
+                    matrix[i][j] = 7;
+                    flame++;
+                }
+                else if (block > 0.76) {
+                    matrix[i][j] = 6;
+                    bomb++;
+                }
+                else if (block > 0.1) {
+                    matrix[i][j] = 2;
+                    explo++;
+                }
+                else {
+                    matrix[i][j] = 1;
+                    empty++;
+                }
+            }
         }
     }
+    //player 1
+    matrix[1][1]=1;
+    matrix[1][2]=1;
+    matrix[2][1]=1;
+    //player 2
+    matrix[1][16]=1;
+    matrix[1][17]=1;
+    matrix[2][17]=1;
+    //player 3
+    matrix[10][1]=1;
+    matrix[11][1]=1;
+    matrix[11][2]=1;
+    //palyer 4
+    matrix[11][16]=1;
+    matrix[11][17]=1;
+    matrix[10][17]=1;
 
+    console.log('\nrandomly generated:\nbombs: ', bomb, '\nflame: ', flame, '\nspeed: ', speed, '\nexplo: ', explo, '\nempty: ', empty);
     return matrix;
 }
 
