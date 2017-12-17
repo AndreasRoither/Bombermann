@@ -9,20 +9,25 @@ background
 bomb
 */
 
+//load images first
+var myImageFactory = new ImageFactory();
+myImageFactory.load(ImageFactoryLoaded);
+
 /********************/
 /*   Declarations   */
 /********************/
 var explosion = new Audio('./sound/Bomb1.mp3');
 explosion.volume = 0.2;
 
+var canvas_game = document.getElementById("gameCanvas");
+
 /* Game Area (Canvas) */
 var myGameArea = {
-    canvas: document.getElementById("gameCanvas"),
+    canvas: canvas_game,
+    context: canvas_game.getContext("2d"),
     start: function () {
         this.canvas.width = 665;
         this.canvas.height = 455;
-        this.context = this.canvas.getContext("2d");
-        //document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.interval = setInterval(updateGameArea, 16);
     },
     clear: function () {
@@ -101,12 +106,12 @@ var gameLoaded = false;
 
 function startGame(position) {
     myBombHandler = new bombHandler();
-    myImageFactory = new ImageFactory();
-    myGameArea.start();
-
+    
     myBackground = new background(myGameArea.context, globalTileSize);
     myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
     players = new otherPlayers();
+
+    myGameArea.start();
     gameLoaded = true;
 }
 
@@ -170,7 +175,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.walkStep = 1;
     this.diagonalMoveDivisior = 1.4;
     this.layerDirty = true;
-    this.layerDirty2 = false;
+    this.layerDirty2 = true;
     this.collsionCorrection = 10 * playerSizeMultiplier;
     this.delay = 0;
 
@@ -589,7 +594,8 @@ function background(context, tileSize) {
     this.drawBlock = function (x, y) {
         switch (this.map[y][x]) {
             case tileBlocks.solid: //solid
-                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.solid], x, y);
+                //this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.solid], x, y);
+                this.ctx.drawImage(myImageFactory.tiles[tileBlocks.solid], this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
                 break;
             case tileBlocks.background: //background
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.background], x, y);
@@ -849,4 +855,8 @@ function calculateCoords(position) {
 //helper
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function ImageFactoryLoaded () {
+    show_infobar("All images loaded, ready to start");
 }

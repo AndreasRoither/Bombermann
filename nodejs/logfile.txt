@@ -1641,3 +1641,56 @@ Client[0m
 	[47m[32mplayer ready call[0m
 
 	game started
+
+-- Server listening --
+Start time: 17/12/2017 @ 13:3:54
+
+App listening at http://:::4200
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: snVp6TMNYL2MJ70LAAAA
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: ury7_gZwyi0AXi5WAAAB
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: L5Bjzz1bVdkiWK6bAAAC
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: f_HZ90Gtzy666lTvAAAD
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: cpYitWi39apKdrnwAAAE
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: StljcNNJkf1nJiA2AAAF
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: HYj5cZxaR9aBVxjZAAAG
+[1m[32m
+Server[0m
+
+	Client connected...
+
+	id: nm_GTfxhHPhgG2OwAAAH

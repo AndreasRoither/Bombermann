@@ -15,21 +15,25 @@ String.prototype.hashCode = function () {
 };
 
 function createGame() {
-  var playerName = encodeURIComponent($("#playerName1").val());
-  var hashcode = playerName.hashCode();
+  if (currentlyConnected) {
+    var playerName = encodeURIComponent($("#playerName1").val());
+    var hashcode = playerName.hashCode();
 
-  socket.emit("create", hashcode, playerName, "Test", matrix);
-  closePopup();
+    socket.emit("create", hashcode, playerName, "Test", matrix);
+    closePopup();
+  }
 }
 
 function joinGame() {
-  var data = {
-    name: encodeURIComponent($("#playerName2").val()),
-    id: encodeURIComponent($("#gameId").val())
-  };
+  if (currentlyConnected) {
+    var data = {
+      name: encodeURIComponent($("#playerName2").val()),
+      id: encodeURIComponent($("#gameId").val())
+    };
 
-  socket.emit("join", data);
-  closePopup();
+    socket.emit("join", data);
+    closePopup();
+  }
 }
 
 function newGame(player_name) { }
@@ -45,7 +49,6 @@ function copyGameId() {
   document.body.removeChild(aux);
 
   change_infobar("Game Id " + gameId + " copied");
-  show_infobar();
 }
 
 // menu

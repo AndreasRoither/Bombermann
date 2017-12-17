@@ -401,7 +401,6 @@ textarea {
 *     infopopup     *
 *********************/
 
-
 #infopopup {
     visibility: hidden;
     min-width: 250px;
@@ -420,8 +419,8 @@ textarea {
 
 #infopopup.show {
     visibility: visible;
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 4.5s;
-    animation: fadein 0.5s, fadeout 0.5s 4.5s;
+    -webkit-animation: fadein 0.4s, fadeout 0.4s 3.6s;
+    animation: fadein 0.4s, fadeout 0.4s 3.6s;
 }
 
 @-webkit-keyframes fadein {

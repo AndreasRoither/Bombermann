@@ -3,6 +3,10 @@
 *********************/
 
 function ImageFactory() {
+  this.loaded = false;
+  this.loadingImgs = 0;
+  this.callback = null;
+
   /* contains all player image paths */
   this.playerImages = {
     tileCount: 8,
@@ -83,9 +87,27 @@ function ImageFactory() {
   * returns image; */
   this.createImage = function (src, title) {
     var img = new Image();
+    var base = this;
+    this.loadingImgs++;
+
     img.src = src;
     img.alt = title;
     img.title = title;
+
+    // add event listeners for callbacks
+    img.addEventListener('error', function (){
+      base.loadingImgs--;
+    });
+
+    img.onload = function () {
+      base.loadingImgs--;
+
+      if (base.loadingImgs == 0) {
+        if (base.loaded) {
+          base.callback();
+        }
+      }
+    }
     return img;
   };
 
@@ -97,26 +119,32 @@ function ImageFactory() {
   this.bombs = [];
   this.flames = [];
 
-  // create and initialize images from the image paths and push it into the arrays
-  for (var i = 0; i < this.playerImages.tileCount; i++) {
-    this.front.push(this.createImage(this.playerImages.frontImgs[i], "Bomberman Front"));
-    this.back.push(this.createImage(this.playerImages.backImgs[i], "Bomberman Back"));
-    this.left.push(this.createImage(this.playerImages.leftImgs[i], "Bomberman Left"));
-    this.right.push(this.createImage(this.playerImages.rightImgs[i], "Bomberman Right"));
-  }
+  this.load = function (callback) {
+    this.callback = callback;
 
-  // create new images and push them into the tiles array
-  for (var i = 0; i < this.tileImages.tileCount; i++) {
-    this.tiles.push(this.createImage(this.tileImages.tiles[i], "Tile"));
-  }
+      // create and initialize images from the image paths and push it into the arrays
+    for (var i = 0; i < this.playerImages.tileCount; i++) {
+      this.front.push(this.createImage(this.playerImages.frontImgs[i], "Bomberman Front"));
+      this.back.push(this.createImage(this.playerImages.backImgs[i], "Bomberman Back"));
+      this.left.push(this.createImage(this.playerImages.leftImgs[i], "Bomberman Left"));
+      this.right.push(this.createImage(this.playerImages.rightImgs[i], "Bomberman Right"));
+    }
 
-  // create new images and push them into the bomb array
-  for (var i = 0; i < this.bombImages.bombCount; i++) {
-    this.bombs.push(this.createImage(this.bombImages.bombs[i], "Bomb"));
-  }
+    // create new images and push them into the tiles array
+    for (var i = 0; i < this.tileImages.tileCount; i++) {
+      this.tiles.push(this.createImage(this.tileImages.tiles[i], "Tile"));
+    }
 
-  // create new images and push them into the flame array
-  for (var i = 0; i < this.flameImages.flameCount; i++) {
-    this.flames.push(this.createImage(this.flameImages.flames[i], "Flame"));
+    // create new images and push them into the bomb array
+    for (var i = 0; i < this.bombImages.bombCount; i++) {
+      this.bombs.push(this.createImage(this.bombImages.bombs[i], "Bomb"));
+    }
+
+    // create new images and push them into the flame array
+    for (var i = 0; i < this.flameImages.flameCount; i++) {
+      this.flames.push(this.createImage(this.flameImages.flames[i], "Flame"));
+    }
+
+    this.loaded = true;
   }
 }

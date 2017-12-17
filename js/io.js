@@ -1,9 +1,30 @@
 
 // connect
 var socket = io.connect('http://localhost:4200/');
+var currentlyConnected = false;
+
+socket.on('connect', function() {
+    currentlyConnected = true;
+    change_infobar("Connected to the Server");
+});
+
+socket.on('disconnect', function() {
+    currentlyConnected = false;
+    change_infobar("You are disconnected");
+});
+
+socket.on('connect_failed', function() {
+    currentlyConnected = false;
+    change_infobar("Connection failed");
+});
+
+socket.on('error', function() {
+    currentlyConnected = false;
+    change_infobar("Connection error");
+});
 
 socket.io.on("connect_error", function () {
-    closePopup();
+    currentlyConnected = false;
     change_infobar("Server not available");
 });
 
@@ -37,7 +58,7 @@ socket.on('game-server-created', function (id, player, matrix) {
     startGame(player.startPosition);
     myBackground.map = matrix;
 
-    change_infobar("Created Game Server, Game ID: " + id);
+    change_infobar("Created Game Server");
 });
 
 socket.on('game-not-found', function (id, playerInfo) {

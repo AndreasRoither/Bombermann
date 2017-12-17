@@ -137,7 +137,7 @@ function show_infobar() {
   x.className = "show";
   setTimeout(function () {
     x.className = x.className.replace("show", "");
-  }, 5000);
+  }, 4000);
 }
 
 function change_infobar(msg) {
