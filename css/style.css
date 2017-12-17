@@ -12,6 +12,9 @@ body {
     margin: 0;
 }
 
+.red {
+    color: red;
+}
 
 /* header style */
 
@@ -242,6 +245,10 @@ textarea {
     bottom: 0;
 }
 
+.popupContainer {
+    padding-bottom: 0px;
+}
+
 .width-stretch {
     width: 100%;
 }
@@ -272,8 +279,12 @@ textarea {
 
 .tabcontent {
     display: none;
-    padding: 100px 20px;
+    padding: 70px 20px;
     height: 100%;
+}
+
+.tabcontent p {
+    text-align: center;
 }
 
 /********************
@@ -287,14 +298,14 @@ textarea {
     width: auto;
     max-width: 700px;
     height: auto;
-    max-height: 400px;
+    /*max-height: 470px;*/
     background: #fff;
     border-radius: 5px;
     z-index: 999;
-    overflow: hidden;
+    overflow: auto;
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 20vh;
+    /*bottom: 0;*/
     left: 0;
     right: 0;
     margin: auto;
@@ -319,7 +330,6 @@ textarea {
     -webkit-transition: 3s;
     transition: 3s;
 }
-
 
 /* Add Zoom Animation */
 

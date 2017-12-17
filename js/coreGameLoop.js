@@ -176,7 +176,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.walkStep = 1;
     this.diagonalMoveDivisior = 1.4;
     this.layerDirty = true;
-    this.layerDirty2 = true;
+    this.layerDirty2 = false;
     this.collsionCorrection = 10 * playerSizeMultiplier;
     this.delay = 0;
 

@@ -41,10 +41,6 @@ function addListeners() {
     }
   });
 
-  $("#chatform").submit(function (e) {
-    e.preventDefault();
-  });
-
   // check if tab is active
   $(window).on("blur focus", function(e) {
     var prevType = $(this).data("prevType");
@@ -88,7 +84,7 @@ function onSwitchToggle() {
 
 function showModalPopup() {
   $(".popup").css({
-    transform: "translateY(0)",
+    transform: "translateY(0vh)",
     "z-index": "999",
     visibility: "visible"
   });

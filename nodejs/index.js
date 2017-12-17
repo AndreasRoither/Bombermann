@@ -64,6 +64,19 @@ var tileBlocks = {
     hiddenSpeedUp: 8
 };
 
+var difficulty = {
+    normal: 1,
+    hardmode: 2
+};
+
+var mode = {
+    deathmatch: 1,
+    closingin: 2,
+    fogofwar: 3,
+    virusonly: 4,
+    destroytheblock: 5
+}
+
 const ConsoleColor = require('./colorcodes.js');
 
 app.use(express.static(__dirname + '/node_modules'));
@@ -81,7 +94,7 @@ io.on('connection', function (client) {
     var gameID,
         userName;
 
-    client.on('create', function (id, name, avatar, matrix) {
+    client.on('create', function (id, name, avatar, difficulty, mode) {
         console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
         console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to create game server' + ConsoleColor.Reset);
         console.log('\r\n\tplayer name ' + name);
@@ -97,7 +110,6 @@ io.on('connection', function (client) {
             startPosition: playerStartPosition(0),
             position: { x: 0, y: 0 }
         };
-        
 
         console.log('\r\n\tplayer pos: ' + player.position.x + " ", player.position.y);
 
@@ -106,14 +118,16 @@ io.on('connection', function (client) {
             players: [player],
             matrix: createMatrix(),
             started: false,
-            created: Date.now()
+            created: Date.now(),
+            difficulty: difficulty,
+            gameMode: mode
         };
 
         gameID = id;
         userName = name;
 
         client.join(id);
-        client.emit('game-server-created', id, player, games[id].matrix);
+        client.emit('game-server-created', id, player, games[id]);
     });
 
     client.on('join', function (data) {

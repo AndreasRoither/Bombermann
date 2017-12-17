@@ -9,7 +9,6 @@
 </head>
 
 <body>
-
     <div class="header">
         <div class="image">
             <img class="pulse" src="img/Bomb/Bomb_f02.png">
@@ -45,7 +44,7 @@
             <ul id="playermsgcontainer" class="ul-right">
             </ul>
             <div class="container">
-                <form id="chatform" onsubmit="sendChatMsg()">
+                <form id="chatform" onsubmit="event.preventDefault(); sendChatMsg();">
                     <label for="text_msg">Message</label>
                     <textarea id="text_msg" name="text_msg" placeholder="Write something.." style="height:80px"></textarea>
                 </form>
@@ -53,28 +52,41 @@
         </div>
         <div id="infopopup" class="infopopup">Loading Images</div>
         <div class="popup animate" id="startPopup">
-            <div class="container">
+            <div class="container popupContainer">
                 <button class="tablink" onclick="openPage('create', this, 'gray')" id="defaultOpen">Create</button>
                 <button class="tablink" onclick="openPage('join', this, 'gray')">Join</button>
 
                 <div id="create" class="tabcontent">
-                    <form onsubmit="createGame()">
+                    <form onsubmit="event.preventDefault(); createGame();">
                         <label for="playerName1">Player name</label>
                         <input type="text" id="playerName1" name="playerName" placeholder="Your name.." required>
 
-                        <label for="mode">Mode</label>
-                        <select id="mode" name="mode">
-                            <option value="Deathmatch">Deathmatch</option>
-                            <option value="ClosingIn">ClosingIn</option>
-                            <option value="Hardmode">Hardmode</option>
-                        </select>
-
+                        <div class="row">
+                            <div class="col-6 select-box">
+                                <label for="mode">Mode</label>
+                                <select id="difficulty" name="difficulty">
+                                    <option value="1">Normal</option>
+                                    <option value="2">Hardmode</option>
+                                </select>
+                            </div>
+                            <div class="col-6 select-box">
+                                <label for="mode">Mode</label>
+                                <select id="mode" name="mode">
+                                    <option value="1">Deathmatch</option>
+                                    <option value="2">ClosingIn</option>
+                                    <option value="3">Fog of war</option>
+                                    <option value="4">Virus only</option>
+                                    <option value="4">Destroy the Block!</option>
+                                </select>
+                            </div>
+                        </div>
                         <input type="submit" value="Create" class="btn success right bottom">
                     </form>
                     <button value="Cancel" class="btn danger left bottom" onclick="closePopup()">Cancel</button>
+                    <p class="red" id="createErrorMsg"></p>
                 </div>
                 <div id="join" class="tabcontent">
-                    <form onsubmit="joinGame()">
+                    <form onsubmit="event.preventDefault(); joinGame();">
                         <label for="playerName2">Player name</label>
                         <input type="text" id="playerName2" name="playerName" placeholder="Your name.." required>
 
@@ -84,6 +96,7 @@
                         <input type="submit" value="Join" class="btn success right bottom">
                     </form>
                     <button value="Cancel" class="btn danger left bottom" onclick="closePopup()">Cancel</button>
+                    <p class="red" id="joinErrorMsg"></p>
                 </div>
             </div>
         </div>

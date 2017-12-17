@@ -17,10 +17,14 @@ String.prototype.hashCode = function () {
 function createGame() {
   if (currentlyConnected) {
     var playerName = encodeURIComponent($("#playerName1").val());
+    var difficulty = $("#difficulty").val();
+    var mode = $("#mode").val();
     var hashcode = playerName.hashCode();
 
-    socket.emit("create", hashcode, playerName, "Test", matrix);
-    closePopup();
+    socket.emit("create", hashcode, playerName, "Test", difficulty, mode);
+  }
+  else {
+    $("#createErrorMsg").text("Not connected to the Server!");
   }
 }
 
@@ -30,9 +34,10 @@ function joinGame() {
       name: encodeURIComponent($("#playerName2").val()),
       id: encodeURIComponent($("#gameId").val())
     };
-
     socket.emit("join", data);
-    closePopup();
+  }
+  else {
+    $("#joinErrorMsg").text("Not connected to the Server!");
   }
 }
 

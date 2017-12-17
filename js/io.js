@@ -2,6 +2,7 @@
 // connect
 var socket = io.connect('http://localhost:4200/');
 var currentlyConnected = false;
+var gameId = 0;
 
 socket.on('connect', function() {
     currentlyConnected = true;
@@ -28,17 +29,13 @@ socket.io.on("connect_error", function () {
     change_infobar("Server not available");
 });
 
-var gameId = 0;
-
-// event listeners
-
-socket.on('game-server-created', function (id, player, matrix) {
-
+socket.on('game-server-created', function (id, player, game) {
+    closePopup();
     gameId = id;
 
     var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
     player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
-    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
+    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container).load();
 
     botmsg = {
@@ -56,13 +53,13 @@ socket.on('game-server-created', function (id, player, matrix) {
     $("#playermsgcontainer").append(bot_message_container).append(bot_message_container2).load();
 
     startGame(player.startPosition);
-    myBackground.map = matrix;
+    myBackground.map = game.matrix;
 
     change_infobar("Created Game Server");
 });
 
 socket.on('game-not-found', function (id, playerInfo) {
-    change_infobar("Game not found");
+    $("#joinErrorMsg").text("Game server not found");
 });
 
 socket.on('player-joined', function (player) {
@@ -77,10 +74,10 @@ socket.on('player-joined', function (player) {
 });
 
 socket.on('joined', function (player, game) {
-
+    closePopup();
     var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
     player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
-    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
+    player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container);
 
     botmsg = {
@@ -189,6 +186,6 @@ socket.on('player-message', function (data, playerName) {
 
 function addPlayerToBox(player) {
     var player_container = "<li id=\"" + player.id + "\"><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
-    player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + encodeURIComponent(player.name) + "</div></li>";
+    player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container).load();
 }
