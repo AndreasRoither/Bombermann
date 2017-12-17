@@ -42,18 +42,18 @@ function addListeners() {
   });
 
   // check if tab is active
-  $(window).on("blur focus", function(e) {
+  $(window).on("blur focus", function (e) {
     var prevType = $(this).data("prevType");
 
-    if (prevType != e.type) {   //  reduce double fire issues
-        switch (e.type) {
-            case "blur":
-                // when tab is not focused, but seen
-                break;
-            case "focus":
-                if (gameLoaded) setAllDirty();
-                break;
-        }
+    if (prevType != e.type) { //  reduce double fire issues
+      switch (e.type) {
+        case "blur":
+          // when tab is not focused, but seen
+          break;
+        case "focus":
+          if (gameLoaded) setAllDirty();
+          break;
+      }
     }
 
     $(this).data("prevType", e.type);
@@ -321,57 +321,53 @@ function updateStatus() {
       var b = buttons[i];
       var val = controller.buttons[i];
       var pressed = val == 1.0;
-      if (typeof(val) == "object") {
+      if (typeof (val) == "object") {
         pressed = val.pressed;
         val = val.value;
       }
 
-        // 0 = A
+      // 0 = A
       if (pressed) {
-        if (i==0 && cooldown == 0) {
+        if (i == 0 && cooldown == 0) {
           cooldown = 10;
           myPlayer.layBomb();
         }
       }
     }
-    if (cooldown>0) cooldown -=1;
+    if (cooldown > 0) cooldown -= 1;
 
-      if (controller.axes[0] > 0.25) { //right
-        padRight = true;
-        movRight = true;
+    if (controller.axes[0] > 0.25) { //right
+      padRight = true;
+      movRight = true;
+    } else if (controller.axes[0] < -0.25) { //left
+      padLeft = true;
+      movLeft = true;
+    } else {
+      if (padLeft) {
+        padLeft = false;
+        movLeft = false;
       }
-      else if (controller.axes[0] < -0.25) { //left
-        padLeft = true;
-        movLeft = true;
+      if (padRight) {
+        padRight = false;
+        movRight = false;
       }
-      else {
-        if (padLeft) {
-          padLeft = false;
-          movLeft = false;
-        }
-        if (padRight) {
-          padRight = false;
-          movRight = false;
-        }
+    }
+    if (controller.axes[1] > 0.25) { //down
+      padDown = true;
+      movDown = true;
+    } else if (controller.axes[1] < -0.25) { //up
+      padUp = true;
+      movUp = true;
+    } else {
+      if (padDown) {
+        padDown = false;
+        movDown = false;
       }
-      if (controller.axes[1] > 0.25) { //down
-        padDown = true;
-        movDown = true;
+      if (padUp) {
+        padUp = false;
+        movUp = false;
       }
-      else if (controller.axes[1] < -0.25) { //up
-        padUp = true;
-        movUp = true;
-      }
-      else {
-        if (padDown) {
-          padDown = false;
-          movDown = false;
-        }
-        if (padUp) {
-          padUp = false;
-          movUp = false;
-        }
-      }
+    }
   }
 
 }
@@ -388,7 +384,6 @@ function scangamepads() {
     }
   }
 }
-
 
 window.addEventListener("gamepadconnected", connecthandler);
 window.addEventListener("gamepaddisconnected", disconnecthandler);
