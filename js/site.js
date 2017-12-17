@@ -171,16 +171,6 @@ window.addEventListener("keydown", function (event) {
     if (event.which == 13) {
       // Enter Key
       event.preventDefault();
-      //debug below
-      myBackground.map[1][1]=3;
-      myBackground.map[2][1]=4;
-      myBackground.map[3][1]=5;
-      myBackground.map[4][1]=6;
-      myBackground.map[5][1]=7;
-      myBackground.map[6][1]=8;
-      myBackground.update();
-      myPlayer.update(false);
-      //debug end
     }
     if (event.which == 97 || event.which == 65) {
       // a || A Key
@@ -201,7 +191,6 @@ window.addEventListener("keydown", function (event) {
     if (event.which == 32) {
       // space Key
       myPlayer.layBomb();
-      //event.preventDefault();
     }
     //Arrow Keys
     if (event.which == 37) {
@@ -278,6 +267,15 @@ window.addEventListener("keyup", function (event) {
 });
 
 
+/***********
+ * Gamepad *
+ ***********/
+
+var padUp = false;
+var padDown = false;
+var padLeft = false;
+var padRight = false;
+
 var haveEvents = 'ongamepadconnected' in window;
 var controllers = {};
 
@@ -291,45 +289,12 @@ function addgamepad(gamepad) {
   var d = document.createElement("div");
   d.setAttribute("id", "controller" + gamepad.index);
 
-  var t = document.createElement("h1");
-  t.appendChild(document.createTextNode("gamepad: " + gamepad.id));
-  d.appendChild(t);
-
-  var b = document.createElement("div");
-  b.className = "buttons";
-  for (var i = 0; i < gamepad.buttons.length; i++) {
-    var e = document.createElement("span");
-    e.className = "button";
-    //e.id = "b" + i;
-    e.innerHTML = i;
-    b.appendChild(e);
-  }
-
-  d.appendChild(b);
-
-  var a = document.createElement("div");
-  a.className = "axes";
-
-  for (var i = 0; i < gamepad.axes.length; i++) {
-    var p = document.createElement("progress");
-    p.className = "axis";
-    //p.id = "a" + i;
-    p.setAttribute("max", "2");
-    p.setAttribute("value", "1");
-    p.innerHTML = i;
-    a.appendChild(p);
-  }
-
-  d.appendChild(a);
-
-  // See https://github.com/luser/gamepadtest/blob/master/index.html
   var start = document.getElementById("start");
   if (start) {
     start.style.display = "none";
   }
 
   document.body.appendChild(d);
-  requestAnimationFrame(updateStatus);
 }
 
 function disconnecthandler(e) {
@@ -349,6 +314,7 @@ function updateStatus() {
 
   var i = 0;
   var j;
+  var cooldown = 0;
 
   for (j in controllers) {
     var controller = controllers[j];
@@ -364,22 +330,52 @@ function updateStatus() {
         val = val.value;
       }
 
-      var pct = Math.round(val * 100) + "%";
-      b.style.backgroundSize = pct + " " + pct;
-
+        // 0 = A
       if (pressed) {
-        b.className = "button pressed";
-      } else {
-        b.className = "button";
+        if (i==0 && cooldown == 0) {
+          cooldown = 10;
+          myPlayer.layBomb();
+        }
       }
     }
+    if (cooldown>0) cooldown -=1;
 
-    var axes = d.getElementsByClassName("axis");
-    for (i = 0; i < controller.axes.length; i++) {
-      var a = axes[i];
-      a.innerHTML = i + ": " + controller.axes[i].toFixed(4);
-      a.setAttribute("value", controller.axes[i] + 1);
-    }
+      if (controller.axes[0] > 0.25) { //right
+        padRight = true;
+        movRight = true;
+      }
+      else if (controller.axes[0] < -0.25) { //left
+        padLeft = true;
+        movLeft = true;
+      }
+      else {
+        if (padLeft) {
+          padLeft = false;
+          movLeft = false;
+        }
+        if (padRight) {
+          padRight = false;
+          movRight = false;
+        }
+      }
+      if (controller.axes[1] > 0.25) { //down
+        padDown = true;
+        movDown = true;
+      }
+      else if (controller.axes[1] < -0.25) { //up
+        padUp = true;
+        movUp = true;
+      }
+      else {
+        if (padDown) {
+          padDown = false;
+          movDown = false;
+        }
+        if (padUp) {
+          padUp = false;
+          movUp = false;
+        }
+      }
   }
 
 }

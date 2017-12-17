@@ -116,6 +116,7 @@ function startGame(position) {
 }
 
 function updateGameArea() {
+    updateStatus();//gamepad
     if (movLeft || movRight || movUp || movDown) {
         myPlayer.tryMove();
     }
