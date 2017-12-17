@@ -51,8 +51,6 @@ function copyGameId() {
   change_infobar("Game Id " + gameId + " copied");
 }
 
-// menu
-
 // loading
 
 function setAllDirty() {
