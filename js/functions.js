@@ -104,7 +104,6 @@ function playerBombSet(bomb) {
 }
 
 function playerDead () {
-  var thisplayerid = "#playercontainer" + socket.id;
-  $(thisplayerid).addClass("stripe-1").load();
+  $("#playercontainer" + socket.id).addClass("stripe-1").load();
   change_infobar("You died");
 }

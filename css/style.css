@@ -762,14 +762,6 @@ textarea {
 /********************
 *      Stripes      *
 *********************/
-
-  .stripe-1 {
-    color: white;
-    background: repeating-linear-gradient(
-      45deg,
-      #d45555,
-      #d45555 10px,
-      #e97171 10px,
-      #e97171 20px
-    );
-  }
+.stripe-1 {
+    background: repeating-linear-gradient( 45deg, #ff000069, #ff000069 10px, #f1f1f1 10px, #f1f1f1 20px);
+}

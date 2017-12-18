@@ -14,7 +14,11 @@ bomb
 var myImageFactory = new ImageFactory();
 myImageFactory.load(ImageFactoryLoaded);
 
-var virusTimer = 10000;
+var virusTimer = {
+    diarrhea: 15000,
+    fastBomb: 20000,
+    default: 15000
+}
 
 /********************/
 /*   Declarations   */
@@ -516,7 +520,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         var canche = Math.random();
 
         if ((canche > probability * 9.7) && (this.stats.godFlames != true)) { // god's flames
-            change_infobar("+God's flames, you are the choosen one");
+            change_infobar("+God's flames, you are the choosen one!");
             this.stats.godFlames = true;
             this.stats.bombRadius = 100;
         }
@@ -537,7 +541,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             change_infobar("+Diarrhea");
 
             // increase bombs for more fun
-            var oldBombCount = this.stats.bombs;
             this.stats.bombs += 2;
             var _this = this;
 
@@ -549,28 +552,26 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             // clear interval
             setTimeout(function () {
                 clearInterval(diarrheaInterval);
-                _this.stats.bombs = oldBombCount;
-            }, virusTimer);
+                _this.stats.bombs -= 2;
+            }, virusTimer.diarrhea);
         }
         else if (canche > probability * 5) {        // fast exploding bombs
             change_infobar("+Fast Bomb");
-            var oldBombTimer = this.stats.bombTimer;
             this.stats.bombTimer /= 2;
             var _this = this;
 
             setTimeout(function () {
-                _this.stats.bombTimer = oldBombTimer;
-            }, virusTimer);
+                _this.stats.bombTimer *= 2;
+            }, virusTimer.fastBomb);
         }
         else if (canche > probability * 4) {        // slowness
             change_infobar("+Turtle Slowness");
-            var oldSpeed = this.walkSpeed;
             this.walkSpeed /= 2;
             var _this = this;
 
             setTimeout(function () {
-                _this.walkSpeed = oldSpeed;
-            }, virusTimer);
+                _this.walkSpeed *= 2;
+            }, virusTimer.default);
         }
         else if (canche > probability * 3) {        // direction switch
             change_infobar("+Switcheroo");
@@ -579,7 +580,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
             setTimeout(function () {
                 _this.stats.directionSwitch = false;
-            }, virusTimer);
+            }, virusTimer.default);
         }
         else if (canche > probability * 2) {        // vision obstruction
             change_infobar("+You can't see me");
@@ -592,7 +593,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
             setTimeout(function () {
                 _this.walkSpeed = oldSpeed;
-            }, virusTimer);
+            }, virusTimer.default);
         }
         else if (canche > probability / 2) {        // nothing happens
             change_infobar("Only a lucky few ones escape the curse");
