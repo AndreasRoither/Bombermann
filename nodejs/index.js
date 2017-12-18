@@ -400,6 +400,7 @@ function createMatrix(gamemode) {
     var explo = 0;
     var empty = 0;
     var virus = 0;
+    var blockSet = false;
 
     // random blocks
     for (var i = 1; i < dimensions.height-1; i++) {
@@ -411,34 +412,34 @@ function createMatrix(gamemode) {
                     if (block > 0.70) {
                         matrix[i][j] = tileBlocks.hiddenVirus;
                         virus++;
-                    }
-                    else if (block > 0.1) {
-                        matrix[i][j] = tileBlocks.explodeable;
-                        explo++;
-                    }
-                    else {
-                        matrix[i][j] = tileBlocks.background;
-                        empty++;
+                        blockSet = true;
                     }
                 }
                 else {
                     if (block > 0.93) {
                         matrix[i][j] = tileBlocks.hiddenSpeedUp;
                         speed++;
+                        blockSet = true;
                     }
                     else if (block > 0.92) {
                         matrix[i][j] = tileBlocks.hiddenSpeedUp;
                         speed++;
+                        blockSet = true;
                     }
                     else if (block > 0.76) {
                         matrix[i][j] = tileBlocks.hiddenFlameUp;
                         flame++;
+                        blockSet = true;
                     }
                     else if (block > 0.68) {
                         matrix[i][j] = tileBlocks.hiddenBombUp;
                         bomb++;
+                        blockSet = true;
                     }
-                    else if (block > 0.1) {
+                }
+
+                if (!blockSet) {
+                    if (block > 0.1) {
                         matrix[i][j] = tileBlocks.explodeable;
                         explo++;
                     }
@@ -447,6 +448,8 @@ function createMatrix(gamemode) {
                         empty++;
                     }
                 }
+
+                blockSet = false;
             }
         }
     }
