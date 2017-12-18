@@ -51,6 +51,7 @@ function addListeners() {
           // when tab is not focused, but seen
           break;
         case "focus":
+          if (currentGamemode == modeTypes.fogofwar) return;
           if (gameLoaded) setAllDirty();
           break;
       }
