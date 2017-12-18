@@ -416,7 +416,12 @@ function createMatrix(gamemode) {
                     }
                 }
                 else {
-                    if (block > 0.93) {
+                    if (block > 0.97) {
+                        matrix[i][j] = tileBlocks.hiddenVirus;
+                        virus++;
+                        blockSet = true;
+                    }
+                    else if (block > 0.93) {
                         matrix[i][j] = tileBlocks.hiddenSpeedUp;
                         speed++;
                         blockSet = true;

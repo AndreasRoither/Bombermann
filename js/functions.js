@@ -102,3 +102,9 @@ function playerMoved(position, imageCounter, currentDirection) {
 function playerBombSet(bomb) {
   socket.emit("bomb",gameId, bomb);
 }
+
+function playerDead () {
+  var thisplayerid = "#playercontainer" + socket.id;
+  $(thisplayerid).addClass("stripe-1").load();
+  change_infobar("You died");
+}

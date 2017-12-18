@@ -758,3 +758,18 @@ textarea {
   .slider.round:before {
     border-radius: 50%;
   }
+
+/********************
+*      Stripes      *
+*********************/
+
+  .stripe-1 {
+    color: white;
+    background: repeating-linear-gradient(
+      45deg,
+      #d45555,
+      #d45555 10px,
+      #e97171 10px,
+      #e97171 20px
+    );
+  }

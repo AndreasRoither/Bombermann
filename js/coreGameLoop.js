@@ -1,3 +1,4 @@
+
 /*INDEX*/
 /*
 start game
@@ -12,6 +13,8 @@ bomb
 //load images first
 var myImageFactory = new ImageFactory();
 myImageFactory.load(ImageFactoryLoaded);
+
+var virusTimer = 10000;
 
 /********************/
 /*   Declarations   */
@@ -75,8 +78,8 @@ function bombHandler() {
     this.myBombsCounter = 0;
     this.bombs = [];
 
-    this.addBomb = function (position, radius) {
-        var playerBomb = new bomb(myPlayer.ctx, 4000, 1000, radius, 2, position);
+    this.addBomb = function (position, radius, bombTimer) {
+        var playerBomb = new bomb(myPlayer.ctx, bombTimer, 1000, radius, 2, position);
         this.bombs.push(playerBomb);
         this.myBombsCounter += 1;
         this.bombsCounter += 1;
@@ -121,7 +124,7 @@ var gameLoaded = false;
 
 function startGame(position) {
     myBombHandler = new bombHandler();
-    
+
     myBackground = new background(myGameArea.context, globalTileSize);
     myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
     players = new otherPlayers();
@@ -163,8 +166,8 @@ function updateGameArea() {
 
     if (players.playerCount != 0) {
         players.players.forEach(element => {
-            if (element.layerDirty) 
-            element.update(true, true);
+            if (element.layerDirty)
+                element.update(true, true);
         });
     }
 
@@ -199,7 +202,10 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         kills: 0,
         bombs: 1,
         bombRadius: 2,
-        speedPowerup: 0
+        bombTimer: 4000,
+        speedPowerup: 0,
+        godFlames: false,
+        directionSwitch: false
     };
 
     this.dimensions = {
@@ -235,6 +241,38 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         [1, 1]
     ];
 
+    this.moveLeft = function () {
+        if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, -this.walkStep, 0) &&
+            this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, -this.walkStep, 0)) {
+            this.speed.speedX -= this.walkStep;
+        }
+        this.currentDirection = directions.left;
+    };
+
+    this.moveRight = function () {
+        if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, this.walkStep, 0) &&
+            this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, this.walkStep, 0)) {
+            this.speed.speedX += this.walkStep;
+        }
+        this.currentDirection = directions.right;
+    };
+
+    this.moveUp = function () {
+        if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep) &&
+            this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep)) {
+            this.speed.speedY -= this.walkStep;
+        }
+        this.currentDirection = directions.up;
+    };
+
+    this.moveDown = function () {
+        if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep) &&
+            this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep)) {
+            this.speed.speedY += this.walkStep;
+        }
+        this.currentDirection = directions.down;
+    };
+
     /*moves player when possible
      * updates the direction + image counter
      * also checks if players moves diagonally */
@@ -243,44 +281,56 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         var moved = false;
         var movedDiagonally = false;
 
-        for (var i=0; i<this.walkSpeed; ++i) {
+        for (var i = 0; i < this.walkSpeed; ++i) {
             if (movLeft) {
-                if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, -this.walkStep, 0) &&
-                    this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, -this.walkStep, 0)) {
-                    this.speed.speedX -= this.walkStep;
-                    moved = true;
+                if (this.stats.directionSwitch) {
+                    this.moveRight();
                 }
-                this.currentDirection = directions.left;
+                else {
+                    this.moveLeft();
+                }
+                moved = true;
             }
             if (movRight && !movLeft) {
-                if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, this.walkStep, 0) &&
-                    this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, this.walkStep, 0)) {
-                    this.speed.speedX += this.walkStep;
-                    moved = true;
+                if (this.stats.directionSwitch) {
+                    this.moveLeft();
                 }
-                this.currentDirection = directions.right;
+                else {
+                    this.moveRight();
+                }
+                moved = true;
             }
             if (movUp) {
-                if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep) &&
-                    this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep)) {
-                    this.speed.speedY -= this.walkStep;
-                    if (moved)
-                        movedDiagonally = true;
-                    else
-                        moved = true;
+                if (this.stats.directionSwitch) {
+                    this.moveDown();
                 }
-                this.currentDirection = directions.up;
+                else {
+                    this.moveUp();
+                }
+
+                // check diagonal move
+                if (moved) {
+                    movedDiagonally = true;
+                }
+                else {
+                    moved = true;
+                }
             }
             if (movDown && !movUp) {
-                if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep) &&
-                    this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep)) {
-                    this.speed.speedY += this.walkStep;
-                    if (moved)
-                        movedDiagonally = true;
-                    else
-                        moved = true;
+                if (this.stats.directionSwitch) {
+                    this.moveUp();
                 }
-                this.currentDirection = directions.down;
+                else {
+                    this.moveDown();
+                }
+
+                // check diagonal move
+                if (moved) {
+                    movedDiagonally = true;
+                }
+                else {
+                    moved = true;
+                }
             }
         }
 
@@ -308,7 +358,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.possibleMove = function (x, y, dx, dy) {
         var y = Math.trunc((y + dy) / myBackground.tileSize);
         var x = Math.trunc((x + dx) / myBackground.tileSize);
-        if (myBackground.map[y][x] == tileBlocks.background || myBackground.map[y][x] == tileBlocks.BombUp || myBackground.map[y][x] == tileBlocks.FlameUp || myBackground.map[y][x] == tileBlocks.SpeedUp) {
+        if (myBackground.map[y][x] == tileBlocks.background || myBackground.map[y][x] == tileBlocks.BombUp || myBackground.map[y][x] == tileBlocks.FlameUp || myBackground.map[y][x] == tileBlocks.SpeedUp || myBackground.map[y][x] == tileBlocks.Virus) {
             return true;
         }
         return false;
@@ -409,7 +459,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                 y: Math.trunc((this.pos.y + (this.dimensions.height / 4) * 3) / myBackground.tileSize),
                 x: Math.trunc((this.pos.x + this.dimensions.width / 2) / myBackground.tileSize)
             };
-            myBombHandler.addBomb(pos, this.stats.bombRadius);
+            myBombHandler.addBomb(pos, this.stats.bombRadius, this.stats.bombTimer);
         };
     };
 
@@ -433,7 +483,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             }
             else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.Virus) {
                 myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
-                change_infobar("Virus!");
+                this.playerGotVirus();
             }
         }
     };
@@ -445,7 +495,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                     this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, x, y) ||
                     this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y) ||
                     this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y))
-                        change_infobar("You died");
+                {
+                    playerDead();
+                }
             }
         }
     };
@@ -453,10 +505,109 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.inFlames = function (plx, ply, x, y) {
         var px = Math.trunc(plx / myBackground.tileSize);
         var py = Math.trunc(ply / myBackground.tileSize);
-        if (py==y && px==x) {
+        if (py == y && px == x) {
             return true;
         }
         return false;
+    };
+
+    this.playerGotVirus = function () {
+        var probability = 0.10;
+        var canche = Math.random();
+
+        if ((canche > probability * 9.7) && (this.stats.godFlames != true)) { // god's flames
+            change_infobar("+God's flames, you are the choosen one");
+            this.stats.godFlames = true;
+            this.stats.bombRadius = 100;
+        }
+        else if (canche > probability * 9) {        // speed powerup
+            this.stats.speedPowerup++;
+            this.walkStep += 0.1;
+            change_infobar("+Speed");
+        }
+        else if (canche > probability * 8) {        // bomb powerup
+            this.stats.bombs++;
+            change_infobar("+Bomb");
+        }
+        else if (canche > probability * 7) {        // flame powerup
+            this.stats.bombRadius++;
+            change_infobar("+Flame");
+        }
+        else if (canche > probability * 6) {        // diarrhea
+            change_infobar("+Diarrhea");
+
+            // increase bombs for more fun
+            var oldBombCount = this.stats.bombs;
+            this.stats.bombs += 2;
+            var _this = this;
+
+            // set interval
+            var diarrheaInterval = setInterval(function () {
+                _this.layBomb();
+            }, 150);
+
+            // clear interval
+            setTimeout(function () {
+                clearInterval(diarrheaInterval);
+                _this.stats.bombs = oldBombCount;
+            }, virusTimer);
+        }
+        else if (canche > probability * 5) {        // fast exploding bombs
+            change_infobar("+Fast Bomb");
+            var oldBombTimer = this.stats.bombTimer;
+            this.stats.bombTimer /= 2;
+            var _this = this;
+
+            setTimeout(function () {
+                _this.stats.bombTimer = oldBombTimer;
+            }, virusTimer);
+        }
+        else if (canche > probability * 4) {        // slowness
+            change_infobar("+Turtle Slowness");
+            var oldSpeed = this.walkSpeed;
+            this.walkSpeed /= 2;
+            var _this = this;
+
+            setTimeout(function () {
+                _this.walkSpeed = oldSpeed;
+            }, virusTimer);
+        }
+        else if (canche > probability * 3) {        // direction switch
+            change_infobar("+Switcheroo");
+            this.stats.directionSwitch = true;
+            var _this = this;
+
+            setTimeout(function () {
+                _this.stats.directionSwitch = false;
+            }, virusTimer);
+        }
+        else if (canche > probability * 2) {        // vision obstruction
+            change_infobar("+You can't see me");
+        }
+        else if (canche > probability) {            // faster better stronger
+            change_infobar("+Fast as hell");
+            var oldSpeed = this.walkSpeed;
+            this.walkSpeed *= 3;
+            var _this = this;
+
+            setTimeout(function () {
+                _this.walkSpeed = oldSpeed;
+            }, virusTimer);
+        }
+        else if (canche > probability / 2) {        // nothing happens
+            change_infobar("Only a lucky few ones escape the curse");
+        }
+        else {                                        // teleport
+            change_infobar("+Teleport");
+            // teleport to another player or switch
+            if (players.playerCount != 0) {
+
+            }
+            else {  // teleport to random position
+
+            }
+        }
+
     };
 }
 
@@ -715,7 +866,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x + i] = tileBlocks.background;
                     enable_x_pos = false;
-                } 
+                }
                 else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                     enable_x_pos = false;
                 }
@@ -733,7 +884,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y + i][this.pos.x] = tileBlocks.background;
                     enable_y_pos = false;
-                } 
+                }
                 else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_pos = false;
                 }
@@ -752,7 +903,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x - i] = tileBlocks.background;
                     enable_x_neg = false;
-                } 
+                }
                 else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                     enable_x_neg = false;
                 }
@@ -770,7 +921,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y - i][this.pos.x] = tileBlocks.background;
                     enable_y_neg = false;
-                } 
+                }
                 else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_neg = false;
                 }
@@ -802,7 +953,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 var enable_x_neg = true;
                 var enable_y_neg = true;
                 for (var i = 1; i <= this.explosionRadius; i++) {
-                    if (enable_x_pos && this.size.x_pos>=i) {
+                    if (enable_x_pos && this.size.x_pos >= i) {
                         if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x + i, this.pos.y);
 
@@ -813,7 +964,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                             enable_x_pos = false;
                         }
                     }
-                    if (enable_y_pos && this.size.y_pos>=i) {
+                    if (enable_y_pos && this.size.y_pos >= i) {
                         if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y + i);
 
@@ -825,7 +976,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                         }
                     }
 
-                    if (enable_x_neg && this.size.x_neg>=i) {
+                    if (enable_x_neg && this.size.x_neg >= i) {
                         if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x - i, this.pos.y);
 
@@ -836,7 +987,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                             enable_x_neg = false;
                         }
                     }
-                    if (enable_y_neg && this.size.y_neg>=i) {
+                    if (enable_y_neg && this.size.y_neg >= i) {
                         if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y - i);
 
@@ -859,13 +1010,13 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
     /* updates image counter
      * determines which frame of the player should be drawn*/
     this.updateFlameCounter = function () {
-        if (this.delay == 4){
+        if (this.delay == 4) {
             if (this.flameCounter < 3) {
-                    this.flameCounter++;
+                this.flameCounter++;
             } else {
                 this.flameCounter = 0;
             }
-            this.delay=0;
+            this.delay = 0;
         }
         else {
             this.delay++;
@@ -889,6 +1040,6 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function ImageFactoryLoaded () {
+function ImageFactoryLoaded() {
     show_infobar("All images loaded, ready to start");
 }
