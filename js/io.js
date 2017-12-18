@@ -52,7 +52,7 @@ socket.on('game-server-created', function (id, player, game) {
 
     $("#playermsgcontainer").append(bot_message_container).append(bot_message_container2).load();
 
-    startGame(player.startPosition);
+    startGame(player.startPosition, game.difficulty);
     myBackground.map = game.matrix;
 
     change_infobar("Created Game Server");
@@ -147,8 +147,20 @@ socket.on('bomb', function (enemyBomb) {
     myBombHandler.addBombFin(enemyBomb);
 });
 
-socket.on('death', function (id, playerInfo) {
+socket.on('death', function (id, playerId) {
+    playerDead(playerId);
+    var i = 0;
+    var index = -1;
+    players.players.forEach(element => {
+        if (element.id == playerId) {
+            index = i;
+        }
+        i++;
+    });
 
+    if (index > -1) {
+        players.players.splice(index, 1);
+    }
 });
 
 socket.on('win', function (id, playerInfo) {

@@ -103,7 +103,14 @@ function playerBombSet(bomb) {
   socket.emit("bomb",gameId, bomb);
 }
 
-function playerDead () {
-  $("#playercontainer" + socket.id).addClass("stripe-1").load();
+function playerDead (id) {
+  $("#playercontainer" + id).addClass("stripe-1").load();
   change_infobar("You died");
+}
+
+function playerNotDead (id) {
+  $("#playercontainer" + id).removeClass("stripe-1").load();
+  $("#checkbox").prop("checked", false);
+  $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
+  playerRdy = false;
 }

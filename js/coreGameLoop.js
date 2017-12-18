@@ -64,7 +64,7 @@ var tileBlocks = {
     hiddenVirus: 10
 };
 
-var difficulty = {
+var difficultyTypes = {
     normal: 1,
     hardmode: 2
 };
@@ -126,11 +126,19 @@ var gameLoaded = false;
 *     Functions     *
 *********************/
 
-function startGame(position) {
+function startGame(position, difficulty) {
     myBombHandler = new bombHandler();
 
     myBackground = new background(myGameArea.context, globalTileSize);
     myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
+
+    if (difficultyTypes.hardmode) {
+        myPlayer.stats.bombs += 4;
+        myPlayer.stats.bombTimer /= 2;
+        myPlayer.stats.bombRadius *= 2;
+        myPlayer.walkStep = 1.3;
+    }
+
     players = new otherPlayers();
 
     myGameArea.start();
@@ -201,6 +209,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.layerDirty2 = false;
     this.collsionCorrection = 5 * playerSizeMultiplier;
     this.delay = 0;
+    this.isAlive = true;
 
     this.stats = {
         kills: 0,
@@ -282,6 +291,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
      * also checks if players moves diagonally */
     this.tryMove = function () {
         if (!gameStarted) return;
+        if (!this.isAlive) return;
         var moved = false;
         var movedDiagonally = false;
 
@@ -370,6 +380,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
     // draws player according to the current looking direction
     this.update = function (draw_bg, draw_others) {
+        if (!this.isAlive) return;
         if (draw_bg) {
             for (var i = 0; i < 6; ++i) { //draw blocks behind player
                 myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
@@ -493,6 +504,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     this.killPlayer = function (x, y) {
+        if (!this.isAlive) return;
         for (var i = 2; i < 6; ++i) {
             if (this.BlockCoord[i][0] == x && this.BlockCoord[i][1] == y) { //player dead
                 if (this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, x, y) ||
@@ -500,9 +512,21 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                     this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y) ||
                     this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y))
                 {
-                    playerDead();
+                    playerDead(socket.id);
+                    this.isAlive = false;
+
+                    if (players.playerCount == 0) { 
+                        gameStarted = false;
+                        this.isAlive = true;
+
+                        playerNotDead(socket.id);
+
+                        //resetPosition();
+                    }
                 }
             }
+
+            if (!this.isAlive) return;
         }
     };
 
