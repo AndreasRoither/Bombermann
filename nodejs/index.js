@@ -402,6 +402,13 @@ function createMatrix(gamemode) {
     var virus = 0;
     var blockSet = false;
 
+    //Chances for Deathmatch
+    var bombChance  = 0.08;
+    var flameChance = 0.08;
+    var speedChance = 0.08;
+    var virusChance = 0.02;
+    var emptyChance = 0.1;
+
     // random blocks
     for (var i = 1; i < dimensions.height-1; i++) {
         for (var j = 1; j < dimensions.width-1; j++) {
@@ -416,27 +423,22 @@ function createMatrix(gamemode) {
                     }
                 }
                 else {
-                    if (block > 0.97) {
+                    if (block > 1 - speedChance) {
+                        matrix[i][j] = tileBlocks.hiddenSpeedUp;
+                        speed++;
+                        blockSet = true;
+                    }
+                    else if (block > (1 - speedChance) - virusChance) {
                         matrix[i][j] = tileBlocks.hiddenVirus;
                         virus++;
                         blockSet = true;
                     }
-                    else if (block > 0.93) {
-                        matrix[i][j] = tileBlocks.hiddenSpeedUp;
-                        speed++;
-                        blockSet = true;
-                    }
-                    else if (block > 0.92) {
-                        matrix[i][j] = tileBlocks.hiddenSpeedUp;
-                        speed++;
-                        blockSet = true;
-                    }
-                    else if (block > 0.76) {
+                    else if (block > ((1 - speedChance) - virusChance) - flameChance) {
                         matrix[i][j] = tileBlocks.hiddenFlameUp;
                         flame++;
                         blockSet = true;
                     }
-                    else if (block > 0.68) {
+                    else if (block > (((1 - speedChance) - virusChance) - flameChance) - bombChance) {
                         matrix[i][j] = tileBlocks.hiddenBombUp;
                         bomb++;
                         blockSet = true;
@@ -444,7 +446,7 @@ function createMatrix(gamemode) {
                 }
 
                 if (!blockSet) {
-                    if (block > 0.1) {
+                    if (block > emptyChance) {
                         matrix[i][j] = tileBlocks.explodeable;
                         explo++;
                     }
