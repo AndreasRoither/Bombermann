@@ -52,7 +52,7 @@ socket.on('game-server-created', function (id, player, game) {
 
     $("#playermsgcontainer").append(bot_message_container).append(bot_message_container2).load();
 
-    startGame(player.startPosition, game.difficulty);
+    startGame(player.startPosition, game.difficulty, game.gameMode);
     myBackground.map = game.matrix;
 
     change_infobar("Created Game Server");
@@ -75,7 +75,7 @@ socket.on('player-joined', function (player) {
 
 socket.on('joined', function (player, game) {
     closePopup();
-    var player_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
+    var player_container = "<li><div id=\"playercontainer" + player.id + "\" class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
     player_container += "<label class=\"switch\" style=\"float:right; margin-top:10px; margin-left: 10px;\"><input id=\"checkbox\" type=\"checkbox\" onclick=\"onSwitchToggle()\"><span class=\"slider round\"></span></label>";
     player_container += "<p><span id=\"playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container);
@@ -143,12 +143,35 @@ socket.on('player-move', function (player, position, imageCounter, currentDirect
     });
 });
 
+socket.on('player-points', function(playerId, points) {
+    players.players.forEach(element => {
+        if (element.id == playerId) {
+            element.stats.points = points;
+        }
+    });
+});
+
+// destroy the block
+socket.on('dtb-win', function (winner) {
+    botmsg = {
+        message: "And the winner is: " + winner.name,
+        message2: "Points: " + winner.points
+    };
+
+    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
+    bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
+    $("#playermsgcontainer").prepend(bot_message_container).load();
+
+    change_infobar("And the winner is: " + winner.name + " Points: " + winner.points);
+});
+
 socket.on('bomb', function (enemyBomb) {
     myBombHandler.addBombFin(enemyBomb);
 });
 
-socket.on('death', function (id, playerId) {
-    playerDead(playerId);
+socket.on('player-death', function ( playerId, playerName) {
+    $("#playercontainer" + playerId).addClass("stripe-1").load();
+
     var i = 0;
     var index = -1;
     players.players.forEach(element => {
@@ -163,8 +186,17 @@ socket.on('death', function (id, playerId) {
     }
 });
 
-socket.on('win', function (id, playerInfo) {
+socket.on('win', function (winner) {
+    botmsg = {
+        message: "And the winner is: " + winner.name,
+        message2: "Kills: " + winner.kills
+    };
 
+    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
+    bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
+    $("#playermsgcontainer").prepend(bot_message_container).load();
+
+    change_infobar("And the winner is: " + winner.name + " Kills: " + winner.kills);
 });
 
 socket.on('left', function (playerId, playerName) {
@@ -197,7 +229,7 @@ socket.on('player-message', function (data, playerName) {
 });
 
 function addPlayerToBox(player) {
-    var player_container = "<li id=\"" + player.id + "\"><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
+    var player_container = "<li id=\"" + player.id + "\"><div id=\"playercontainer" + player.id + "\" class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00_blue.png\" alt=\"Avatar\" style=\"width:10%;\">";
     player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
     $("#players").append(player_container).load();
 }

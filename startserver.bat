@@ -15,5 +15,8 @@ echo.
 echo. >>logfile.txt 2>> errorlog.txt
 echo Server crashed >>logfile.txt 2>> errorlog.txt
 echo. >>logfile.txt 2>> errorlog.txt
+echo ---------------------------
+echo -- Restart at %time% --
+echo ---------------------------
 goto loop
 pause

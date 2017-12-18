@@ -110,20 +110,27 @@ io.on('connection', function (client) {
             ready: false,
             alive: true,
             startPosition: playerStartPosition(0),
-            position: { x: 0, y: 0 }
+            position: { x: 0, y: 0 },
+            points: 0,
+            kills: 0
         };
 
         console.log('\r\n\tmode: ' + mode);
 
+        var generatedBlocks = 0;
+
         games[id] = {
             id: id,
             players: [player],
-            matrix: createMatrix(mode),
+            matrix: createMatrix(mode, generatedBlocks),
             started: false,
             created: Date.now(),
             difficulty: difficulty,
-            gameMode: mode
+            gameMode: mode,
+            explodeableBlocks: generatedBlocks
         };
+
+        console.log("GeneratedBlocks " + generatedBlocks);
 
         gameID = id;
         userName = name;
@@ -155,7 +162,9 @@ io.on('connection', function (client) {
                     ready: false,
                     alive: true,
                     startPosition: playerStartPosition(playerIndex),
-                    position: { x: 0, y: 0 }
+                    position: { x: 0, y: 0 },
+                    points: 0,
+                    kills: 0
                 };
 
             game.players.push(player);
@@ -195,9 +204,8 @@ io.on('connection', function (client) {
 
         if (totalReady >= 1 && totalReady == game.players.length) {
             game.started = true;
-            
 
-            client.emit('game-start', game.matrix)
+            client.emit('game-start', game.matrix);
             client.broadcast.to(id).emit('game-start', game.matrix);
             console.log('\r\n\tgame started');
         }
@@ -217,6 +225,68 @@ io.on('connection', function (client) {
         });
 
         client.broadcast.to(gameId).emit('player-move', thePlayer, position, imageCounter, currentDirection);
+    });
+
+    client.on('points', function(gameId, playerId, points) {
+        var game = games[gameId];
+
+        if (!game) return;
+        var sumPoints = 0;
+        var highestPoints = game.players[0];
+
+        game.players.forEach(function (player) {
+            if (player.id == socketId) {
+                player.points = points;
+            }
+
+            if (player.points > highestPoints.points) {
+                highestPoints = player;
+            }
+
+            sumPoints += player.points;
+        });
+
+        if (sumPoints >= game.generatedBlocks) {
+            client.emit('dtb-win', game.matrix);
+            client.broadcast.to(gameId).emit('dtb-win', highestPoints.id, points);
+        }
+
+        client.broadcast.to(gameId).emit('player-points', playerId, points);
+    });
+
+    client.on('death', function(gameId, playerId, bombId) {
+        var game = games[gameId];
+
+        if (!game) return;
+        var totalPlayers = game.players.length;
+        var deadPlayers = 0;
+        var winner = game.players[0];
+        var playerName;
+
+        game.players.forEach(function (player) {
+            if (player.id == socketId) {
+                player.isAlive = false;
+                deadPlayers++;
+                playerName = player.name;
+            }
+
+            if (player.isAlive) {
+                winner = player;
+            }
+
+            if (player.id == bombId) {
+                player.kills++;
+            }
+        });
+
+        console.log(winner.name);
+
+        if (deadPlayers >= totalPlayers - 1) {
+            client.emit('win', winner);
+            client.broadcast.to(gameId).emit('win', winner);
+        }
+
+        client.broadcast.to(gameId).emit('player-death', playerId, playerName);
     });
 
     client.on('bomb', function (id, bomb) {
@@ -353,20 +423,19 @@ function pickIndex(game) {
         if (player.index == index) {
             index++;
         }
-
     });
 
     return index;
 }
 
-function createMatrix(gamemode) {
+function createMatrix(gamemode, generatedBlocks) {
     
     var dimensions = {
         width: 19,
         height: 13
     };
 
-    var matrix = new Array();;
+    var matrix = new Array();
     
     for (var i = 0; i < dimensions.height; i++) {
         matrix[i] = new Array();
@@ -483,6 +552,7 @@ function createMatrix(gamemode) {
     matrix[10][17]=1;
 
     console.log('\nrandomly generated:\nbombs: ', bomb, '\nflame: ', flame, '\nspeed: ', speed, '\nexplo: ', explo, '\nvirus: ', virus, '\nempty: ', empty);
+    generatedBlocks = explo;
     return matrix;
 }
 

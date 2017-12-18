@@ -1694,3 +1694,29 @@ Server[0m
 	Client connected...
 
 	id: nm_GTfxhHPhgG2OwAAAH
+
+-- Server listening --
+Start time: 18/12/2017 @ 18:13:12
+
+App listening at http://:::4200
+ 
+Server crashed 
+ 
+
+-- Server listening --
+Start time: 18/12/2017 @ 18:13:20
+
+App listening at http://:::4200
+
+-- Server listening --
+Start time: 18/12/2017 @ 18:16:45
+
+App listening at http://:::4200
+ 
+Server crashed 
+ 
+
+-- Server listening --
+Start time: 18/12/2017 @ 18:18:25
+
+App listening at http://:::4200

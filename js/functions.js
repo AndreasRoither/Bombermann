@@ -17,7 +17,7 @@ function createGame() {
   if (currentlyConnected) {
     var playerName = encodeURIComponent($("#playerName1").val());
     difficulty = $("#difficulty").val();
-    mode = $("#mode").val();
+    mode = parseInt($("#mode").val());
     var hashcode = playerName.hashCode();
 
     socket.emit("create", hashcode, playerName, "Test", difficulty, mode);
@@ -40,10 +40,6 @@ function joinGame() {
   }
 }
 
-function newGame(player_name) { }
-
-function endGame(player_name) { }
-
 function copyGameId() {
   var aux = document.createElement("input");
   aux.setAttribute("value", gameId);
@@ -54,8 +50,6 @@ function copyGameId() {
 
   change_infobar("Game Id " + gameId + " copied");
 }
-
-// loading
 
 function setAllDirty() {
   myPlayer.layerDirty = true;
@@ -103,9 +97,10 @@ function playerBombSet(bomb) {
   socket.emit("bomb",gameId, bomb);
 }
 
-function playerDead (id) {
+function playerDead (id, bombId) {
   $("#playercontainer" + id).addClass("stripe-1").load();
   change_infobar("You died");
+  socket.emit("death", gameId, socket.id, bombId);
 }
 
 function playerNotDead (id) {
@@ -113,4 +108,8 @@ function playerNotDead (id) {
   $("#checkbox").prop("checked", false);
   $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
   playerRdy = false;
+}
+
+function sendPoints(points) {
+  socket.emit("points", gameId, socket.id, bomb);
 }

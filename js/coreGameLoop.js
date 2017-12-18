@@ -69,7 +69,7 @@ var difficultyTypes = {
     hardmode: 2
 };
 
-var mode = {
+var modeTypes = {
     deathmatch: 1,
     closingin: 2,
     fogofwar: 3,
@@ -86,8 +86,8 @@ function bombHandler() {
         var playerBomb = new bomb(myPlayer.ctx, bombTimer, 1000, radius, 2, position);
         this.bombs.push(playerBomb);
         this.myBombsCounter += 1;
-        this.bombsCounter += 1;
-        var index = this.bombsCounter;
+        this.bombCounter += 1;
+        var index = this.bombCounter;
         var _this = this;
 
         playerBombSet(playerBomb);
@@ -105,8 +105,8 @@ function bombHandler() {
         var playerBomb = new bomb(myPlayer.ctx, enemyBomb.bombTimer, enemyBomb.explodeTimer, enemyBomb.explosionRadius, 2, enemyBomb.pos);
         playerBomb.id = enemyBomb.id
         this.bombs.push(playerBomb);
-        this.bombsCounter += 1;
-        var index = this.bombsCounter;
+        this.bombCounter += 1;
+        var index = this.bombCounter;
         var _this = this;
 
         // set remove bomb timeout
@@ -121,12 +121,14 @@ var globalPlayerSizeMultiplier = 0.5;
 var globalTileSize = 35;
 var gameStarted = false;
 var gameLoaded = false;
+var currentGamemode;
+var closingInterval;
 
 /********************
 *     Functions     *
 *********************/
 
-function startGame(position, difficulty) {
+function startGame(position, difficulty, mode) {
     myBombHandler = new bombHandler();
 
     myBackground = new background(myGameArea.context, globalTileSize);
@@ -139,9 +141,35 @@ function startGame(position, difficulty) {
         myPlayer.walkStep = 1.3;
     }
 
+    currentGamemode = mode;
     players = new otherPlayers();
 
     myGameArea.start();
+
+    switch(mode) {
+        case modeTypes.deathmatch:
+            break;
+        case modeTypes.closingin:
+
+            // set timeout when to start closing in
+            setTimeout(function () {
+                // set interval
+                myBackground.setClosingStartPosition(0, 1);
+                closingInterval = setInterval(function () {
+                    change_infobar("Closing in!");
+                    myBackground.nextSolidBlock();
+                }, 500);
+            }, 20000);
+            
+            break;
+        case modeTypes.destroytheblock:
+            break;
+        case modeTypes.fogofwar:
+            myBackground.layerDirty = false;
+            myBackground.drawAroundplayer();
+            break;
+    }
+
     gameLoaded = true;
 }
 
@@ -218,7 +246,8 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         bombTimer: 4000,
         speedPowerup: 0,
         godFlames: false,
-        directionSwitch: false
+        directionSwitch: false,
+        points: 0
     };
 
     this.dimensions = {
@@ -503,7 +532,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
     };
 
-    this.killPlayer = function (x, y) {
+    this.killPlayer = function (x, y, bombPlayerId) {
         if (!this.isAlive) return;
         for (var i = 2; i < 6; ++i) {
             if (this.BlockCoord[i][0] == x && this.BlockCoord[i][1] == y) { //player dead
@@ -512,7 +541,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                     this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y) ||
                     this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y))
                 {
-                    playerDead(socket.id);
+                    if (currentGamemode == modeTypes.destroytheblock) return;
+
+                    playerDead(socket.id, bombPlayerId);
                     this.isAlive = false;
 
                     if (players.playerCount == 0) { 
@@ -520,7 +551,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                         this.isAlive = true;
 
                         playerNotDead(socket.id);
-
                         //resetPosition();
                     }
                 }
@@ -620,7 +650,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             }, virusTimer.default);
         }
         else if (canche > probability / 2) {        // nothing happens
-            change_infobar("Only a lucky few ones escape the curse");
+            change_infobar("Only a lucky few ones escape the curse..");
         }
         else {                                        // teleport
             change_infobar("+Teleport");
@@ -632,7 +662,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
             }
         }
-
     };
 }
 
@@ -678,7 +707,8 @@ function playerObject(position, id) {
     };
 
     this.stats = {
-        kills: 0
+        kills: 0,
+        points: 0
     };
 
     this.update = function (draw_bg, draw_others) {
@@ -750,6 +780,8 @@ function playerObject(position, id) {
             }
         }
     };
+
+    this.convertPlayerPos();
 }
 
 function otherPlayers() {
@@ -765,11 +797,29 @@ function background(context, tileSize) {
     this.width = 0;
     this.ctx = context;
     this.layerDirty = true;
+    this.closingDirection = 1;
+    this.possibleBlocks = 19*13;
+    this.countClosingIn = 0;
 
     this.dimensions = {
         width: 19,
         height: 13
     };
+
+    this.closingDimensions = {
+        width: this.dimensions.width,
+        height: this.dimensions.height
+    };
+
+    this.closingPosition = {
+        x: 0,
+        y: 0
+    };
+    
+    this.closingPositionTemp = {
+        x: 0,
+        y: 0
+    }
 
     this.map = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -792,6 +842,14 @@ function background(context, tileSize) {
         this.drawBackground();
     };
 
+    // draw around player pos
+    this.drawAroundplayer = function () {
+        for (var i = 0; i < 6; ++i) { //draw blocks behind player
+            myBackground.drawBlock(myPlayer.oldBlockCoord[i][0], myPlayer.oldBlockCoord[i][1]);
+        }
+        myPlayer.oldBlockCoord = myPlayer.BlockCoord;
+    };
+
     // draw_background draws background according to the matrix (this.map)
     this.drawBackground = function () {
         for (var y = 0; y < this.dimensions.height; ++y) {
@@ -812,7 +870,7 @@ function background(context, tileSize) {
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.explodeable], x, y);
                 break;
             case tileBlocks.solid:
-                this.ctx.drawImage(myImageFactory.tiles[tileBlocks.solid], this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
+                this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.solid], x, y);
                 break;
             case tileBlocks.background:
                 this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.background], x, y);
@@ -835,6 +893,59 @@ function background(context, tileSize) {
     this.draw_image = function (ctx, img, x, y) {
         ctx.drawImage(img, this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
     };
+
+    this.nextSolidBlock = function() {
+        switch(this.closingDirection){
+            case 1:
+                if (this.closingPosition.x >= this.closingDimensions.width - 3) {
+                    this.closingDirection = 2;
+                }
+                this.closingPosition.x++;
+                break;
+            case 2:
+                if (this.closingPosition.y >= this.closingDimensions.height - 3) {
+                    this.closingDirection = 3;
+                }
+                this.closingPosition.y++;
+                break;
+            case 3:
+                if (this.closingPosition.x < this.closingPositionTemp.x + 3) {
+                    this.closingDirection = 4;
+                }
+                this.closingPosition.x--;
+                break;
+            case 4:
+                if (this.closingPosition.y < this.closingPositionTemp.x + 3) {
+                    this.closingDirection = 5;
+                }
+                this.closingPosition.y--;
+                break;
+            case 5:
+                this.closingPositionTemp.x++;
+                this.closingPositionTemp.y++;
+                this.closingDimensions.width--;
+                this.closingDimensions.height--;
+                this.closingDirection = 1;
+                this.closingPosition.x = this.closingPositionTemp.x;
+                this.closingPosition.y = this.closingPositionTemp.y;
+                break;
+        }
+        if (this.countClosingIn < this.possibleBlocks / 2) {
+            this.countClosingIn++;
+            this.map[this.closingPosition.y][this.closingPosition.x] = tileBlocks.solid;
+            this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.solid], this.closingPosition.x, this.closingPosition.y);
+        }
+        else {
+            clearInterval(closingInterval);
+        }
+    };
+
+    this.setClosingStartPosition = function(x, y) {
+        this.closingPosition.x = x;
+        this.closingPosition.y = y;
+        this.closingPositionTemp.x = x;
+        this.closingPositionTemp.y = y;
+    }
 }
 
 /*everything with bombs*/
@@ -885,6 +996,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
         var enable_y_pos = true;
         var enable_x_neg = true;
         var enable_y_neg = true;
+        var changed = false;
         for (var i = 1; i <= this.explosionRadius; i++) {
             if (enable_x_pos) {
                 this.size.x_pos++;
@@ -903,6 +1015,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     myBackground.map[this.pos.y][this.pos.x + i] = 1;
                     enable_x_pos = false;
                 }
+
+                if ((!enable_x_pos) && (currentGamemode == modeTypes.destroytheblock)) {
+                    if (this.playerId == socket.id) {
+                        myPlayer.stats.points++;
+                        changed = true;
+                    }
+                    else {
+                        setOtherPlayerPoints(this.playerId);
+                    }
+                }
             }
             if (enable_y_pos) {
                 this.size.y_pos++;
@@ -920,6 +1042,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.explodeable) {
                     myBackground.map[this.pos.y + i][this.pos.x] = 1;
                     enable_y_pos = false;
+                }
+
+                if ((!enable_y_pos) && (currentGamemode == modeTypes.destroytheblock)) {
+                    if (this.playerId == socket.id) {
+                        myPlayer.stats.points++;
+                        changed = true;
+                    }
+                    else {
+                        setOtherPlayerPoints(this.playerId);
+                    }
                 }
             }
 
@@ -940,6 +1072,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     myBackground.map[this.pos.y][this.pos.x - i] = 1;
                     enable_x_neg = false;
                 }
+
+                if ((!enable_x_neg) && (currentGamemode == modeTypes.destroytheblock)) {
+                    if (this.playerId == socket.id) {
+                        myPlayer.stats.points++;
+                        changed = true;
+                    }
+                    else {
+                        setOtherPlayerPoints(this.playerId);
+                    }
+                }
             }
             if (enable_y_neg) {
                 this.size.y_neg++;
@@ -958,6 +1100,21 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     myBackground.map[this.pos.y - i][this.pos.x] = 1;
                     enable_y_neg = false;
                 }
+
+                if ((!enable_y_neg) && (currentGamemode == modeTypes.destroytheblock)) {
+                    if (this.playerId == socket.id) {
+                        myPlayer.stats.points++;
+                        changed = true;
+                    }
+                    else {
+                        setOtherPlayerPoints(this.playerId);
+                    }
+                }
+            }
+
+            if ((changed) && (currentGamemode == modeTypes.destroytheblock)) {
+                changed = false;
+                sendPoints(myPlayer.stats.points);
             }
         }
     };
@@ -969,7 +1126,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
         } else if (this.status == 3) {
             myBackground.drawBlock(this.pos.x, this.pos.y);
             this.drawBlock(this.ctx, myImageFactory.bombs[0], this.pos.x, this.pos.y);
-            myPlayer.killPlayer(this.pos.x, this.pos.y);
+            myPlayer.killPlayer(this.pos.x, this.pos.y, this.playerId);
             this.updateFlameCounter();
             //flames
             for (var i = 1; i <= this.explosionRadius; i++) {
@@ -984,7 +1141,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x + i, this.pos.y);
 
-                            myPlayer.killPlayer(this.pos.x + i, this.pos.y);
+                            myPlayer.killPlayer(this.pos.x + i, this.pos.y, this.playerId);
                         } else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                             enable_x_pos = false;
                         }
@@ -995,7 +1152,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y + i);
 
-                            myPlayer.killPlayer(this.pos.x, this.pos.y + i);
+                            myPlayer.killPlayer(this.pos.x, this.pos.y + i, this.playerId);
                         } else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_pos = false;
                         }
@@ -1007,7 +1164,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x - i, this.pos.y);
 
-                            myPlayer.killPlayer(this.pos.x - i, this.pos.y);
+                            myPlayer.killPlayer(this.pos.x - i, this.pos.y, this.playerId);
                         } else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                             enable_x_neg = false;
                         }
@@ -1018,7 +1175,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y - i);
 
-                            myPlayer.killPlayer(this.pos.x, this.pos.y - i);
+                            myPlayer.killPlayer(this.pos.x, this.pos.y - i, this.playerId);
                         } else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_neg = false;
                         }
@@ -1067,4 +1224,12 @@ function sleep(ms) {
 
 function ImageFactoryLoaded() {
     show_infobar("All images loaded, ready to start");
+}
+
+function setOtherPlayerPoints(bombId) {
+    players.players.forEach(element => {
+        if (element.id == bombId) {
+            element.stats.points++;
+        }
+    });
 }
