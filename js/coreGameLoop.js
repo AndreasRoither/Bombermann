@@ -214,6 +214,12 @@ function updateGameArea() {
     myBombHandler.bombs.forEach(element => {
         if (element.layerDirty) element.drawBomb();
         myPlayer.update(false, true);
+        if (players.playerCount != 0) {
+            players.players.forEach(element => {
+                if (element.layerDirty)
+                    element.update(false, true);
+            });
+        }
     });
 }
 
