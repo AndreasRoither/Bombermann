@@ -212,13 +212,21 @@ function updateGameArea() {
     }
 
     myBombHandler.bombs.forEach(element => {
-        if (element.layerDirty) element.drawBomb();
+        if (element.layerDirty) {
+            myPlayer.update(true, false);
+            if (players.playerCount != 0) {
+                players.players.forEach(element => {
+                    if (element.layerDirty)
+                        element.update(true, false);
+                });
+            }
+        }
+    });
+
+    myBombHandler.bombs.forEach(element => {
+        if (element.layerDirty) {
+            element.drawBomb();
         myPlayer.update(false, true);
-        if (players.playerCount != 0) {
-            players.players.forEach(element => {
-                if (element.layerDirty)
-                    element.update(false, true);
-            });
         }
     });
 }
