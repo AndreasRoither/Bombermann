@@ -1011,6 +1011,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
         var enable_x_neg = true;
         var enable_y_neg = true;
         var changed = false;
+        var solid = false;
         for (var i = 1; i <= this.explosionRadius; i++) {
             if (enable_x_pos) {
                 this.size.x_pos++;
@@ -1020,6 +1021,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                     enable_x_pos = false;
+                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.Virus) {
                     myBackground.map[this.pos.y][this.pos.x + i] -= 4;
@@ -1030,7 +1032,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     enable_x_pos = false;
                 }
 
-                if ((!enable_x_pos) && (currentGamemode == modeTypes.destroytheblock)) {
+                if (!(enable_x_pos) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
                     if (this.playerId == socket.id) {
                         myPlayer.stats.points++;
                         changed = true;
@@ -1038,6 +1040,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     else {
                         setOtherPlayerPoints(this.playerId);
                     }
+                }
+                else if (solid) {
+                    solid = false;
                 }
             }
             if (enable_y_pos) {
@@ -1048,6 +1053,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 }
                 else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_pos = false;
+                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.Virus) {
                     myBackground.map[this.pos.y + i][this.pos.x] -= 4;
@@ -1058,7 +1064,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     enable_y_pos = false;
                 }
 
-                if ((!enable_y_pos) && (currentGamemode == modeTypes.destroytheblock)) {
+                if (!(enable_y_pos) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
                     if (this.playerId == socket.id) {
                         myPlayer.stats.points++;
                         changed = true;
@@ -1066,6 +1072,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     else {
                         setOtherPlayerPoints(this.playerId);
                     }
+                }
+                else if (solid) {
+                    solid = false;
                 }
             }
 
@@ -1077,6 +1086,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                     enable_x_neg = false;
+                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.Virus) {
                     myBackground.map[this.pos.y][this.pos.x - i] -= 4;
@@ -1087,7 +1097,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     enable_x_neg = false;
                 }
 
-                if ((!enable_x_neg) && (currentGamemode == modeTypes.destroytheblock)) {
+                if (!(enable_x_neg) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
                     if (this.playerId == socket.id) {
                         myPlayer.stats.points++;
                         changed = true;
@@ -1095,6 +1105,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     else {
                         setOtherPlayerPoints(this.playerId);
                     }
+                }
+                else if (solid) {
+                    solid = false;
                 }
             }
             if (enable_y_neg) {
@@ -1105,6 +1118,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                 }
                 else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_neg = false;
+                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.Virus) {
                     myBackground.map[this.pos.y - i][this.pos.x] -= 4;
@@ -1115,7 +1129,7 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     enable_y_neg = false;
                 }
 
-                if ((!enable_y_neg) && (currentGamemode == modeTypes.destroytheblock)) {
+                if (!(enable_y_neg) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
                     if (this.playerId == socket.id) {
                         myPlayer.stats.points++;
                         changed = true;
@@ -1124,11 +1138,16 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                         setOtherPlayerPoints(this.playerId);
                     }
                 }
+                else if (solid) {
+                    solid = false;
+                }
             }
 
             if ((changed) && (currentGamemode == modeTypes.destroytheblock)) {
                 changed = false;
+                alert(myPlayer.stats.points);
                 sendPoints(myPlayer.stats.points);
+                
             }
         }
     };

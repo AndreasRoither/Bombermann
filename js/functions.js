@@ -52,13 +52,7 @@ function copyGameId() {
 }
 
 function setAllDirty() {
-  myPlayer.layerDirty = true;
   myBackground.layerDirty = true;
-  players.players.forEach(element => {
-    element.layerDirty = true;
-  });
-
-  updateGameArea();
 }
 
 // players

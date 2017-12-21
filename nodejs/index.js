@@ -117,20 +117,22 @@ io.on('connection', function (client) {
 
         console.log('\r\n\tmode: ' + mode);
 
-        var generatedBlocks = 0;
+        var Blocks = {
+            generatedBlocks: 0
+        };
 
         games[id] = {
             id: id,
             players: [player],
-            matrix: createMatrix(mode, generatedBlocks),
+            matrix: createMatrix(mode, Blocks),
             started: false,
             created: Date.now(),
             difficulty: difficulty,
             gameMode: mode,
-            explodeableBlocks: generatedBlocks
+            explodeableBlocks: Blocks.generatedBlocks
         };
 
-        console.log("GeneratedBlocks " + generatedBlocks);
+        console.log("GeneratedBlocks " + Blocks.generatedBlocks);
 
         gameID = id;
         userName = name;
@@ -144,6 +146,7 @@ io.on('connection', function (client) {
         console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to join game server' + ConsoleColor.Reset);
         console.log('\r\n\tplayer name: ' + data.name);
         console.log('\r\n\tgame id: ' + data.id);
+        console.log('\r\n\tsocket id: ' + socketId);
 
         var game = games[data.id];
 
@@ -235,7 +238,8 @@ io.on('connection', function (client) {
         var highestPoints = game.players[0];
 
         game.players.forEach(function (player) {
-            if (player.id == socketId) {
+            console.log("Name: " + player.name + "Points: " + player.points);
+            if (player.id == playerId) {
                 player.points = points;
             }
 
@@ -246,12 +250,13 @@ io.on('connection', function (client) {
             sumPoints += player.points;
         });
 
-        if (sumPoints >= game.generatedBlocks) {
+        console.log("Sumpoints: " + sumPoints + " gamegenerated: " + game.explodeableBlocks);
+        if (sumPoints >= game.explodeableBlocks) {
             client.emit('dtb-win', game.matrix);
             client.broadcast.to(gameId).emit('dtb-win', highestPoints.id, points);
         }
 
-        client.broadcast.to(gameId).emit('player-points', playerId, points);
+        //client.broadcast.to(gameId).emit('player-points', playerId, points);
     });
 
     client.on('death', function(gameId, playerId, bombId) {
@@ -264,13 +269,14 @@ io.on('connection', function (client) {
         var playerName;
 
         game.players.forEach(function (player) {
-            if (player.id == socketId) {
-                player.isAlive = false;
+            if (player.id == playerId) {
+                player.alive = false;
                 deadPlayers++;
                 playerName = player.name;
+                console.log(player.name);
             }
 
-            if (player.isAlive) {
+            if (player.alive) {
                 winner = player;
             }
 
@@ -278,8 +284,6 @@ io.on('connection', function (client) {
                 player.kills++;
             }
         });
-
-        console.log(winner.name);
 
         if (deadPlayers >= totalPlayers - 1) {
             client.emit('win', winner);
@@ -428,7 +432,7 @@ function pickIndex(game) {
     return index;
 }
 
-function createMatrix(gamemode, generatedBlocks) {
+function createMatrix(gamemode, Blocks) {
     
     var dimensions = {
         width: 19,
@@ -477,6 +481,12 @@ function createMatrix(gamemode, generatedBlocks) {
     var speedChance = 0.08;
     var virusChance = 0.02;
     var emptyChance = 0.1;
+
+    switch(gamemode) {
+        case modeTypes.destroytheblock:
+            emptyChance = 0.9;
+            break;
+    }
 
     // random blocks
     for (var i = 1; i < dimensions.height-1; i++) {
@@ -552,7 +562,8 @@ function createMatrix(gamemode, generatedBlocks) {
     matrix[10][17]=1;
 
     console.log('\nrandomly generated:\nbombs: ', bomb, '\nflame: ', flame, '\nspeed: ', speed, '\nexplo: ', explo, '\nvirus: ', virus, '\nempty: ', empty);
-    generatedBlocks = explo;
+    Blocks.generatedBlocks = explo + bomb + flame + speed + virus;
+    console.log(Blocks.generatedBlocks);
     return matrix;
 }
 
