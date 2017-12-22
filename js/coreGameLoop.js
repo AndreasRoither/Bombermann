@@ -206,22 +206,12 @@ function updateGameArea() {
 
     if (players.playerCount != 0) {
         players.players.forEach(element => {
-            if (element.layerDirty)
+            if (element.layerDirty) {
                 element.update(true, true);
+                element.layerDirty = false;
+            }
         });
     }
-
-    myBombHandler.bombs.forEach(element => {
-        if (element.layerDirty) {
-            myPlayer.update(true, false);
-            if (players.playerCount != 0) {
-                players.players.forEach(element => {
-                    if (element.layerDirty)
-                        element.update(true, false);
-                });
-            }
-        }
-    });
 
     myBombHandler.bombs.forEach(element => {
         if (element.layerDirty) {
@@ -770,7 +760,6 @@ function playerObject(position, id) {
             myPlayer.update(false, false);
             this.removePowerUp();
         }
-        this.layerDirty = false;
     };
 
     this.drawBlockCoords = function () {
