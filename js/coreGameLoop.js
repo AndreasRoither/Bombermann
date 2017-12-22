@@ -522,25 +522,45 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     this.getPowerUp = function () {
-        for (var i = 2; i < 6; ++i) {
-            if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.BombUp) {
-                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+        var pickUp = [
+            [1, 1],
+            [1, 1],
+            [1, 1],
+            [1, 1]
+            ];
+
+            //calc pickUp
+            pickUp[0][0] = Math.trunc((this.pos.x + this.collsionCorrection)/ myBackground.tileSize);
+            pickUp[0][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
+
+            pickUp[1][0] = Math.trunc((this.pos.x + this.collsionCorrection)/ myBackground.tileSize);
+            pickUp[1][1] = Math.trunc((this.pos.y + this.dimensions.height - this.collsionCorrection)/ myBackground.tileSize);
+
+            pickUp[2][0] = Math.trunc((this.pos.x + this.dimensions.width - this.collsionCorrection)/ myBackground.tileSize);
+            pickUp[2][1] = Math.trunc((this.pos.y + this.dimensions.height / 2)/ myBackground.tileSize);
+
+            pickUp[3][0] = Math.trunc((this.pos.x + this.dimensions.width - this.collsionCorrection)/ myBackground.tileSize);
+            pickUp[3][1] = Math.trunc((this.pos.y + this.dimensions.height - this.collsionCorrection)/ myBackground.tileSize);
+
+        for (var i = 0; i < 4; ++i) {
+            if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.BombUp) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
                 this.stats.bombs++;
                 change_infobar("+Bomb");
             }
-            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.FlameUp) {
-                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            else if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.FlameUp) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
                 this.stats.bombRadius++;
                 change_infobar("+Flame");
             }
-            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.SpeedUp) {
-                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            else if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.SpeedUp) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
                 this.stats.speedPowerup++;
                 this.walkStep += 0.1;
                 change_infobar("+Speed");
             }
-            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.Virus) {
-                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            else if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.Virus) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
                 this.playerGotVirus();
             }
         }
@@ -782,15 +802,38 @@ function playerObject(position, id) {
     };
 
     this.removePowerUp = function () {
-        for (var i = 2; i < 6; ++i) {
-            if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.BombUp) {
-                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+        var pickUp = [
+            [1, 1],
+            [1, 1],
+            [1, 1],
+            [1, 1]
+            ];
+
+            //calc pickUp
+            pickUp[0][0] = Math.trunc((this.pos.x + myPlayer.collsionCorrection)/ myBackground.tileSize);
+            pickUp[0][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
+
+            pickUp[1][0] = Math.trunc((this.pos.x + myPlayer.collsionCorrection)/ myBackground.tileSize);
+            pickUp[1][1] = Math.trunc((this.pos.y + this.dimensions.height - myPlayer.collsionCorrection)/ myBackground.tileSize);
+
+            pickUp[2][0] = Math.trunc((this.pos.x + this.dimensions.width - myPlayer.collsionCorrection)/ myBackground.tileSize);
+            pickUp[2][1] = Math.trunc((this.pos.y + this.dimensions.height / 2)/ myBackground.tileSize);
+
+            pickUp[3][0] = Math.trunc((this.pos.x + this.dimensions.width - myPlayer.collsionCorrection)/ myBackground.tileSize);
+            pickUp[3][1] = Math.trunc((this.pos.y + this.dimensions.height - myPlayer.collsionCorrection)/ myBackground.tileSize);
+
+        for (var i = 0; i < 4; ++i) {
+            if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.BombUp) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
             }
-            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.FlameUp) {
-                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            else if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.FlameUp) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
             }
-            else if (myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] == tileBlocks.SpeedUp) {
-                myBackground.map[this.BlockCoord[i][1]][this.BlockCoord[i][0]] = tileBlocks.background;
+            else if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.SpeedUp) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
+            }
+            else if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.Virus) {
+                myBackground.map[pickUp[i][1]][pickUp[i][0]] = tileBlocks.background;
             }
         }
     };
