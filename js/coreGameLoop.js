@@ -242,6 +242,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     this.collsionCorrection = 5 * playerSizeMultiplier;
     this.delay = 0;
     this.isAlive = true;
+    this.quarter = 1; //in which quarter of a block the player stands
 
     this.stats = {
         kills: 0,
@@ -291,7 +292,18 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, -this.walkStep, 0) &&
             this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, -this.walkStep, 0)) {
             this.speed.speedX -= this.walkStep;
+            overrideDown = false;
+            overrideUp = false;
         }
+        else if (overrideDown || !movUp && !movDown && (this.quarter==3 || this.quarter==4) && !overrideUp) {
+            this.moveDown();
+            overrideDown = true;
+        }
+        else if (overrideUp || !movUp && !movDown && (this.quarter==2 || this.quarter==1) && !overrideDown) {
+            this.moveUp();
+            overrideUp = true;
+        }
+        double = false;
         this.currentDirection = directions.left;
     };
 
@@ -299,7 +311,18 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, this.walkStep, 0) &&
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, this.walkStep, 0)) {
             this.speed.speedX += this.walkStep;
+            overrideDown = false;
+            overrideUp = false;
         }
+        else if (overrideDown || !movUp && !movDown && (this.quarter==4 || this.quarter==3) && !overrideUp) {
+            this.moveDown();
+            overrideDown = true;
+        }
+        else if (overrideUp || !movUp && !movDown && (this.quarter==1 || this.quarter==2) && !overrideDown) {
+            this.moveUp();
+            overrideUp = true;
+        }
+        double = false;
         this.currentDirection = directions.right;
     };
 
@@ -307,7 +330,18 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep) &&
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep)) {
             this.speed.speedY -= this.walkStep;
+            overrideRight = false;
+            overrideLeft = false;
         }
+        else if (overrideRight || !movLeft && !movRight && (this.quarter==1 || this.quarter==4) && !overrideLeft) {
+            this.moveRight();
+            overrideRight = true;
+        }
+        else if (overrideLeft || !movLeft && !movRight && (this.quarter==2 || this.quarter==3) && !overrideRight) {
+            this.moveLeft();
+            overrideLeft = true;
+        }
+        double = false;
         this.currentDirection = directions.up;
     };
 
@@ -315,7 +349,18 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep) &&
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep)) {
             this.speed.speedY += this.walkStep;
+            overrideRight = false;
+            overrideLeft = false;
         }
+        else if (overrideRight || !movLeft && !movRight && (this.quarter==4 || this.quarter==1) && !overrideLeft) {
+            this.moveRight();
+            overrideRight = true;
+        }
+        else if (overrideLeft || !movLeft && !movRight && (this.quarter==3 || this.quarter==2) && !overrideRight) {
+            this.moveLeft();
+            overrideLeft = true;
+        }
+        double = false;
         this.currentDirection = directions.down;
     };
 
@@ -327,6 +372,13 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (!this.isAlive) return;
         var moved = false;
         var movedDiagonally = false;
+
+        //controlling for corner assist
+        var overrideLeft = false;
+        var overrideRight = false;
+        var overrideUp = false;
+        var overrideDown = false;
+        var double = false;
 
         for (var i = 0; i < this.walkSpeed; ++i) {
             if (movLeft) {
@@ -403,13 +455,79 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
     //checks if a single Point can be moved
     this.possibleMove = function (x, y, dx, dy) {
-        var y = Math.trunc((y + dy) / myBackground.tileSize);
-        var x = Math.trunc((x + dx) / myBackground.tileSize);
-        if (myBackground.map[y][x] == tileBlocks.background || myBackground.map[y][x] == tileBlocks.BombUp || myBackground.map[y][x] == tileBlocks.FlameUp || myBackground.map[y][x] == tileBlocks.SpeedUp || myBackground.map[y][x] == tileBlocks.Virus) {
+        var tempY = Math.trunc((y + dy) / myBackground.tileSize);
+        var tempX = Math.trunc((x + dx) / myBackground.tileSize);
+        if (myBackground.map[tempY][tempX] == tileBlocks.background || myBackground.map[tempY][tempX] == tileBlocks.BombUp || myBackground.map[tempY][tempX] == tileBlocks.FlameUp || myBackground.map[tempY][tempX] == tileBlocks.SpeedUp || myBackground.map[tempY][tempX] == tileBlocks.Virus) {
             return true;
         }
-        return false;
+        else {
+            this.getQuarter(x, y);
+            return false;
+        }
     };
+
+    this.getQuarter = function(x, y) {
+        var fallbackY = (this.pos.y + (this.dimensions.height / 4) * 3) / myBackground.tileSize;
+        var fallbackX = (this.pos.x + this.dimensions.width / 2) / myBackground.tileSize;
+
+        if (double) {
+            if ((fallbackX - Math.trunc(fallbackX)) < 0.5) {
+                if ((fallbackY - Math.trunc(fallbackY)) < 0.5) {
+                    this.quarter=2;
+                }
+                else {
+                    this.quarter=3;
+                }
+            }
+            else {
+                if ((fallbackY - Math.trunc(fallbackY)) < 0.5) {
+                    this.quarter=1;
+                }
+                else {
+                    this.quarter=4;
+                }
+            }
+        }
+        else {
+            if ((x - (this.pos.x + this.dimensions.width / 2)) < 0) {
+                if (y - (this.pos.y + (this.dimensions.height / 4) * 3) < 0) {
+                    if (movUp) {
+                        this.quarter=1;
+                    }
+                    else if (movLeft) {
+                        this.quarter=3;
+                    }
+                }
+                else {
+                    if (movDown) {
+                        this.quarter=4;
+                    }
+                    else if (movLeft) {
+                        this.quarter=2;
+                    }
+                }
+            }
+            else {
+                if (y - (this.pos.y + (this.dimensions.height / 4) * 3) < 0) {
+                    if (movUp) {
+                        this.quarter=2;
+                    }
+                    else if (movRight) {
+                        this.quarter=4;
+                    }
+                }
+                else {
+                    if (movDown) {
+                        this.quarter=3;
+                    }
+                    else if (movRight) {
+                        this.quarter=1;
+                    }
+                }
+            }
+            double = true;
+        }
+    }
 
     // draws player according to the current looking direction
     this.update = function (draw_bg, draw_others) {
