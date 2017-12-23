@@ -295,11 +295,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideDown = false;
             overrideUp = false;
         }
-        else if (overrideDown || !movUp && !movDown && (this.quarter==3 || this.quarter==4) && !overrideUp) {
+        else if (!movUp && !movDown && overrideDown || !movUp && !movDown && (this.quarter==3 || this.quarter==4) && !overrideUp) {
             this.moveDown();
             overrideDown = true;
         }
-        else if (overrideUp || !movUp && !movDown && (this.quarter==2 || this.quarter==1) && !overrideDown) {
+        else if (!movUp && !movDown && overrideUp || !movUp && !movDown && (this.quarter==2 || this.quarter==1) && !overrideDown) {
             this.moveUp();
             overrideUp = true;
         }
@@ -314,11 +314,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideDown = false;
             overrideUp = false;
         }
-        else if (overrideDown || !movUp && !movDown && (this.quarter==4 || this.quarter==3) && !overrideUp) {
+        else if (!movUp && !movDown && overrideDown || !movUp && !movDown && (this.quarter==4 || this.quarter==3) && !overrideUp) {
             this.moveDown();
             overrideDown = true;
         }
-        else if (overrideUp || !movUp && !movDown && (this.quarter==1 || this.quarter==2) && !overrideDown) {
+        else if (!movUp && !movDown && overrideUp || !movUp && !movDown && (this.quarter==1 || this.quarter==2) && !overrideDown) {
             this.moveUp();
             overrideUp = true;
         }
@@ -333,11 +333,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideRight = false;
             overrideLeft = false;
         }
-        else if (overrideRight || !movLeft && !movRight && (this.quarter==1 || this.quarter==4) && !overrideLeft) {
+        else if (!movLeft && !movRight && overrideRight || !movLeft && !movRight && (this.quarter==1 || this.quarter==4) && !overrideLeft) {
             this.moveRight();
             overrideRight = true;
         }
-        else if (overrideLeft || !movLeft && !movRight && (this.quarter==2 || this.quarter==3) && !overrideRight) {
+        else if (!movLeft && !movRight && overrideLeft || !movLeft && !movRight && (this.quarter==2 || this.quarter==3) && !overrideRight) {
             this.moveLeft();
             overrideLeft = true;
         }
@@ -352,11 +352,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideRight = false;
             overrideLeft = false;
         }
-        else if (overrideRight || !movLeft && !movRight && (this.quarter==4 || this.quarter==1) && !overrideLeft) {
+        else if (!movLeft && !movRight && overrideRight || !movLeft && !movRight && (this.quarter==4 || this.quarter==1) && !overrideLeft) {
             this.moveRight();
             overrideRight = true;
         }
-        else if (overrideLeft || !movLeft && !movRight && (this.quarter==3 || this.quarter==2) && !overrideRight) {
+        else if (!movLeft && !movRight && overrideLeft || !movLeft && !movRight && (this.quarter==3 || this.quarter==2) && !overrideRight) {
             this.moveLeft();
             overrideLeft = true;
         }
