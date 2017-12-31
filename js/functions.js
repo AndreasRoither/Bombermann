@@ -102,8 +102,13 @@ function playerNotDead (id) {
   $("#checkbox").prop("checked", false);
   $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
   playerRdy = false;
+  gameStarted = false;
 }
 
 function sendPoints(points) {
   socket.emit("points", gameId, socket.id, bomb);
+}
+
+function gameFinished() {
+  socket.emit("game-finished ",gameId);
 }

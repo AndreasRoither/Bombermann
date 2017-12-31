@@ -76,7 +76,8 @@ var modeTypes = {
     closingin: 2,
     fogofwar: 3,
     virusonly: 4,
-    destroytheblock: 5
+    destroytheblock: 5,
+    test: 6
 }
 
 const ConsoleColor = require('./colorcodes.js');
@@ -181,6 +182,26 @@ io.on('connection', function (client) {
         }
     });
 
+    client.on('game-finished', function(id){
+        var game = games[data.id];
+        if (!game) return;
+        game.started = false;
+    });
+
+    client.on('player-reset', function(gameId, playerId){
+        var game = games[gameId];
+        if (!game) return;
+
+        game.players.forEach(function (player, index) {
+            player.kills = 0;
+            player.points = 0;
+            player.position.x = player.startPosition.x;
+            player.position.y = player.startPosition.y;
+            player.ready = false;
+            player.alive = true;
+        });
+    });
+
     client.on('ready', function (id, isReady) {
         console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
         console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
@@ -282,15 +303,25 @@ io.on('connection', function (client) {
 
             if (player.id == bombId) {
                 player.kills++;
+                console.log("Player Id " + player.name + " Player Kills" + player.kills);
             }
         });
 
         if (deadPlayers >= totalPlayers - 1) {
             client.emit('win', winner);
             client.broadcast.to(gameId).emit('win', winner);
+
+            game.players.forEach(function (player, index) {
+                player.kills = 0;
+                player.points = 0;
+                player.position.x = player.startPosition.x;
+                player.position.y = player.startPosition.y;
+                player.ready = false;
+                player.alive = true;
+            });
         }
 
-        client.broadcast.to(gameId).emit('player-death', playerId, playerName);
+        client.broadcast.to(gameId).emit('player-death', playerId, playerName, bombId);
     });
 
     client.on('bomb', function (id, bomb) {
@@ -298,60 +329,7 @@ io.on('connection', function (client) {
         if (!game) return;
         if (!game.started) return;
 
-        client.to(id).emit('bomb', bomb); /*
-
-        var bombTimer = 2000,
-            strength = 1;
-
-        setTimeout(function () {
-            var blown = [{
-                x: position.x,
-                y: position.y
-            },
-            {
-                x: position.x,
-                y: position.y - strength
-            },
-            {
-                x: position.x,
-                y: position.y + strength
-            },
-            {
-                x: position.x - strength,
-                y: position.y
-            },
-            {
-                x: position.x + strength,
-                y: position.y
-            }
-            ];
-
-            blown.forEach(function (spot) {
-                if (canExplode(game.matrix, spot.x, spot.y)) {
-                    game.players.forEach(function (player) {
-                        if (player.position.x == spot.x && player.position.y == spot.y) {
-                            player.alive = false;
-                            client.to(id).emit('death', player.id);
-                        }
-                    });
-                }
-            });
-
-            var totalAlive = 0,
-                winner;
-
-            game.players.forEach(function (player) {
-                if (player.alive) {
-                    totalAlive++;
-
-                    winner = player;
-                }
-            });
-
-            if (totalAlive == 1) {
-                client.to(id).emit('win', winner);
-            }
-        }, bombTimer); */
+        client.to(id).emit('bomb', bomb);
     });
 
     client.on('disconnect', function () {
@@ -484,6 +462,9 @@ function createMatrix(gamemode, Blocks) {
 
     switch(gamemode) {
         case modeTypes.destroytheblock:
+            emptyChance = 0.9;
+            break;
+        case modeTypes.test:
             emptyChance = 0.9;
             break;
     }

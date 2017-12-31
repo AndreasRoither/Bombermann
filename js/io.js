@@ -54,6 +54,7 @@ socket.on('game-server-created', function (id, player, game) {
 
     startGame(player.startPosition, game.difficulty, game.gameMode);
     myBackground.map = game.matrix;
+    myBackground.startMap = game.matrix;
 
     change_infobar("Created Game Server");
 });
@@ -121,6 +122,10 @@ socket.on('ready', function (id, ready) {
 socket.on('game-start', function (id, matrix) {
     gameStarted = true;
     change_infobar("Game started");
+
+    $('#players > li > div').each(function () { 
+        $(this).removeClass("stripe-1").load();
+    });
 });
 
 socket.on('game-started', function () {
@@ -165,10 +170,10 @@ socket.on('dtb-win', function (winner) {
 });
 
 socket.on('bomb', function (enemyBomb) {
-    myBombHandler.addBombFin(enemyBomb);
+    myBombHandler.addBombEnemy(enemyBomb);
 });
 
-socket.on('player-death', function ( playerId, playerName) {
+socket.on('player-death', function ( playerId, playerName, killerId) {
     $("#playercontainer" + playerId).addClass("stripe-1").load();
 
     var i = 0;
@@ -183,6 +188,10 @@ socket.on('player-death', function ( playerId, playerName) {
     if (index > -1) {
         players.players.splice(index, 1);
     }
+
+    if (myPlayer.playerId == killerId) {
+        myPlayer.stats.kills++;
+    }
 });
 
 socket.on('win', function (winner) {
@@ -193,9 +202,25 @@ socket.on('win', function (winner) {
 
     var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
     bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
+
+    botmsg = {
+        message: "To start the game anew, every player has to be ready again ;)",
+    };
+
+    var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
+    bot_message_container += "<p>" + botmsg.message + "</p></div></li>";
     $("#playermsgcontainer").prepend(bot_message_container).load();
 
     change_infobar("And the winner is: " + winner.name + " Kills: " + winner.kills);
+
+    $("#checkbox").prop("checked", false);
+    $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
+    $('#players > li > div > p > span').each(function () { 
+        $(this).removeClass("ready").addClass("not-ready").text("not ready");
+    });
+    playerRdy = false;
+    gameStarted = false;
+
 });
 
 socket.on('left', function (playerId, playerName) {

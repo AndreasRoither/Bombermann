@@ -130,14 +130,56 @@ ul li {
 /* Responsive layout - 
   the three columns stack on top of each other instead of next to each other */
 
-@media screen and (max-width: 600px) {
+  @media screen and (max-width: 1350px) {
+    .column.side {
+        width: 24%;
+    }
+    .column.middle {
+        width: 52%;
+    }
+}
+
+@media screen and (max-width: 1340px) {
+    .column.side {
+        width: 23%;
+    }
+    .column.middle {
+        width: 54%;
+    }
+}
+
+@media screen and (max-width: 1330px) {
+    .column.side {
+        width: 22%;
+    }
+    .column.middle {
+        width: 56%;
+    }
+}
+
+@media screen and (max-width: 1320px) {
+    .column.side {
+        width: 21%;
+    }
+    .column.middle {
+        width: 58%;
+    }
+}
+
+@media screen and (max-width: 1310px) {
+    .column.side {
+        width: 20%;
+    }
+    .column.middle {
+        width: 60%;
+    }
+}
+
+@media screen and (max-width: 700px) {
     .column.side,
     .column.middle {
         width: 100%;
     }
-}
-
-@media screen and (max-width: 600px) {
     .topnav a:not(:first-child) {
         display: none;
     }
@@ -145,9 +187,6 @@ ul li {
         float: right;
         display: block;
     }
-}
-
-@media screen and (max-width: 600px) {
     .topnav.responsive {
         position: relative;
     }
@@ -163,6 +202,8 @@ ul li {
     }
 }
 
+
+
 .divheader {
     text-align: center;
     padding: 10px 16px;
@@ -170,7 +211,6 @@ ul li {
     background: #555;
     color: #f1f1f1;
 }
-
 
 /* footer that is fixed */
 
