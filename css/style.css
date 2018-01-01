@@ -1,5 +1,3 @@
-
-
 /********************
 * basic site style  *
 *********************/
@@ -16,16 +14,10 @@ body {
     color: red;
 }
 
-/* header style */
-
 .header {
     background-color: #f1f1f1;
     padding: 10px;
     text-align: center;
-}
-
-.image img {
-    width: 100%;
 }
 
 .header .text {
@@ -38,9 +30,11 @@ body {
     vertical-align: middle;
 }
 
+.image img {
+    width: 100%;
+}
 
 /* top nav style */
-
 .topnav {
     overflow: hidden;
     background-color: #333;
@@ -61,40 +55,32 @@ body {
     color: black;
 }
 
+.topnav .icon {
+    display: none;
+}
+
 .active {
     background-color: #4caf50;
     color: white;
 }
 
-.topnav .icon {
-    display: none;
-}
-
-
 /* three unequal columns the float next to each other */
-
 .column {
     float: left;
 }
 
-
 /* Left and right column */
-
 .column.side {
     width: 25%;
 }
 
-
 /* Middle column */
-
 .column.middle {
     width: 50%;
     padding: 10px;
 }
 
-
 /* nav lists */
-
 ul {
     margin-top: 5px;
     width: 100%;
@@ -117,92 +103,12 @@ ul li {
     list-style: none;
 }
 
-
 /* Clear floats after the columns */
-
 .row:after {
     content: "";
     display: table;
     clear: both;
 }
-
-
-/* Responsive layout - 
-  the three columns stack on top of each other instead of next to each other */
-
-  @media screen and (max-width: 1350px) {
-    .column.side {
-        width: 24%;
-    }
-    .column.middle {
-        width: 52%;
-    }
-}
-
-@media screen and (max-width: 1340px) {
-    .column.side {
-        width: 23%;
-    }
-    .column.middle {
-        width: 54%;
-    }
-}
-
-@media screen and (max-width: 1330px) {
-    .column.side {
-        width: 22%;
-    }
-    .column.middle {
-        width: 56%;
-    }
-}
-
-@media screen and (max-width: 1320px) {
-    .column.side {
-        width: 21%;
-    }
-    .column.middle {
-        width: 58%;
-    }
-}
-
-@media screen and (max-width: 1310px) {
-    .column.side {
-        width: 20%;
-    }
-    .column.middle {
-        width: 60%;
-    }
-}
-
-@media screen and (max-width: 700px) {
-    .column.side,
-    .column.middle {
-        width: 100%;
-    }
-    .topnav a:not(:first-child) {
-        display: none;
-    }
-    .topnav a.icon {
-        float: right;
-        display: block;
-    }
-    .topnav.responsive {
-        position: relative;
-    }
-    .topnav.responsive .icon {
-        position: absolute;
-        right: 0;
-        top: 0;
-    }
-    .topnav.responsive a {
-        float: none;
-        display: block;
-        text-align: left;
-    }
-}
-
-
 
 .divheader {
     text-align: center;
@@ -212,57 +118,12 @@ ul li {
     color: #f1f1f1;
 }
 
-/* footer that is fixed */
-
-.footer {
-    background-color: #f1f1f1;
-    text-align: center;
-    padding: 0px;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+.divheader-left {
+    border-bottom-right-radius: 5px;
 }
 
-.bomb:hover {
-    -webkit-transform: scale(1.3);
-    -ms-transform: scale(1.3);
-    transform: scale(1.3);
-    transition: 0.3s;
-}
-
-.pulse:hover {
-    animation-name: pulse_animation;
-    animation-duration: 1500ms;
-    transform-origin: 70% 70%;
-    animation-iteration-count: infinite;
-    animation-timing-function: linear;
-}
-
-@keyframes pulse_animation {
-    0% {
-        transform: scale(1);
-    }
-    30% {
-        transform: scale(1);
-    }
-    40% {
-        transform: scale(1.08);
-    }
-    50% {
-        transform: scale(1);
-    }
-    60% {
-        transform: scale(1);
-    }
-    70% {
-        transform: scale(1.05);
-    }
-    80% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1);
-    }
+.divheader-right {
+    border-bottom-left-radius: 5px;
 }
 
 input[type="text"],
@@ -293,14 +154,72 @@ textarea {
     width: 100%;
 }
 
+/********************
+*       Footer      *
+*********************/
+
+/* footer that is fixed */
+.footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 0px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/********************
+* Bomb & Hover Anim *
+*********************/
+
+.bomb:hover {
+    -webkit-transform: scale(1.3);
+    -ms-transform: scale(1.3);
+    transform: scale(1.3);
+    transition: 0.3s;
+}
+
+.pulse:hover {
+    animation-name: pulse_animation;
+    animation-duration: 1500ms;
+    transform-origin: 70% 70%;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+/* Bomb Animation */
+@keyframes pulse_animation {
+    0% {
+        transform: scale(1);
+    }
+    30% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.08);
+    }
+    50% {
+        transform: scale(1);
+    }
+    60% {
+        transform: scale(1);
+    }
+    70% {
+        transform: scale(1.05);
+    }
+    80% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 
 /********************
 *       Tabs        *
 *********************/
 
-
-/* tab links */
-
+/* tab from popup */
 .tablink {
     background-color: #555;
     color: white;
@@ -311,6 +230,17 @@ textarea {
     padding: 14px 16px;
     font-size: 17px;
     width: 50%;
+    
+}
+
+.tablink-left {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.tablink-right {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 .tablink:hover {
@@ -326,6 +256,7 @@ textarea {
 .tabcontent p {
     text-align: center;
 }
+
 
 /********************
 *    Popup Modal     *
@@ -372,7 +303,6 @@ textarea {
 }
 
 /* Add Zoom Animation */
-
 .animate {
     -webkit-animation: animatezoom 0.5s;
     animation: animatezoom 0.5s
@@ -406,48 +336,9 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
+    width: 100%;
+    max-width: 800px;
 }
-
-/********************
-*       Alerts      *
-*********************/
-
-.alert {
-    padding: 20px;
-    background-color: #f44336;
-    color: white;
-    opacity: 1;
-    transition: opacity 0.6s;
-    margin-bottom: 5px;
-}
-
-.alert.success {
-    background-color: #4caf50;
-}
-
-.alert.info {
-    background-color: #2196f3;
-}
-
-.alert.warning {
-    background-color: #ff9800;
-}
-
-.closebtn {
-    margin-left: 15px;
-    color: white;
-    font-weight: bold;
-    float: right;
-    font-size: 22px;
-    line-height: 20px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.closebtn:hover {
-    color: black;
-}
-
 
 /********************
 *     infopopup     *
@@ -519,11 +410,11 @@ canvas {
     }
 }
 
+
 /********************
 *      Chat Msg      *
 *       Player       *
 *********************/
-
 
 .msg-container {
     border: 2px solid #dedede;
@@ -584,6 +475,12 @@ canvas {
     color: #f44336;
 }
 
+/* so long words won't break out of the div */
+.ellipses {
+    text-overflow: ellipsis;
+    overflow-wrap: break-word;
+}
+
 /********************
 *      Button       *
 *********************/
@@ -602,9 +499,6 @@ canvas {
     background-color: #4caf50;
 }
 
-
-/* Green */
-
 .btn.success:hover {
     background-color: #46a049;
 }
@@ -613,9 +507,6 @@ canvas {
     background-color: #2196f3;
 }
 
-
-/* Blue */
-
 .btn.info:hover {
     background: #0b7dda;
 }
@@ -623,9 +514,6 @@ canvas {
 .btn.danger {
     background-color: #f44336;
 }
-
-
-/* Blue */
 
 .btn.danger:hover {
     background: #f44336;
@@ -677,6 +565,11 @@ canvas {
     background-color: #46a049;
 }
 
+/********************
+*      Columns      *
+*********************/
+
+/* selects all col- */
 [class*="col-"] {
     float: left;
     padding: 15px;
@@ -732,14 +625,6 @@ canvas {
     width: 100%;
 }
 
-@media (max-width:800px) {
-    [class*="col-"] {
-        width: 100%;
-        /*The width is 100%, when the viewport is 800px or smaller*/
-        display: inline-block;
-        margin: 0 auto;
-    }
-}
 
 /********************
 *   Toogle Switch   *
@@ -750,11 +635,13 @@ canvas {
     display: inline-block;
     width: 70px;
     height: 34px;
-  }
-  
-  .switch input {display:none;}
-  
-  .slider {
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -764,9 +651,9 @@ canvas {
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  .slider:before {
+}
+
+.slider:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -776,34 +663,81 @@ canvas {
     background-color: white;
     -webkit-transition: .4s;
     transition: .4s;
-  }
-  
-  input:checked + .slider {
+}
+
+input:checked+.slider {
     background-color: #2196F3;
-  }
-  
-  input:focus + .slider {
+}
+
+input:focus+.slider {
     box-shadow: 0 0 1px #2196F3;
-  }
-  
-  input:checked + .slider:before {
+}
+
+input:checked+.slider:before {
     -webkit-transform: translateX(36px);
     -ms-transform: translateX(36px);
     transform: translateX(36px);
-  }
-  
-  /* Rounded sliders */
-  .slider.round {
+}
+
+.slider.round {
     border-radius: 34px;
-  }
-  
-  .slider.round:before {
+}
+
+.slider.round:before {
     border-radius: 50%;
-  }
+}
+
 
 /********************
 *      Stripes      *
 *********************/
+
+/* for player death */
 .stripe-1 {
     background: repeating-linear-gradient( 45deg, #ff000069, #ff000069 10px, #f1f1f1 10px, #f1f1f1 20px);
+}
+
+
+/********************
+* Responsive layout *
+*********************/
+
+
+/* the three columns stack on top of each other instead of next to each other  */
+
+@media screen and (max-width: 1000px) {
+    .column.side,
+    .column.middle {
+        width: 100%;
+    }
+    .topnav a:not(:first-child) {
+        display: none;
+    }
+    .topnav a.icon {
+        float: right;
+        display: block;
+    }
+    .topnav.responsive {
+        position: relative;
+    }
+    .topnav.responsive .icon {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .topnav.responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+}
+
+/* cols */
+@media screen and (max-width: 800px) {
+    [class*="col-"] {
+        width: 100%;
+        /*The width is 100%, when the viewport is 800px or smaller*/
+        display: inline-block;
+        margin: 0 auto;
+    }
 }

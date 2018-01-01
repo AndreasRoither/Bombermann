@@ -13,9 +13,11 @@ $(document).ready(function () {
 
 function make_responsive() {
   var x = document.getElementById("topnav1");
+
   if (x.className === "topnav") {
     x.className += " responsive";
-  } else {
+  } 
+  else {
     x.className = "topnav";
   }
 }
@@ -23,13 +25,14 @@ function make_responsive() {
 function openPage(pageName, elmnt, color) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
   tablinks = document.getElementsByClassName("tablink");
-  for (i = 0; i < tablinks.length; i++) {
+
+  for (i = 0; i < tabcontent.length; i++)
+    tabcontent[i].style.display = "none";
+
+  for (i = 0; i < tablinks.length; i++)
     tablinks[i].style.backgroundColor = "";
-  }
+
   document.getElementById(pageName).style.display = "block";
   elmnt.style.backgroundColor = color;
 }
@@ -105,23 +108,6 @@ function closePopup() {
 /********************
  *       Alert       *
  *********************/
-
-$(document).ready(update_alerts());
-
-function update_alerts() {
-  var close = document.getElementsByClassName("closebtn");
-  var i;
-
-  for (i = 0; i < close.length; i++) {
-    close[i].onclick = function () {
-      var div = this.parentElement;
-      div.style.opacity = "0";
-      setTimeout(function () {
-        div.style.display = "none";
-      }, 600);
-    };
-  }
-}
 
 function showinfopopup() {
   var popup = document.getElementById("infoPopup");

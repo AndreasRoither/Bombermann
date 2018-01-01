@@ -1,21 +1,24 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 
 <head>
-    <meta charset="utf-8">
     <title>Bombermann</title>
-    <link href="css/style.css" rel="stylesheet">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="Keywords" content="Bomberman, Game, Multiplayer Game">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
+    <!-- header content with pulsating bomb  -->
     <div class="header">
         <div class="image">
             <img class="pulse" src="img/Bomb/Bomb_f02.png">
         </div>
         <div class="text">Bombermann</div>
     </div>
-    
+
+    <!-- Navigation menu  -->
     <div class="topnav" id="topnav1">
         <a href="index.html" class="active">Multiplayer</a>
         <!--<a href="#single">Singleplayer</a>-->
@@ -23,44 +26,56 @@
         <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="make_responsive()">&#9776;</a>
     </div>
 
+    <!-- Main Row -->
     <div class="row">
+
+        <!-- Players -->
         <div class="column side">
-            <div class="divheader">
+            <div class="divheader divheader-left">
                 <h2>Players</h2>
             </div>
-            <ul id="players" class="ul-left">
-            </ul>
+            <ul id="players" class="ul-left"></ul>
             <button value="Copy Id" class="btn success center" onclick="copyGameId()">Copy Game ID</button>
         </div>
+
+        <!-- GameArea -->
         <div class="column middle">
             <canvas id="gameCanvas">
                 Please upgrade your browser to support HTML5
             </canvas>
         </div>
+
+        <!-- Player messages -->
         <div class="column side">
-            <div class="divheader">
+            <div class="divheader divheader-right">
                 <h2>Player messages</h2>
             </div>
-            <ul id="playermsgcontainer" class="ul-right">
-            </ul>
+            <ul id="playermsgcontainer" class="ul-right"></ul>
             <div class="container">
                 <form id="chatform" onsubmit="event.preventDefault(); sendChatMsg();">
                     <label for="text_msg">Message</label>
                     <textarea id="text_msg" name="text_msg" placeholder="Write something.." style="height:80px"></textarea>
                 </form>
             </div>
+            <span style="font-size:30px;cursor:pointer" onclick="openSide()">&#9776; open</span>
         </div>
+
+        <!-- Info popup -->
         <div id="infopopup" class="infopopup">Loading Images</div>
+
+        <!-- Game session creation / join popup -->
         <div class="popup animate" id="startPopup">
             <div class="container popupContainer">
-                <button class="tablink" onclick="openPage('create', this, 'gray')" id="defaultOpen">Create</button>
-                <button class="tablink" onclick="openPage('join', this, 'gray')">Join</button>
 
+                <!-- Create Join Tablinks -->
+                <button class="tablink tablink-left" onclick="openPage('create', this, 'gray')" id="defaultOpen">Create</button>
+                <button class="tablink tablink-right" onclick="openPage('join', this, 'gray')">Join</button>
+
+                <!-- Create game tabcontent  -->
                 <div id="create" class="tabcontent">
                     <form onsubmit="event.preventDefault(); createGame();">
                         <label for="playerName1">Player name</label>
                         <input type="text" id="playerName1" name="playerName" placeholder="Your name.." required>
-
                         <div class="row">
                             <div class="col-6 select-box">
                                 <label for="mode">Difficulty</label>
@@ -86,14 +101,14 @@
                     <button value="Cancel" class="btn danger left bottom" onclick="closePopup()">Cancel</button>
                     <p class="red" id="createErrorMsg"></p>
                 </div>
+
+                <!-- Join game tabcontent  -->
                 <div id="join" class="tabcontent">
                     <form onsubmit="event.preventDefault(); joinGame();">
                         <label for="playerName2">Player name</label>
                         <input type="text" id="playerName2" name="playerName" placeholder="Your name.." required>
-
                         <label for="gameId">Game id</label>
                         <input type="text" id="gameId" name="gameId" placeholder="Game id.." required>
-
                         <input type="submit" value="Join" class="btn success right bottom">
                     </form>
                     <button value="Cancel" class="btn danger left bottom" onclick="closePopup()">Cancel</button>
@@ -102,6 +117,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Footer -->
     <div class="footer">
         <p>Bombermann</p>
     </div>
@@ -114,5 +131,4 @@
     <script src="js/functions.js"></script>
     <script src="js/coreGameLoop.js"></script>
 </body>
-
 </html>

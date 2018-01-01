@@ -69,7 +69,7 @@ function sendChatMsg() {
   $("#text_msg").val("");
 
   var message_container = "<li><div class=\"msg-container darker\"><img src=\"img/Bomb/Bomb_f02.png\" alt=\"Avatar\" class=\"right\" style=\"width:10%;\">";
-  message_container += "<p>" + decodeURIComponent(chatmsg.message) + "</p><span class=\"time-left\">" + chatmsg.time + "</span></div></li>";
+  message_container += "<p class=\"ellipses\">" + decodeURIComponent(chatmsg.message) + "</p><span class=\"time-left\">" + chatmsg.time + "</span></div></li>";
 
   $("#playermsgcontainer").prepend(message_container).load();
 }
