@@ -53,7 +53,7 @@ socket.on('game-server-created', function (id, player, game) {
     $("#playermsgcontainer").append(bot_message_container).append(bot_message_container2).load();
 
     startGame(player.startPosition, game.difficulty, game.gameMode);
-    myBackground.map = game.matrix;
+    myBackground.map = arrayClone(game.matrix);
     myBackground.startMap = game.matrix;
 
     change_infobar("Created Game Server");
@@ -92,7 +92,8 @@ socket.on('joined', function (player, game) {
 
     startGame(player.startPosition);
 
-    myBackground.map = game.matrix;
+    myBackground.map = arrayClone(game.matrix);
+    myBackground.startMap = arrayClone(game.matrix);
 
     game.players.forEach(element => {
         if (player.id != element.id) {
@@ -126,6 +127,23 @@ socket.on('game-start', function (id, matrix) {
     $('#players > li > div').each(function () { 
         $(this).removeClass("stripe-1").load();
     });
+
+    if (!myPlayer.isAlive) {
+        myPlayer.isAlive = true;
+        myPlayer.layerDirty = true;
+    }
+
+    if (gameFinished) {
+        myBackground.resetMap();
+        if (players.playerCount != 0) {
+            myPlayer.resetPosition();
+            players.players.forEach(tempPlayer => {
+                tempPlayer.resetPosition();
+                tempPlayer.resetStats();
+            });
+        }
+        gameFinished = false;
+    }
 });
 
 socket.on('game-started', function () {
@@ -176,18 +194,12 @@ socket.on('bomb', function (enemyBomb) {
 socket.on('player-death', function ( playerId, playerName, killerId) {
     $("#playercontainer" + playerId).addClass("stripe-1").load();
 
-    var i = 0;
-    var index = -1;
-    players.players.forEach(element => {
-        if (element.id == playerId) {
-            index = i;
+    players.players.forEach(tempPlayer => {
+        if (tempPlayer.id == playerId) {
+            tempPlayer.isAlive = false;
+            tempPlayer.drawBlockCoords();
         }
-        i++;
     });
-
-    if (index > -1) {
-        players.players.splice(index, 1);
-    }
 
     if (myPlayer.playerId == killerId) {
         myPlayer.stats.kills++;
@@ -202,7 +214,8 @@ socket.on('win', function (winner) {
 
     var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
     bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
-
+    $("#playermsgcontainer").prepend(bot_message_container).load();
+    
     botmsg = {
         message: "To start the game anew, every player has to be ready again ;)",
     };
@@ -220,7 +233,7 @@ socket.on('win', function (winner) {
     });
     playerRdy = false;
     gameStarted = false;
-
+    gameFinished = true;
 });
 
 socket.on('left', function (playerId, playerName) {
@@ -252,8 +265,3 @@ socket.on('player-message', function (data, playerName) {
 
 });
 
-function addPlayerToBox(player) {
-    var player_container = "<li id=\"" + player.id + "\"><div id=\"playercontainer" + player.id + "\" class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" style=\"width:10%;\">";
-    player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
-    $("#players").append(player_container).load();
-}

@@ -30,6 +30,7 @@ var canvas_game = document.getElementById("gameCanvas");
 
 /* Game Area (Canvas) */
 var myGameArea = {
+    gameStartedUp: false,
     canvas: canvas_game,
     context: canvas_game.getContext("2d"),
     start: function () {
@@ -51,6 +52,7 @@ var directions = {
 };
 
 var tileBlocks = {
+    numberOfHiddenBlocks: 4,
     solid: 0,
     background: 1,
     explodeable: 2,
@@ -121,6 +123,7 @@ var globalPlayerSizeMultiplier = 0.5;
 var globalTileSize = 35;
 var gameStarted = false;
 var gameLoaded = false;
+var gameFinished = false;
 var currentGamemode;
 var currentDifficulty;
 var closingInterval;
@@ -146,8 +149,6 @@ function startGame(position, difficulty, mode) {
     currentGamemode = mode;
     players = new otherPlayers();
 
-    myGameArea.start();
-
     switch(mode) {
         case modeTypes.deathmatch:
             break;
@@ -172,7 +173,10 @@ function startGame(position, difficulty, mode) {
             break;
     }
 
+    myGameArea.start();
+
     gameLoaded = true;
+    myGameArea.gameStartedUp = true;
 }
 
 function updateGameArea() {
@@ -196,32 +200,41 @@ function updateGameArea() {
 
     // redraw player if sth changed
     if (myPlayer.layerDirty) {
-        myPlayer.update(true, true);
+        myPlayer.update(true, false);
         myPlayer.layerDirty2 = true;
         playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
     } else if (myPlayer.layerDirty2) {
         myPlayer.imageCounter = 0;
         myPlayer.layerDirty2 = false;
-        myPlayer.update(true, true);
+        myPlayer.update(true, false);
         playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
     }
 
     if (players.playerCount != 0) {
-        players.players.forEach(element => {
-            if (element.layerDirty) {
-                element.update(true, true);
-                element.layerDirty = false;
+        players.players.forEach(tempPlayer => {
+            if ((tempPlayer.layerDirty && tempPlayer.isAlive) || collisionDetectionPlayer(tempPlayer)) {
+                tempPlayer.update(true, true);
+                tempPlayer.layerDirty = false;
             }
         });
     }
 
-    myBombHandler.bombs.forEach(element => {
-        if (element.layerDirty) {
-            element.drawBomb();
-        if (collisionDetectionBomb(element))
-            myPlayer.update(false, true);
-        }
-    });
+    if (myBombHandler.bombCounter != 0) {
+        myBombHandler.bombs.forEach(element => {
+            var collision = false;
+            if (collisionDetectionBomb(element)) {
+                element.layerDirty = true;
+                collision = true;
+            }
+
+            if (element.layerDirty || element.status == 3) {
+                element.drawBomb();
+
+                if (collision) myPlayer.update(false, false);
+                element.layerDirty = false;
+            }
+        });
+    }
 }
 
 
@@ -547,6 +560,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             }
             this.oldBlockCoord = this.BlockCoord;
         }
+
         if (draw_others) {
             if (players.playerCount != 0) {
                 players.players.forEach(element => {
@@ -708,7 +722,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                     }
                 }
             }
-
             if (!this.isAlive) return;
         }
     };
@@ -740,6 +753,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         this.pos.y = this.startPos.y;
         this.currentDirection = directions.down;
         this.convertPlayerPos();
+        this.layerDirty = true;
     };
 
     this.playerGotVirus = function () {
@@ -836,6 +850,10 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             }
         }
     };
+
+    // calculate player pos, and set old one to prevent overdrawing other players
+    this.convertPlayerPos();
+    this.oldBlockCoord = this.BlockCoord;
 }
 
 /* Multiplayer player object
@@ -845,6 +863,7 @@ function playerObject(position, id) {
     this.layerDirty = true;
     this.imageCounter = 0;
     this.currentDirection = directions.down;
+    this.isAlive = true;
 
     this.BlockCoord = [
         [1, 1],
@@ -983,7 +1002,21 @@ function playerObject(position, id) {
         }
     };
 
+    this.resetPosition = function() {
+        this.pos.x = this.startPos.x;
+        this.pos.y = this.startPos.y;
+        this.currentDirection = directions.down;
+        this.convertPlayerPos();
+        this.layerDirty = true;
+    };
+
+    this.resetStats = function () {
+        this.stats.kills = 0;
+        this.stats.points = 0;
+    };
+
     this.convertPlayerPos();
+    this.oldBlockCoord = this.BlockCoord;
 }
 
 function otherPlayers() {
@@ -1030,16 +1063,16 @@ function background(context, tileSize) {
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ];
 
-    this.startMap = this.map;
+    this.startMap = arrayClone(this.map);
 
     // update function draws the background
     this.update = function () {
@@ -1149,7 +1182,13 @@ function background(context, tileSize) {
         this.closingPosition.y = y;
         this.closingPositionTemp.x = x;
         this.closingPositionTemp.y = y;
-    }
+    };
+
+    this.resetMap = function() {
+        // clone array; not a reference copy
+        this.map = arrayClone(this.startMap);
+        this.layerDirty = true;
+    };
 }
 
 /*everything with bombs*/
@@ -1201,28 +1240,44 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
         var enable_x_neg = true;
         var enable_y_neg = true;
         var changed = false;
-        var solid = false;
+
         for (var i = 1; i <= this.explosionRadius; i++) {
             if (enable_x_pos) {
+                myPlayer.killPlayer(this.pos.x + i, this.pos.y, this.bombPlayerId);
                 this.size.x_pos++;
+
+                if ((currentGamemode == modeTypes.destroytheblock) && (this.checkBlock(myBackground.map[this.pos.y][this.pos.x + i]))) {
+                    if (this.bombPlayerId == socket.id) {
+                        myPlayer.stats.points++;
+                        changed = true;
+                    }
+                    else {
+                        setOtherPlayerPoints(this.bombPlayerId);
+                    }
+                }
+
                 if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x + i] = tileBlocks.background;
                     enable_x_pos = false;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                     enable_x_pos = false;
-                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.Virus) {
-                    myBackground.map[this.pos.y][this.pos.x + i] -= 4;
+                    myBackground.map[this.pos.y][this.pos.x + i] -= tileBlocks.numberOfHiddenBlocks;
                     enable_x_pos = false;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x + i] > tileBlocks.explodeable) {
                     myBackground.map[this.pos.y][this.pos.x + i] = 1;
                     enable_x_pos = false;
                 }
+            }
 
-                if (!(enable_x_pos) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
+            if (enable_y_pos) {
+                myPlayer.killPlayer(this.pos.x, this.pos.y + i, this.bombPlayerId);
+                this.size.y_pos++;
+
+                if ((currentGamemode == modeTypes.destroytheblock) && (this.checkBlock(myBackground.map[this.pos.y + i][this.pos.x]))) {
                     if (this.bombPlayerId == socket.id) {
                         myPlayer.stats.points++;
                         changed = true;
@@ -1231,30 +1286,29 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                         setOtherPlayerPoints(this.bombPlayerId);
                     }
                 }
-                else if (solid) {
-                    solid = false;
-                }
-            }
-            if (enable_y_pos) {
-                this.size.y_pos++;
+
                 if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y + i][this.pos.x] = tileBlocks.background;
                     enable_y_pos = false;
                 }
                 else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_pos = false;
-                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.Virus) {
-                    myBackground.map[this.pos.y + i][this.pos.x] -= 4;
+                    myBackground.map[this.pos.y + i][this.pos.x] -= tileBlocks.numberOfHiddenBlocks;
                     enable_y_pos = false;
                 }
                 else if (myBackground.map[this.pos.y + i][this.pos.x] > tileBlocks.explodeable) {
                     myBackground.map[this.pos.y + i][this.pos.x] = 1;
                     enable_y_pos = false;
                 }
+            }
 
-                if (!(enable_y_pos) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
+            if (enable_x_neg) {
+                myPlayer.killPlayer(this.pos.x - i, this.pos.y, this.bombPlayerId);
+                this.size.x_neg++;
+
+                if ((currentGamemode == modeTypes.destroytheblock) && (this.checkBlock(myBackground.map[this.pos.y][this.pos.x - i]))) {
                     if (this.bombPlayerId == socket.id) {
                         myPlayer.stats.points++;
                         changed = true;
@@ -1263,31 +1317,29 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                         setOtherPlayerPoints(this.bombPlayerId);
                     }
                 }
-                else if (solid) {
-                    solid = false;
-                }
-            }
 
-            if (enable_x_neg) {
-                this.size.x_neg++;
                 if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y][this.pos.x - i] = tileBlocks.background;
                     enable_x_neg = false;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                     enable_x_neg = false;
-                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.Virus) {
-                    myBackground.map[this.pos.y][this.pos.x - i] -= 4;
+                    myBackground.map[this.pos.y][this.pos.x - i] -= tileBlocks.numberOfHiddenBlocks;
                     enable_x_neg = false;
                 }
                 else if (myBackground.map[this.pos.y][this.pos.x - i] > tileBlocks.explodeable) {
                     myBackground.map[this.pos.y][this.pos.x - i] = 1;
                     enable_x_neg = false;
                 }
+            }
 
-                if (!(enable_x_neg) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
+            if (enable_y_neg) {
+                myPlayer.killPlayer(this.pos.x, this.pos.y - i, this.bombPlayerId);
+                this.size.y_neg++;
+
+                if ((currentGamemode == modeTypes.destroytheblock) && (this.checkBlock(myBackground.map[this.pos.y - i][this.pos.x]))) {
                     if (this.bombPlayerId == socket.id) {
                         myPlayer.stats.points++;
                         changed = true;
@@ -1296,48 +1348,27 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                         setOtherPlayerPoints(this.bombPlayerId);
                     }
                 }
-                else if (solid) {
-                    solid = false;
-                }
-            }
-            if (enable_y_neg) {
-                this.size.y_neg++;
+
                 if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.explodeable) { //remove block
                     myBackground.map[this.pos.y - i][this.pos.x] = tileBlocks.background;
                     enable_y_neg = false;
                 }
                 else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                     enable_y_neg = false;
-                    solid = true;
                 }
                 else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.Virus) {
-                    myBackground.map[this.pos.y - i][this.pos.x] -= 4;
+                    myBackground.map[this.pos.y - i][this.pos.x] -= tileBlocks.numberOfHiddenBlocks;
                     enable_y_neg = false;
                 }
                 else if (myBackground.map[this.pos.y - i][this.pos.x] > tileBlocks.explodeable) {
                     myBackground.map[this.pos.y - i][this.pos.x] = 1;
                     enable_y_neg = false;
                 }
-
-                if (!(enable_y_neg) && (currentGamemode == modeTypes.destroytheblock) && !(solid)) {
-                    if (this.bombPlayerId == socket.id) {
-                        myPlayer.stats.points++;
-                        changed = true;
-                    }
-                    else {
-                        setOtherPlayerPoints(this.bombPlayerId);
-                    }
-                }
-                else if (solid) {
-                    solid = false;
-                }
             }
 
-            if ((changed) && (currentGamemode == modeTypes.destroytheblock)) {
+            if (changed) {
                 changed = false;
-                alert(myPlayer.stats.points);
                 sendPoints(myPlayer.stats.points);
-                
             }
         }
     };
@@ -1361,9 +1392,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     if (enable_x_pos && this.size.x_pos >= i) {
                         if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x + i, this.pos.y);
-
+ 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x + i, this.pos.y);
-
+ 
                             myPlayer.killPlayer(this.pos.x + i, this.pos.y, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                             enable_x_pos = false;
@@ -1372,21 +1403,21 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     if (enable_y_pos && this.size.y_pos >= i) {
                         if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y + i);
-
+ 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y + i);
-
+ 
                             myPlayer.killPlayer(this.pos.x, this.pos.y + i, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_pos = false;
                         }
                     }
-
+ 
                     if (enable_x_neg && this.size.x_neg >= i) {
                         if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x - i, this.pos.y);
-
+ 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x - i, this.pos.y);
-
+ 
                             myPlayer.killPlayer(this.pos.x - i, this.pos.y, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                             enable_x_neg = false;
@@ -1395,9 +1426,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     if (enable_y_neg && this.size.y_neg >= i) {
                         if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y - i);
-
+ 
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y - i);
-
+ 
                             myPlayer.killPlayer(this.pos.x, this.pos.y - i, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_neg = false;
@@ -1408,6 +1439,12 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
         }
     };
 
+    // check if block is explodeable, and not an item or a solid block
+    this.checkBlock = function (block) {
+        if ((block > tileBlocks.Virus) || (block == 2)) return true;
+    };
+
+    // draw a block
     this.drawBlock = function (ctx, img, x, y) {
         ctx.drawImage(img, myBackground.tileSize * x, myBackground.tileSize * y, myBackground.tileSize, myBackground.tileSize);
     };
@@ -1468,9 +1505,35 @@ function collisionDetectionBomb (bomb) {
     };
 
     if (bomb.pos.x == playerCoords.headX || bomb.pos.x == playerCoords.bodyX || bomb.pos.y == playerCoords.headY || bomb.pos.y == playerCoords.bodyY) {
-        change_infobar("collision");
         return true;
     }
+}
 
-    if (bomb.status != 3) return false;
+function collisionDetectionPlayer (player) {
+
+    // check player Block Coords
+    var playerCoords = {
+        headX: myPlayer.BlockCoord[1][0],
+        headY: myPlayer.BlockCoord[1][1],
+        bodyX: myPlayer.BlockCoord[3][0],
+        bodyY: myPlayer.BlockCoord[3][1]
+    };
+
+    var otherPlayerCoords = {
+        headX: player.BlockCoord[1][0],
+        headY: player.BlockCoord[1][1],
+        bodyX: player.BlockCoord[3][0],
+        bodyY: player.BlockCoord[3][1]
+    };
+
+    if (((playerCoords.headX == otherPlayerCoords.headX) || (playerCoords.headX - 1 == otherPlayerCoords.headX) || (playerCoords.headX +1 == otherPlayerCoords.headX)) &&
+        ((playerCoords.headY == otherPlayerCoords.headY) ||
+         (playerCoords.headY == otherPlayerCoords.bodyY) ||
+         (playerCoords.bodyY == otherPlayerCoords.headY) ||
+         (playerCoords.bodyY - 1 == otherPlayerCoords.headY) ||
+         (playerCoords.headY - 1 == otherPlayerCoords.bodyY) ||
+         (playerCoords.headY + 1 == otherPlayerCoords.bodyY) )) {
+            return true;
+    }
+    return false;
 }

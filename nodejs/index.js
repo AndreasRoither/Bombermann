@@ -1,11 +1,11 @@
 /*// sending to sender-client only
-socket.emit('message', "this is a test");
+socket.emit('message', 'this is a test');
 
 // sending to all clients, include sender
-io.emit('message', "this is a test");
+io.emit('message', 'this is a test');
 
 // sending to all clients except sender
-socket.broadcast.emit('message', "this is a test");
+socket.broadcast.emit('message', 'this is a test');
 
 // sending to all clients in 'game' room(channel) except sender
 socket.broadcast.to('game').emit('message', 'nice game');
@@ -31,11 +31,11 @@ var io = require('socket.io')(server);
 var port_to_listen = 4200;
 
 var currentdate = new Date();
-var datetime = "Start time: " + currentdate.getDate() + "/" +
-    (currentdate.getMonth() + 1) + "/" +
-    currentdate.getFullYear() + " @ " +
-    currentdate.getHours() + ":" +
-    currentdate.getMinutes() + ":" +
+var datetime = 'Start time: ' + currentdate.getDate() + '/' +
+    (currentdate.getMonth() + 1) + '/' +
+    currentdate.getFullYear() + ' @ ' +
+    currentdate.getHours() + ':' +
+    currentdate.getMinutes() + ':' +
     currentdate.getSeconds();
 
 // game vars
@@ -53,6 +53,7 @@ var maxMatrixDimensions = {
 };
 
 var tileBlocks = {
+    numberOfHiddenBlocks: 4,
     solid: 0,
     background: 1,
     explodeable: 2,
@@ -133,7 +134,7 @@ io.on('connection', function (client) {
             explodeableBlocks: Blocks.generatedBlocks
         };
 
-        console.log("GeneratedBlocks " + Blocks.generatedBlocks);
+        console.log('GeneratedBlocks ' + Blocks.generatedBlocks);
 
         gameID = id;
         userName = name;
@@ -256,28 +257,28 @@ io.on('connection', function (client) {
 
         if (!game) return;
         var sumPoints = 0;
-        var highestPoints = game.players[0];
+        var highestPlayer = game.players[0];
 
         game.players.forEach(function (player) {
-            console.log("Name: " + player.name + "Points: " + player.points);
+            console.log('Name: ' + player.name + ' Points: ' + player.points);
             if (player.id == playerId) {
                 player.points = points;
             }
 
-            if (player.points > highestPoints.points) {
-                highestPoints = player;
+            if (player.points > highestPlayer.points) {
+                highestPlayer = player;
             }
 
             sumPoints += player.points;
         });
 
-        console.log("Sumpoints: " + sumPoints + " gamegenerated: " + game.explodeableBlocks);
+        console.log('Sumpoints: ' + sumPoints + ' gamegenerated: ' + game.explodeableBlocks);
         if (sumPoints >= game.explodeableBlocks) {
-            client.emit('dtb-win', game.matrix);
-            client.broadcast.to(gameId).emit('dtb-win', highestPoints.id, points);
+            client.emit('dtb-win', highestPlayer);
+            client.broadcast.to(gameId).emit('dtb-win', highestPlayer);
         }
 
-        //client.broadcast.to(gameId).emit('player-points', playerId, points);
+        client.broadcast.to(gameId).emit('player-points', playerId, points);
     });
 
     client.on('death', function(gameId, playerId, bombId) {
@@ -303,7 +304,7 @@ io.on('connection', function (client) {
 
             if (player.id == bombId) {
                 player.kills++;
-                console.log("Player Id " + player.name + " Player Kills" + player.kills);
+                console.log('Player Id ' + player.name + ' Player Kills' + player.kills);
             }
         });
 
@@ -418,6 +419,38 @@ function createMatrix(gamemode, Blocks) {
     };
 
     var matrix = new Array();
+
+    var bomb  = 0;
+    var flame = 0;
+    var speed = 0;
+    var explo = 0;
+    var empty = 0;
+    var virus = 0;
+    var blockSet = false;
+
+    //Chances for Deathmatch
+    var bombChance  = 0.08;
+    var flameChance = 0.08;
+    var speedChance = 0.08;
+    var virusChance = 0.02;
+    var emptyChance = 0.3;
+
+    switch(gamemode) {
+        case modeTypes.destroytheblock:
+            emptyChance = 0.9;
+            bombChance  = 0.01;
+            flameChance = 0.01;
+            speedChance = 0.01;
+            virusChance = 0.01;
+            break;
+        case modeTypes.test:
+            emptyChance = 0.99;
+            bombChance  = 0.01;
+            flameChance = 0.01;
+            speedChance = 0.01;
+            virusChance = 0.01;
+            break;
+    }
     
     for (var i = 0; i < dimensions.height; i++) {
         matrix[i] = new Array();
@@ -439,39 +472,15 @@ function createMatrix(gamemode, Blocks) {
     }
 
     // wall every two pos
-    for (var i = 2; i < dimensions.height-2; i+=2) {
-        for (var j = 2; j < dimensions.width-2; j+=2) {
+    for (var i = 2; i < dimensions.height - 2; i += 2) {
+        for (var j = 2; j < dimensions.width - 2; j += 2) {
             matrix[i][j] = tileBlocks.solid;
         }
     }
 
-    var bomb  = 0;
-    var flame = 0;
-    var speed = 0;
-    var explo = 0;
-    var empty = 0;
-    var virus = 0;
-    var blockSet = false;
-
-    //Chances for Deathmatch
-    var bombChance  = 0.08;
-    var flameChance = 0.08;
-    var speedChance = 0.08;
-    var virusChance = 0.02;
-    var emptyChance = 0.1;
-
-    switch(gamemode) {
-        case modeTypes.destroytheblock:
-            emptyChance = 0.9;
-            break;
-        case modeTypes.test:
-            emptyChance = 0.9;
-            break;
-    }
-
     // random blocks
-    for (var i = 1; i < dimensions.height-1; i++) {
-        for (var j = 1; j < dimensions.width-1; j++) {
+    for (var i = 1; i < dimensions.height - 1; i++) {
+        for (var j = 1; j < dimensions.width - 1; j++) {
             if (matrix[i][j] != 0){
                 var block = Math.random();
 
@@ -483,22 +492,22 @@ function createMatrix(gamemode, Blocks) {
                     }
                 }
                 else {
-                    if (block > 1 - speedChance) {
+                    if (block > (1 - speedChance)) {
                         matrix[i][j] = tileBlocks.hiddenSpeedUp;
                         speed++;
                         blockSet = true;
                     }
-                    else if (block > (1 - speedChance) - virusChance) {
+                    else if (block > (1 - speedChance - virusChance)) {
                         matrix[i][j] = tileBlocks.hiddenVirus;
                         virus++;
                         blockSet = true;
                     }
-                    else if (block > ((1 - speedChance) - virusChance) - flameChance) {
+                    else if (block > (1 - speedChance - virusChance - flameChance)) {
                         matrix[i][j] = tileBlocks.hiddenFlameUp;
                         flame++;
                         blockSet = true;
                     }
-                    else if (block > (((1 - speedChance) - virusChance) - flameChance) - bombChance) {
+                    else if (block > (1 - speedChance - virusChance - flameChance - bombChance)) {
                         matrix[i][j] = tileBlocks.hiddenBombUp;
                         bomb++;
                         blockSet = true;
@@ -508,6 +517,7 @@ function createMatrix(gamemode, Blocks) {
                 if (!blockSet) {
                     if (block > emptyChance) {
                         matrix[i][j] = tileBlocks.explodeable;
+                        console.log('i: ' + i + ' j: ' + j);
                         explo++;
                     }
                     else {
@@ -515,7 +525,6 @@ function createMatrix(gamemode, Blocks) {
                         empty++;
                     }
                 }
-
                 blockSet = false;
             }
         }
@@ -542,18 +551,32 @@ function createMatrix(gamemode, Blocks) {
     matrix[11][17]=1;
     matrix[10][17]=1;
 
+    var tempstring = '';
+    var count = 0;
+    var sum = 0;
+
+    for (var i = 1; i < dimensions.height; i++) {
+        for (var j = 1; j < dimensions.width; j++) {
+            if (matrix[i][j] == 1 || matrix[i][j] == 0) {
+                tempstring += ' ';
+            }
+            else {
+                tempstring += matrix[i][j];
+                count++;
+            }
+        }
+        console.log(tempstring + '  Count: ' + count);
+        tempstring = '';
+        sum += count;
+        count = 0;
+    }
+    console.log('sum: ' + sum);
+
+
     console.log('\nrandomly generated:\nbombs: ', bomb, '\nflame: ', flame, '\nspeed: ', speed, '\nexplo: ', explo, '\nvirus: ', virus, '\nempty: ', empty);
     Blocks.generatedBlocks = explo + bomb + flame + speed + virus;
     console.log(Blocks.generatedBlocks);
     return matrix;
-}
-
-function canExplode(matrix, x, y) {
-    if (!matrix[x]) return;
-
-    var tile = matrix[x][y];
-
-    return tile && (tile.type == 'pillar' ? false : true);
 }
 
 function getTotalReadyPlayers(game) {

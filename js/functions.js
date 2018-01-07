@@ -18,7 +18,7 @@ function createGame() {
     var playerName = encodeURIComponent($("#playerName1").val());
     difficulty = $("#difficulty").val();
     mode = parseInt($("#mode").val());
-    var hashcode = playerName.hashCode();
+    var hashcode = socket.id.hashCode();
 
     socket.emit("create", hashcode, playerName, "Test", difficulty, mode);
   }
@@ -51,8 +51,38 @@ function copyGameId() {
   change_infobar("Game Id " + gameId + " copied");
 }
 
+function resetGameArea() {
+  if (myGameArea.gameStartedUp && !gameStarted) {
+    myBackground.resetMap();
+  }
+}
+
 function setAllDirty() {
   myBackground.layerDirty = true;
+}
+
+function addPlayerToBox(player) {
+  var player_container = "<li id=\"" + player.id + "\"><div id=\"playercontainer" + player.id + "\" class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" style=\"width:10%;\">";
+  player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
+  $("#players").append(player_container).load();
+}
+
+function arrayClone( arr ) {
+  var i, copy;
+
+  if( Array.isArray(arr) ) {
+      copy = arr.slice( 0 );
+      for( i = 0; i < copy.length; i++ ) {
+          copy[ i ] = arrayClone( copy[ i ] );
+      }
+      return copy;
+  }
+  else if( typeof arr === 'object' ) {
+      throw 'Cannot clone array containing an object!';
+  }
+  else {
+      return arr;
+  }
 }
 
 // players
@@ -106,7 +136,7 @@ function playerNotDead (id) {
 }
 
 function sendPoints(points) {
-  socket.emit("points", gameId, socket.id, bomb);
+  socket.emit("points", gameId, socket.id, points);
 }
 
 function gameFinished() {
