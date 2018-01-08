@@ -146,6 +146,14 @@ var movRight = false;
 var movUp = false;
 var movDown = false;
 
+// prevent down or up scrolling; since 
+window.addEventListener("keydown", function(e) {
+  // space and arrow keys
+  if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+      e.preventDefault();
+  }
+}, false);
+
 window.addEventListener("keydown", function (event) {
   var target = event.target || event.srcElement;
   var targetTagName = (target.nodeType == 1) ? target.nodeName.toUpperCase() : "";
@@ -153,7 +161,6 @@ window.addEventListener("keydown", function (event) {
     if (event.repeat) return;
     if (event.which == 13) {
       // Enter Key
-      event.preventDefault();
     }
     if (event.which == 97 || event.which == 65) {
       // a || A Key
@@ -179,26 +186,22 @@ window.addEventListener("keydown", function (event) {
     if (event.which == 37) {
       // left key
       movLeft = true;
-      event.preventDefault();
     }
     if (event.which == 39) {
       // right key
       movRight = true;
-      event.preventDefault();
     }
     if (event.which == 38) {
       // up key
       movUp = true;
-      event.preventDefault();
     }
     if (event.which == 40) {
       // down key
       movDown = true;
-      event.preventDefault();
     }
   }
   //console.log( event.type + ": " +  event.keyCode ); //debug
-});
+}, false);
 
 window.addEventListener("keyup", function (event) {
   if (event.which == 13) {
@@ -223,28 +226,23 @@ window.addEventListener("keyup", function (event) {
   }
   if (event.which == 32) {
     // space Key
-    event.preventDefault();
   }
   //Arrow Keys
   if (event.which == 37) {
     // left key
     movLeft = false;
-    event.preventDefault();
   }
   if (event.which == 39) {
     // right key
     movRight = false;
-    event.preventDefault();
   }
   if (event.which == 38) {
     // up key
     movUp = false;
-    event.preventDefault();
   }
   if (event.which == 40) {
     // down key
     movDown = false;
-    event.preventDefault();
   }
   //console.log( event.type + ": " +  event.keyCode ); //debug
 });

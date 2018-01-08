@@ -105,6 +105,7 @@ socket.on('joined', function (player, game) {
     });
 
     gameId = game.id;
+    currentGamemode = game.gameMode;
 
     change_infobar("Sucessfully joined the game");
 });
