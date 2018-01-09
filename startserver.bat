@@ -1,7 +1,7 @@
 
 @echo off
 echo ------------------------------------------------ 
-echo -- Batch Ran on %date% at %time% --
+echo -- Batch ran on %date% at %time% --
 echo ------------------------------------------------
 cd .\nodejs
 echo.
