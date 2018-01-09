@@ -117,6 +117,10 @@ function bombHandler() {
             _this.bombCounter -= 1;
         }, (playerBomb.bombTimer + playerBomb.explodeTimer));
     };
+
+    this.clearBombs = function () {
+        this.bombs = [];
+    };
 };
 
 var globalPlayerSizeMultiplier = 0.5;
@@ -197,7 +201,6 @@ function updateGameArea() {
 
         myBombHandler.bombs.forEach(element => {
             element.drawBomb();
-            element.layerDirty = false;
         });
     }
 
@@ -234,7 +237,7 @@ function updateGameArea() {
                 element.drawBomb();
 
                 if (collision) myPlayer.update(false, false);
-                element.layerDirty = false;
+                //element.layerDirty = false;
             }
         });
     }
@@ -716,6 +719,8 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                     if (players.playerCount == 0) {
                         this.isAlive = true;
 
+                        myBombHandler.clearBombs();
+                        clearInterval(closingInterval);
                         playerNotDead(socket.id);
                         gameIsFinished();
                         this.resetPosition();
@@ -825,17 +830,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
                 _this.stats.directionSwitch = false;
             }, virusTimer.default);
         }
-        else if (canche > probability * 2) {        // vision obstruction
-            change_infobar("+You can't see me");
-
-            var _this = this;
-
-            //$.confetti.restart();
-
-            // clear interval
-            setTimeout(function () {
-                //$.confetti.stop();
-            }, virusTimer.default);
+        else if (canche > probability * 2) {
+            this.stats.bombRadius++;
+            change_infobar("+Flame");
         }
         else if (canche > probability) {            // faster better stronger
             change_infobar("+Fast as hell");
@@ -1176,6 +1173,28 @@ function background(context, tileSize) {
             this.countClosingIn++;
             this.map[this.closingPosition.y][this.closingPosition.x] = tileBlocks.solid;
             this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.solid], this.closingPosition.x, this.closingPosition.y);
+
+            var playerCoords = {
+                bodyX: myPlayer.BlockCoord[3][0],
+                bodyY: myPlayer.BlockCoord[3][1]
+            };
+
+            if (this.closingPosition.y == playerCoords.bodyY && this.closingPosition.x == playerCoords.bodyX) {
+                clearInterval(closingInterval);
+                playerDead(this.playerId, 0);
+                myPlayer.isAlive = false;
+
+                if (players.playerCount == 0) {
+                    myPlayer.isAlive = true;
+
+                    playerNotDead(socket.id);
+                    gameIsFinished();
+                    myBombHandler.clearBombs();
+                    myPlayer.resetPosition();
+                    myPlayer.resetStats();
+                    return;
+                }
+            }
         }
         else {
             clearInterval(closingInterval);
