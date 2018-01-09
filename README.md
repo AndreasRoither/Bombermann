@@ -13,22 +13,22 @@ As an alternative you can also start the server with the .bat files.
 Bombermann is undergoing constant change, so things might be buggy!
 Preview page: [Page](https://andiroither.github.io/Bombermann/) -> does not work without a running node js server.
 
+### Example Images
 <p align="center">
-  <img src="img/1.png" width="200"/>
+  <img src="https://github.com/AndiRoither/Bombermann/blob/master/img/1.PNG" width="500"/>
 </p>
 
 <p align="center">
-  <img src="img/2.png" width="200"/>
+  <img src="https://github.com/AndiRoither/Bombermann/blob/master/img/2.PNG" width="500"/>
 </p>
 
 <p align="center">
-  <img src="img/3.png" width="200"/>
+  <img src="https://github.com/AndiRoither/Bombermann/blob/master/img/3.PNG" width="500"/>
 </p>
 
 <p align="center">
-  <img src="img/4.png" width="200"/>
+  <img src="https://github.com/AndiRoither/Bombermann/blob/master/img/4.PNG" width="500"/>
 </p>
-
 
 ### Technology used
 Built with
