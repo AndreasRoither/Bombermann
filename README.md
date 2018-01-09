@@ -14,7 +14,7 @@ Bombermann is undergoing constant change, so things might be buggy!
 Preview page: [Page](https://andiroither.github.io/Bombermann/) -> does not work without a running node js server.
 
 ### How-To
-When you opened the page a modal popup will show. Input your name and choose the difficulty and the gamemode. Click create to start your game session. If you click the copy id button the game id will be copied to your clipboard. If you want others to join just send them the copied id. Every player has to press the ready toogle button to start the game. If all died or a winner has been decided, restarting the game will be possible. Every player just has to press the ready button again.
+When you opened the page a modal popup will show. Input your name and choose the difficulty and the gamemode. Click create to start your game session. If you click the copy id button the game id will be copied to your clipboard. If you want others to join just send them the copied id. Every player has to press the ready toogle button to start the game. If all died or a winner has been decided, restarting the game will be possible when every player is ready again.
 
 ### Example Images
 <p align="center">
