@@ -149,7 +149,7 @@ function startGame(position, difficulty, mode) {
     currentGamemode = mode;
     players = new otherPlayers();
 
-    switch(mode) {
+    switch (mode) {
         case modeTypes.deathmatch:
             break;
         case modeTypes.closingin:
@@ -163,7 +163,7 @@ function startGame(position, difficulty, mode) {
                     myBackground.nextSolidBlock();
                 }, 500);
             }, 20000);
-            
+
             break;
         case modeTypes.destroytheblock:
             break;
@@ -191,11 +191,14 @@ function updateGameArea() {
         myPlayer.update(false, true);
         myBackground.layerDirty = false;
 
-        if (players.playerCount != 0) {
-            players.players.forEach(element => {
-                element.update(true);
-            });
-        }
+        players.players.forEach(element => {
+            element.update(true);
+        });
+
+        myBombHandler.bombs.forEach(element => {
+            element.drawBomb();
+            element.layerDirty = false;
+        });
     }
 
     // redraw player if sth changed
@@ -317,11 +320,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideDown = false;
             overrideUp = false;
         }
-        else if (!movUp && !movDown && overrideDown || !movUp && !movDown && (this.quarter==3 || this.quarter==4) && !overrideUp) {
+        else if (!movUp && !movDown && overrideDown || !movUp && !movDown && (this.quarter == 3 || this.quarter == 4) && !overrideUp) {
             this.moveDown();
             overrideDown = true;
         }
-        else if (!movUp && !movDown && overrideUp || !movUp && !movDown && (this.quarter==2 || this.quarter==1) && !overrideDown) {
+        else if (!movUp && !movDown && overrideUp || !movUp && !movDown && (this.quarter == 2 || this.quarter == 1) && !overrideDown) {
             this.moveUp();
             overrideUp = true;
         }
@@ -336,11 +339,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideDown = false;
             overrideUp = false;
         }
-        else if (!movUp && !movDown && overrideDown || !movUp && !movDown && (this.quarter==4 || this.quarter==3) && !overrideUp) {
+        else if (!movUp && !movDown && overrideDown || !movUp && !movDown && (this.quarter == 4 || this.quarter == 3) && !overrideUp) {
             this.moveDown();
             overrideDown = true;
         }
-        else if (!movUp && !movDown && overrideUp || !movUp && !movDown && (this.quarter==1 || this.quarter==2) && !overrideDown) {
+        else if (!movUp && !movDown && overrideUp || !movUp && !movDown && (this.quarter == 1 || this.quarter == 2) && !overrideDown) {
             this.moveUp();
             overrideUp = true;
         }
@@ -355,11 +358,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideRight = false;
             overrideLeft = false;
         }
-        else if (!movLeft && !movRight && overrideRight || !movLeft && !movRight && (this.quarter==1 || this.quarter==4) && !overrideLeft) {
+        else if (!movLeft && !movRight && overrideRight || !movLeft && !movRight && (this.quarter == 1 || this.quarter == 4) && !overrideLeft) {
             this.moveRight();
             overrideRight = true;
         }
-        else if (!movLeft && !movRight && overrideLeft || !movLeft && !movRight && (this.quarter==2 || this.quarter==3) && !overrideRight) {
+        else if (!movLeft && !movRight && overrideLeft || !movLeft && !movRight && (this.quarter == 2 || this.quarter == 3) && !overrideRight) {
             this.moveLeft();
             overrideLeft = true;
         }
@@ -374,11 +377,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             overrideRight = false;
             overrideLeft = false;
         }
-        else if (!movLeft && !movRight && overrideRight || !movLeft && !movRight && (this.quarter==4 || this.quarter==1) && !overrideLeft) {
+        else if (!movLeft && !movRight && overrideRight || !movLeft && !movRight && (this.quarter == 4 || this.quarter == 1) && !overrideLeft) {
             this.moveRight();
             overrideRight = true;
         }
-        else if (!movLeft && !movRight && overrideLeft || !movLeft && !movRight && (this.quarter==3 || this.quarter==2) && !overrideRight) {
+        else if (!movLeft && !movRight && overrideLeft || !movLeft && !movRight && (this.quarter == 3 || this.quarter == 2) && !overrideRight) {
             this.moveLeft();
             overrideLeft = true;
         }
@@ -488,25 +491,25 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
     };
 
-    this.getQuarter = function(x, y) {
+    this.getQuarter = function (x, y) {
         var fallbackY = (this.pos.y + (this.dimensions.height / 4) * 3) / myBackground.tileSize;
         var fallbackX = (this.pos.x + this.dimensions.width / 2) / myBackground.tileSize;
 
         if (double) {
             if ((fallbackX - Math.trunc(fallbackX)) < 0.5) {
                 if ((fallbackY - Math.trunc(fallbackY)) < 0.5) {
-                    this.quarter=2;
+                    this.quarter = 2;
                 }
                 else {
-                    this.quarter=3;
+                    this.quarter = 3;
                 }
             }
             else {
                 if ((fallbackY - Math.trunc(fallbackY)) < 0.5) {
-                    this.quarter=1;
+                    this.quarter = 1;
                 }
                 else {
-                    this.quarter=4;
+                    this.quarter = 4;
                 }
             }
         }
@@ -514,36 +517,36 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             if ((x - (this.pos.x + this.dimensions.width / 2)) < 0) {
                 if (y - (this.pos.y + (this.dimensions.height / 4) * 3) < 0) {
                     if (movUp) {
-                        this.quarter=1;
+                        this.quarter = 1;
                     }
                     else if (movLeft) {
-                        this.quarter=3;
+                        this.quarter = 3;
                     }
                 }
                 else {
                     if (movDown) {
-                        this.quarter=4;
+                        this.quarter = 4;
                     }
                     else if (movLeft) {
-                        this.quarter=2;
+                        this.quarter = 2;
                     }
                 }
             }
             else {
                 if (y - (this.pos.y + (this.dimensions.height / 4) * 3) < 0) {
                     if (movUp) {
-                        this.quarter=2;
+                        this.quarter = 2;
                     }
                     else if (movRight) {
-                        this.quarter=4;
+                        this.quarter = 4;
                     }
                 }
                 else {
                     if (movDown) {
-                        this.quarter=3;
+                        this.quarter = 3;
                     }
                     else if (movRight) {
-                        this.quarter=1;
+                        this.quarter = 1;
                     }
                 }
             }
@@ -658,20 +661,20 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             [1, 1],
             [1, 1],
             [1, 1]
-            ];
+        ];
 
-            //calc pickUp
-            pickUp[0][0] = Math.trunc((this.pos.x + this.collsionCorrection)/ myBackground.tileSize);
-            pickUp[0][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
+        //calc pickUp
+        pickUp[0][0] = Math.trunc((this.pos.x + this.collsionCorrection) / myBackground.tileSize);
+        pickUp[0][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
 
-            pickUp[1][0] = Math.trunc((this.pos.x + this.collsionCorrection)/ myBackground.tileSize);
-            pickUp[1][1] = Math.trunc((this.pos.y + this.dimensions.height - this.collsionCorrection)/ myBackground.tileSize);
+        pickUp[1][0] = Math.trunc((this.pos.x + this.collsionCorrection) / myBackground.tileSize);
+        pickUp[1][1] = Math.trunc((this.pos.y + this.dimensions.height - this.collsionCorrection) / myBackground.tileSize);
 
-            pickUp[2][0] = Math.trunc((this.pos.x + this.dimensions.width - this.collsionCorrection)/ myBackground.tileSize);
-            pickUp[2][1] = Math.trunc((this.pos.y + this.dimensions.height / 2)/ myBackground.tileSize);
+        pickUp[2][0] = Math.trunc((this.pos.x + this.dimensions.width - this.collsionCorrection) / myBackground.tileSize);
+        pickUp[2][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
 
-            pickUp[3][0] = Math.trunc((this.pos.x + this.dimensions.width - this.collsionCorrection)/ myBackground.tileSize);
-            pickUp[3][1] = Math.trunc((this.pos.y + this.dimensions.height - this.collsionCorrection)/ myBackground.tileSize);
+        pickUp[3][0] = Math.trunc((this.pos.x + this.dimensions.width - this.collsionCorrection) / myBackground.tileSize);
+        pickUp[3][1] = Math.trunc((this.pos.y + this.dimensions.height - this.collsionCorrection) / myBackground.tileSize);
 
         for (var i = 0; i < 4; ++i) {
             if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.BombUp) {
@@ -699,23 +702,22 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
     this.killPlayer = function (x, y, bombPlayerId) {
         if (!this.isAlive || !gameStarted) return;
+        if (currentGamemode == modeTypes.destroytheblock) return;
+
         for (var i = 2; i < 6; ++i) {
             if (this.BlockCoord[i][0] == x && this.BlockCoord[i][1] == y) { //player dead
                 if (this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, x, y) ||
                     this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height - this.collsionCorrection, x, y) ||
                     this.inFlames(this.pos.x + this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y) ||
-                    this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y))
-                {
-                    if (currentGamemode == modeTypes.destroytheblock) return;
-
+                    this.inFlames(this.pos.x + this.dimensions.width - this.collsionCorrection, this.pos.y + this.dimensions.height / 2, x, y)) {
                     playerDead(this.playerId, bombPlayerId);
                     this.isAlive = false;
 
-                    if (players.playerCount == 0) { 
+                    if (players.playerCount == 0) {
                         this.isAlive = true;
 
                         playerNotDead(socket.id);
-                        gameFinished();
+                        gameIsFinished();
                         this.resetPosition();
                         this.resetStats();
                         return;
@@ -825,6 +827,15 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
         else if (canche > probability * 2) {        // vision obstruction
             change_infobar("+You can't see me");
+
+            var _this = this;
+
+            //$.confetti.restart();
+
+            // clear interval
+            setTimeout(function () {
+                //$.confetti.stop();
+            }, virusTimer.default);
         }
         else if (canche > probability) {            // faster better stronger
             change_infobar("+Fast as hell");
@@ -839,15 +850,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         else if (canche > probability / 2) {        // nothing happens
             change_infobar("Only a lucky few ones escape the curse..");
         }
-        else {                                        // teleport
-            change_infobar("+Teleport");
-            // teleport to another player or switch
-            if (players.playerCount != 0) {
-
-            }
-            else {  // teleport to random position
-
-            }
+        else {
+            this.stats.bombs++;
+            change_infobar("+Bomb");
         }
     };
 
@@ -971,20 +976,20 @@ function playerObject(position, id) {
             [1, 1],
             [1, 1],
             [1, 1]
-            ];
+        ];
 
-            //calc pickUp
-            pickUp[0][0] = Math.trunc((this.pos.x + myPlayer.collsionCorrection)/ myBackground.tileSize);
-            pickUp[0][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
+        //calc pickUp
+        pickUp[0][0] = Math.trunc((this.pos.x + myPlayer.collsionCorrection) / myBackground.tileSize);
+        pickUp[0][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
 
-            pickUp[1][0] = Math.trunc((this.pos.x + myPlayer.collsionCorrection)/ myBackground.tileSize);
-            pickUp[1][1] = Math.trunc((this.pos.y + this.dimensions.height - myPlayer.collsionCorrection)/ myBackground.tileSize);
+        pickUp[1][0] = Math.trunc((this.pos.x + myPlayer.collsionCorrection) / myBackground.tileSize);
+        pickUp[1][1] = Math.trunc((this.pos.y + this.dimensions.height - myPlayer.collsionCorrection) / myBackground.tileSize);
 
-            pickUp[2][0] = Math.trunc((this.pos.x + this.dimensions.width - myPlayer.collsionCorrection)/ myBackground.tileSize);
-            pickUp[2][1] = Math.trunc((this.pos.y + this.dimensions.height / 2)/ myBackground.tileSize);
+        pickUp[2][0] = Math.trunc((this.pos.x + this.dimensions.width - myPlayer.collsionCorrection) / myBackground.tileSize);
+        pickUp[2][1] = Math.trunc((this.pos.y + this.dimensions.height / 2) / myBackground.tileSize);
 
-            pickUp[3][0] = Math.trunc((this.pos.x + this.dimensions.width - myPlayer.collsionCorrection)/ myBackground.tileSize);
-            pickUp[3][1] = Math.trunc((this.pos.y + this.dimensions.height - myPlayer.collsionCorrection)/ myBackground.tileSize);
+        pickUp[3][0] = Math.trunc((this.pos.x + this.dimensions.width - myPlayer.collsionCorrection) / myBackground.tileSize);
+        pickUp[3][1] = Math.trunc((this.pos.y + this.dimensions.height - myPlayer.collsionCorrection) / myBackground.tileSize);
 
         for (var i = 0; i < 4; ++i) {
             if (myBackground.map[pickUp[i][1]][pickUp[i][0]] == tileBlocks.BombUp) {
@@ -1002,7 +1007,7 @@ function playerObject(position, id) {
         }
     };
 
-    this.resetPosition = function() {
+    this.resetPosition = function () {
         this.pos.x = this.startPos.x;
         this.pos.y = this.startPos.y;
         this.currentDirection = directions.down;
@@ -1033,7 +1038,7 @@ function background(context, tileSize) {
     this.ctx = context;
     this.layerDirty = true;
     this.closingDirection = 1;
-    this.possibleBlocks = 19*13;
+    this.possibleBlocks = 19 * 13;
     this.countClosingIn = 0;
 
     this.dimensions = {
@@ -1050,7 +1055,7 @@ function background(context, tileSize) {
         x: 0,
         y: 0
     };
-    
+
     this.closingPositionTemp = {
         x: 0,
         y: 0
@@ -1131,8 +1136,8 @@ function background(context, tileSize) {
         ctx.drawImage(img, this.tileSize * x, this.tileSize * y, this.tileSize, this.tileSize);
     };
 
-    this.nextSolidBlock = function() {
-        switch(this.closingDirection){
+    this.nextSolidBlock = function () {
+        switch (this.closingDirection) {
             case 1:
                 if (this.closingPosition.x >= this.closingDimensions.width - 3) {
                     this.closingDirection = 2;
@@ -1177,14 +1182,14 @@ function background(context, tileSize) {
         }
     };
 
-    this.setClosingStartPosition = function(x, y) {
+    this.setClosingStartPosition = function (x, y) {
         this.closingPosition.x = x;
         this.closingPosition.y = y;
         this.closingPositionTemp.x = x;
         this.closingPositionTemp.y = y;
     };
 
-    this.resetMap = function() {
+    this.resetMap = function () {
         // clone array; not a reference copy
         this.map = arrayClone(this.startMap);
         this.layerDirty = true;
@@ -1392,9 +1397,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     if (enable_x_pos && this.size.x_pos >= i) {
                         if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x + i, this.pos.y);
- 
+
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x + i, this.pos.y);
- 
+
                             myPlayer.killPlayer(this.pos.x + i, this.pos.y, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y][this.pos.x + i] == tileBlocks.solid) { //solid block
                             enable_x_pos = false;
@@ -1403,21 +1408,21 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     if (enable_y_pos && this.size.y_pos >= i) {
                         if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y + i);
- 
+
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y + i);
- 
+
                             myPlayer.killPlayer(this.pos.x, this.pos.y + i, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y + i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_pos = false;
                         }
                     }
- 
+
                     if (enable_x_neg && this.size.x_neg >= i) {
                         if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x - i, this.pos.y);
- 
+
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x - i, this.pos.y);
- 
+
                             myPlayer.killPlayer(this.pos.x - i, this.pos.y, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y][this.pos.x - i] == tileBlocks.solid) { //solid block
                             enable_x_neg = false;
@@ -1426,9 +1431,9 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
                     if (enable_y_neg && this.size.y_neg >= i) {
                         if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.background) { //flames
                             myBackground.drawBlock(this.pos.x, this.pos.y - i);
- 
+
                             this.drawBlock(this.ctx, myImageFactory.flames[this.flameCounter], this.pos.x, this.pos.y - i);
- 
+
                             myPlayer.killPlayer(this.pos.x, this.pos.y - i, this.bombPlayerId);
                         } else if (myBackground.map[this.pos.y - i][this.pos.x] == tileBlocks.solid) { //solid block
                             enable_y_neg = false;
@@ -1494,7 +1499,7 @@ function setOtherPlayerPoints(bombId) {
     });
 }
 
-function collisionDetectionBomb (bomb) {
+function collisionDetectionBomb(bomb) {
 
     // check player Block Coords
     var playerCoords = {
@@ -1509,7 +1514,7 @@ function collisionDetectionBomb (bomb) {
     }
 }
 
-function collisionDetectionPlayer (player) {
+function collisionDetectionPlayer(player) {
 
     // check player Block Coords
     var playerCoords = {
@@ -1526,14 +1531,18 @@ function collisionDetectionPlayer (player) {
         bodyY: player.BlockCoord[3][1]
     };
 
-    if (((playerCoords.headX == otherPlayerCoords.headX) || (playerCoords.headX - 1 == otherPlayerCoords.headX) || (playerCoords.headX +1 == otherPlayerCoords.headX)) &&
+    if (((playerCoords.headX == otherPlayerCoords.headX) || (playerCoords.headX - 1 == otherPlayerCoords.headX) || (playerCoords.headX + 1 == otherPlayerCoords.headX)) &&
         ((playerCoords.headY == otherPlayerCoords.headY) ||
-         (playerCoords.headY == otherPlayerCoords.bodyY) ||
-         (playerCoords.bodyY == otherPlayerCoords.headY) ||
-         (playerCoords.bodyY - 1 == otherPlayerCoords.headY) ||
-         (playerCoords.headY - 1 == otherPlayerCoords.bodyY) ||
-         (playerCoords.headY + 1 == otherPlayerCoords.bodyY) )) {
-            return true;
+            (playerCoords.headY == otherPlayerCoords.bodyY) ||
+            (playerCoords.bodyY == otherPlayerCoords.headY) ||
+            (playerCoords.bodyY - 1 == otherPlayerCoords.headY) ||
+            (playerCoords.headY - 1 == otherPlayerCoords.bodyY) ||
+            (playerCoords.headY + 1 == otherPlayerCoords.bodyY))) {
+        return true;
     }
     return false;
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }

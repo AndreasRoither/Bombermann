@@ -338,6 +338,7 @@ canvas {
     display: block;
     width: 100%;
     max-width: 800px;
+    z-index: 2;
 }
 
 /********************

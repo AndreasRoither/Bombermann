@@ -139,6 +139,6 @@ function sendPoints(points) {
   socket.emit("points", gameId, socket.id, points);
 }
 
-function gameFinished() {
+function gameIsFinished() {
   socket.emit("game-finished ",gameId);
 }
