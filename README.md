@@ -13,6 +13,23 @@ As an alternative you can also start the server with the .bat files.
 Bombermann is undergoing constant change, so things might be buggy!
 Preview page: [Page](https://andiroither.github.io/Bombermann/) -> does not work without a running node js server.
 
+<p align="center">
+  <img src="img/1.png" width="200"/>
+</p>
+
+<p align="center">
+  <img src="img/2.png" width="200"/>
+</p>
+
+<p align="center">
+  <img src="img/3.png" width="200"/>
+</p>
+
+<p align="center">
+  <img src="img/4.png" width="200"/>
+</p>
+
+
 ### Technology used
 Built with
 [Visual Studio Code](https://code.visualstudio.com/)
