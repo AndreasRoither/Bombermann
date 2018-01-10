@@ -38,10 +38,12 @@ var currentOpenGameSessions = 0;
 var currentConnectedSockets = 0;
 var currentConnectedPlayers = 0;
 
+const ConsoleColor = require('./colorcodes.js');
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var path = require('path');
 var port_to_listen = 4200;
 
 // set log interval
@@ -112,13 +114,13 @@ var modeTypes = {
     test: 6
 }
 
-const ConsoleColor = require('./colorcodes.js');
+// set express folder to one above, where index.html is located
+app.use(express.static(__dirname + '/../'));
 
-app.use(express.static(__dirname + '/node_modules'));
-
+/*
 app.get('/', function (req, res, next) {
-    res.sendFile(__dirname + '/index.html');
-});
+    res.sendFile(path.resolve(__dirname + '/../index.html'));
+});*/
 
 io.on('connection', function (client) {
     currentConnectedSockets++;
