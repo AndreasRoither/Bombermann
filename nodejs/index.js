@@ -1,4 +1,9 @@
-/*// sending to sender-client only
+/********************
+*     Examples      *
+*********************/
+
+/*
+// sending to sender-client only
 socket.emit('message', 'this is a test');
 
 // sending to all clients, include sender
@@ -22,13 +27,39 @@ io.of('myNamespace').emit('message', 'gg');
 // sending to individual socketid
 socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
 
-// load
+
+/********************
+*  Declarations &   *
+*    setting up     *
+*********************/
+
+var debug = false;
+var currentOpenGameSessions = 0;
+var currentConnectedSockets = 0;
+var currentConnectedPlayers = 0;
 
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port_to_listen = 4200;
+
+// set log interval
+var logInterval = setInterval(function () {
+    var tempcurrentdate = new Date();
+    var tempdatetime = 'Server check at: ' + tempcurrentdate.getDate() + '/' +
+    (tempcurrentdate.getMonth() + 1) + '/' +
+    tempcurrentdate.getFullYear() + ' @ ' +
+    tempcurrentdate.getHours() + ':' +
+    tempcurrentdate.getMinutes() + ':' +
+    tempcurrentdate.getSeconds();
+
+    console.log('-- ' + tempdatetime + ' --');
+    console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\r\nServer' + ConsoleColor.Reset);
+    console.log('\r\tCurrent connected sockets:  ' + currentConnectedSockets);
+    console.log('\r\tCurrent open game sessions: ' + currentOpenGameSessions);
+    console.log('\r\tCurrent connected players:  ' + currentConnectedPlayers + '\n\r');
+}, 20000);
 
 var currentdate = new Date();
 var datetime = 'Start time: ' + currentdate.getDate() + '/' +
@@ -90,8 +121,12 @@ app.get('/', function (req, res, next) {
 });
 
 io.on('connection', function (client) {
-    console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\r\nServer' + ConsoleColor.Reset);
-    console.log('\r\n\tClient connected...\r\n\r\n\tid: %s', client.id);
+    currentConnectedSockets++;
+
+    if (debug) {
+        console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\r\nServer' + ConsoleColor.Reset);
+        console.log('\r\n\tClient connected...\r\n\r\n\tid: %s', client.id);
+    }
 
     // socket id for connecting player
     var socketId = client.id;
@@ -99,10 +134,14 @@ io.on('connection', function (client) {
         userName;
 
     client.on('create', function (id, name, avatar, difficulty, mode) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
-        console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to create game server' + ConsoleColor.Reset);
-        console.log('\r\n\tplayer name ' + name);
-        console.log('\r\n\tGame Server ID ' + id);
+        currentOpenGameSessions++;
+        if (debug) {
+            console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
+            console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to create game server' + ConsoleColor.Reset);
+            console.log('\r\n\tplayer name ' + name);
+            console.log('\r\n\tGame Server ID ' + id);
+            console.log('\r\n\tmode: ' + mode);
+        }
 
         var player = {
             id: socketId,
@@ -116,8 +155,6 @@ io.on('connection', function (client) {
             points: 0,
             kills: 0
         };
-
-        console.log('\r\n\tmode: ' + mode);
 
         var Blocks = {
             generatedBlocks: 0
@@ -134,7 +171,7 @@ io.on('connection', function (client) {
             explodeableBlocks: Blocks.generatedBlocks
         };
 
-        console.log('GeneratedBlocks ' + Blocks.generatedBlocks);
+        if (debug) console.log('\r\n\tGeneratedBlocks ' + Blocks.generatedBlocks);
 
         gameID = id;
         userName = name;
@@ -144,11 +181,13 @@ io.on('connection', function (client) {
     });
 
     client.on('join', function (data) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
-        console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to join game server' + ConsoleColor.Reset);
-        console.log('\r\n\tplayer name: ' + data.name);
-        console.log('\r\n\tgame id: ' + data.id);
-        console.log('\r\n\tsocket id: ' + socketId);
+        if (debug) {
+            console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
+            console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'request to join game server' + ConsoleColor.Reset);
+            console.log('\r\n\tplayer name: ' + data.name);
+            console.log('\r\n\tgame id: ' + data.id);
+            console.log('\r\n\tsocket id: ' + socketId);
+        }
 
         var game = games[data.id];
 
@@ -180,6 +219,7 @@ io.on('connection', function (client) {
             client.join(data.id);
             client.emit('joined', player, game);
             client.broadcast.to(data.id).emit('player-joined', player);
+            currentConnectedPlayers++;
         }
     });
 
@@ -204,16 +244,14 @@ io.on('connection', function (client) {
     });
 
     client.on('ready', function (id, isReady) {
-        console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
-        console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
+        if (debug) {
+            console.log(ConsoleColor.Bright + ConsoleColor.FgCyan + '\r\nClient' + ConsoleColor.Reset);
+            console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'player ready call' + ConsoleColor.Reset);
+        }
 
         var game = games[id];
 
-        if (!game) {
-            console.log('\r\n\tgame not found');
-            console.log('\r\n\tgameId: ' + id);
-            return;
-        }
+        if (!game) return;
 
         var totalReady = 0;
 
@@ -232,7 +270,7 @@ io.on('connection', function (client) {
 
             client.emit('game-start', game.matrix);
             client.broadcast.to(id).emit('game-start', game.matrix);
-            console.log('\r\n\tgame started');
+            if (debug) console.log('\r\n\tgame started');
         }
     });
 
@@ -260,20 +298,15 @@ io.on('connection', function (client) {
         var highestPlayer = game.players[0];
 
         game.players.forEach(function (player) {
-            console.log('Name: ' + player.name + ' Points: ' + player.points + ' new points: ' + points);
-            console.log('Player.id: ' + player.id + ' playerId: ' + playerId);
-            if (player.id == playerId) {
+            if (player.id == playerId)
                 player.points = points;
-            }
 
-            if (player.points > highestPlayer.points) {
+            if (player.points > highestPlayer.points)
                 highestPlayer = player;
-            }
 
             sumPoints += player.points;
         });
 
-        console.log('Sumpoints: ' + sumPoints + ' gamegenerated: ' + game.explodeableBlocks + '\r\n');
         if (sumPoints >= game.explodeableBlocks) {
             client.emit('dtb-win', highestPlayer);
             client.broadcast.to(gameId).emit('dtb-win', highestPlayer);
@@ -305,7 +338,7 @@ io.on('connection', function (client) {
 
             if (player.id == bombId) {
                 player.kills++;
-                console.log('Player Id ' + player.name + ' Player Kills' + player.kills);
+                if (debug) console.log('Player Id ' + player.name + ' Player Kills' + player.kills);
             }
         });
 
@@ -335,26 +368,39 @@ io.on('connection', function (client) {
     });
 
     client.on('disconnect', function () {
+        if (currentConnectedPlayers > 0) currentConnectedPlayers--;
+        if (currentConnectedSockets > 0) currentConnectedSockets--;
+
         if (!gameID) return;
-        console.log(ConsoleColor.Bright + ConsoleColor.FgRed + '\r\nClient' + ConsoleColor.Reset);
+        if (debug) console.log(ConsoleColor.Bright + ConsoleColor.FgRed + '\r\nClient' + ConsoleColor.Reset);
 
         var game = games[gameID];
         if (game == undefined) {
-            console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgRed + 'game undefined' + ConsoleColor.Reset);
+            if (debug) console.log('\r\n\t' + ConsoleColor.BgWhite + ConsoleColor.FgRed + 'game undefined' + ConsoleColor.Reset);
             return;
         }
-        console.log('\r\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'disconnected' + ConsoleColor.Reset);
+        if (debug) console.log('\r\n\tclient ' + ConsoleColor.BgWhite + ConsoleColor.FgGreen + 'disconnected' + ConsoleColor.Reset);
 
         game.players.forEach(function (player, index) {
             if (player != undefined && player.id == socketId) {
                 this.splice(index, 1);
 
-                console.log('\r\n\tplayer name: ' + player.name);
-                console.log('\r\n\tgame id: ' + player.id);
+                if (debug) {
+                    console.log('\r\n\tplayer name: ' + player.name);
+                    console.log('\r\n\tgame id: ' + player.id);
+                }
 
                 client.broadcast.to(gameID).emit('left', client.id, player.name);
             }
         }, game.players);
+
+        if (debug) console.log('\r\nConnected players: ' + game.players.length);
+
+        if (game.players.length == 0) {
+            game = null;
+            games[gameID] = null;
+            if (currentOpenGameSessions > 0) currentOpenGameSessions--;
+        }
     });
 
     client.on('messages', function (data) {
@@ -375,17 +421,9 @@ io.on('connection', function (client) {
     });
 });
 
-server.listen(port_to_listen, function () {
-    var host = server.address().address;
-    var port = server.address().port;
-
-    console.log('\r\n-- Server listening --');
-    console.log(datetime);
-    console.log('\r\nApp listening at http://%s:%s', host, port);
-});
-
-/////////////
-// functions
+/********************
+*  Helper functions *
+*********************/
 
 function pickAvatar(game) {
 
@@ -549,7 +587,7 @@ function createMatrix(gamemode, Blocks) {
     }
 
     Blocks.generatedBlocks = sum;
-    console.log(Blocks.generatedBlocks);
+    if (debug) console.log('\r\n\tGenereated Blocks' + Blocks.generatedBlocks);
     return matrix;
 }
 
@@ -607,3 +645,16 @@ setInterval(function () {
         }
     }
 }, 1000 * 60 * 10);
+
+/********************
+*   Start Server    *
+*********************/
+
+server.listen(port_to_listen, function () {
+    var host = server.address().address;
+    var port = server.address().port;
+
+    console.log('\r\n-- Server listening --');
+    console.log(datetime);
+    console.log('\r\nApp listening at http://%s:%s', host, port + '\n\r');
+});
