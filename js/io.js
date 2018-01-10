@@ -1,5 +1,5 @@
 
-// connect
+// connect to server
 var socket = io.connect('http://localhost:4200/');
 var currentlyConnected = false;
 var gameId = 0;
@@ -70,7 +70,6 @@ socket.on('player-joined', function (player) {
     var newPlayer = new playerObject(player.startPosition, player.id);
     players.players.push(newPlayer);
     players.playerCount += 1;
-
 });
 
 socket.on('joined', function (player, game) {
@@ -135,6 +134,10 @@ socket.on('game-start', function (id, matrix) {
     }
 
     if (gameFinished) {
+        if (diarrheaIntervalRunning) {
+            clearInterval(diarrheaInterval);
+        }
+
         myBackground.resetMap();
         if (players.playerCount != 0) {
             myPlayer.resetPosition();
@@ -152,7 +155,6 @@ socket.on('game-started', function () {
 });
 
 socket.on('game-stop', function (id, playerInfo) {
-
 });
 
 socket.on('player-move', function (player, position, imageCounter, currentDirection) {
@@ -263,6 +265,4 @@ socket.on('player-message', function (data, playerName) {
     message_container += "<p class=\"ellipses\">" + playerName + "</p><p>" + decodeURIComponent(data.message) + "</p><span class=\"time-right\">" + data.time + "</span></div></li>";
 
     $("#playermsgcontainer").prepend(message_container).load();
-
 });
-

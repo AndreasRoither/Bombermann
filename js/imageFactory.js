@@ -2,6 +2,7 @@
 *   Image Factory   *
 *********************/
 
+// image factory loads all images
 function ImageFactory() {
   this.loaded = false;
   this.loadingImgs = 0;

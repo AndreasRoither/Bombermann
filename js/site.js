@@ -22,6 +22,7 @@ function make_responsive() {
   }
 }
 
+// full page tab switch
 function openPage(pageName, elmnt, color) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -37,6 +38,7 @@ function openPage(pageName, elmnt, color) {
   elmnt.style.backgroundColor = color;
 }
 
+// key listeners; prevent default
 function addListeners() {
   $("#text_msg").on("keyup", function (e) {
     if (e.keyCode == 13) {
@@ -354,7 +356,6 @@ function updateStatus() {
       }
     }
   }
-
 }
 
 function scangamepads() {

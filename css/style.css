@@ -411,7 +411,6 @@ canvas {
     }
 }
 
-
 /********************
 *      Chat Msg      *
 *       Player       *
@@ -629,7 +628,6 @@ canvas {
     width: 100%;
 }
 
-
 /********************
 *   Toogle Switch   *
 *********************/
@@ -691,7 +689,6 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
-
 /********************
 *      Stripes      *
 *********************/
@@ -701,11 +698,9 @@ input:checked+.slider:before {
     background: repeating-linear-gradient( 45deg, #ff000069, #ff000069 10px, #f1f1f1 10px, #f1f1f1 20px);
 }
 
-
 /********************
 * Responsive layout *
 *********************/
-
 
 /* the three columns stack on top of each other instead of next to each other  */
 

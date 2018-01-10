@@ -1,4 +1,6 @@
-// game
+/********************
+*   Game functions  *
+*********************/
 var difficulty;
 var mode;
 
@@ -85,7 +87,9 @@ function arrayClone( arr ) {
   }
 }
 
-// players
+/********************
+*  Payer functions  *
+*********************/
 
 function sendChatMsg() {
   var createdAt = new Date().toLocaleTimeString();
