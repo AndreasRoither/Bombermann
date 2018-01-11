@@ -95,7 +95,7 @@ function sendChatMsg() {
   var createdAt = new Date().toLocaleTimeString();
 
   chatmsg = {
-    message: encodeURIComponent($("#text_msg").val()),
+    message: encodeURIComponent($("#text_msg").val().replace(/</g, "&lt;").replace(/>/g, "&gt;")),
     time: createdAt
   };
 

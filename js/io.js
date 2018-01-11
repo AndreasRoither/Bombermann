@@ -263,10 +263,11 @@ socket.on('left', function (playerId, playerName) {
 });
 
 socket.on('player-message', function (data, playerName) {
+    data.message = decodeURIComponent(data.message);
     playerName = playerName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     data.message = data.message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var message_container = "<li><div class=\"msg-container\"><img src=\"img/Bomb/Bomb_f01.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
-    message_container += "<p class=\"ellipses\">" + playerName + "</p><p>" + decodeURIComponent(data.message) + "</p><span class=\"time-right\">" + data.time + "</span></div></li>";
+    message_container += "<p class=\"ellipses\">" + playerName + "</p><p>" + data.message + "</p><span class=\"time-right\">" + data.time + "</span></div></li>";
 
     $("#playermsgcontainer").prepend(message_container).load();
 });
