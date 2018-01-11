@@ -198,7 +198,7 @@ io.on('connection', function (client) {
 
         var playerIndex = pickIndex(game);
 
-        if (game && game.players.length <= 4) {
+        if (game && game.players.length < 4) {
             var avatar = pickAvatar(game),
                 player = {
                     id: socketId,
@@ -356,6 +356,8 @@ io.on('connection', function (client) {
                 player.ready = false;
                 player.alive = true;
             });
+
+            game.started = false;
         }
 
         client.broadcast.to(gameId).emit('player-death', playerId, playerName, bombId);

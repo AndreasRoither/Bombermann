@@ -200,6 +200,7 @@ socket.on('player-death', function ( playerId, playerName, killerId) {
     players.players.forEach(tempPlayer => {
         if (tempPlayer.id == playerId) {
             tempPlayer.isAlive = false;
+            tempPlayer.layerDirty = false;
             tempPlayer.drawBlockCoords();
         }
     });

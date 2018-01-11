@@ -193,7 +193,7 @@ function updateGameArea() {
         myBackground.layerDirty = false;
 
         players.players.forEach(element => {
-            element.update(true);
+            if (element.isAlive) element.update(true);
         });
 
         myBombHandler.bombs.forEach(element => {
@@ -213,16 +213,6 @@ function updateGameArea() {
         playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
     }
 
-    // draw players
-    if (players.playerCount != 0) {
-        players.players.forEach(tempPlayer => {
-            if ((tempPlayer.layerDirty && tempPlayer.isAlive) || collisionDetectionPlayer(tempPlayer)) {
-                tempPlayer.update(true, true);
-                tempPlayer.layerDirty = false;
-            }
-        });
-    }
-
     // draw bombs
     if (myBombHandler.bombCounter != 0) {
         myBombHandler.bombs.forEach(element => {
@@ -238,6 +228,16 @@ function updateGameArea() {
 
                 if (collision) myPlayer.update(false, false);
                 //element.layerDirty = false;
+            }
+        });
+    }
+
+    // draw players
+    if (players.playerCount != 0) {
+        players.players.forEach(tempPlayer => {
+            if ((tempPlayer.layerDirty && tempPlayer.isAlive) || collisionDetectionPlayer(tempPlayer)) {
+                tempPlayer.update(true, true);
+                tempPlayer.layerDirty = false;
             }
         });
     }
