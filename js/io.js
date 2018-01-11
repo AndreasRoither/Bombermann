@@ -64,6 +64,7 @@ socket.on('game-not-found', function (id, playerInfo) {
 });
 
 socket.on('player-joined', function (player) {
+    player.name = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     addPlayerToBox(player);
     change_infobar("Player " + player.name + " joined");
 
