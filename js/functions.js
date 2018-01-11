@@ -64,8 +64,9 @@ function setAllDirty() {
 }
 
 function addPlayerToBox(player) {
+  player.name = decodeURIComponent(player.name).replace(/</g, "&lt;").replace(/>/g, "&gt;");
   var player_container = "<li id=\"" + player.id + "\"><div id=\"playercontainer" + player.id + "\" class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" style=\"width:10%;\">";
-  player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + decodeURIComponent(player.name) + "</div></li>";
+  player_container += "<p><span id=\"" + player.id + "playerReady\" class=\"player-status not-ready\">not ready</span></p>" + "<p>" + player.name + "</div></li>";
   $("#players").append(player_container).load();
 }
 
