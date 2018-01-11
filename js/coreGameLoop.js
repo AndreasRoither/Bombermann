@@ -235,7 +235,7 @@ function updateGameArea() {
     // draw players
     if (players.playerCount != 0) {
         players.players.forEach(tempPlayer => {
-            if ((tempPlayer.layerDirty && tempPlayer.isAlive) || collisionDetectionPlayer(tempPlayer)) {
+            if ((tempPlayer.layerDirty && tempPlayer.isAlive) || (collisionDetectionPlayer(tempPlayer) && tempPlayer.isAlive)) {
                 tempPlayer.update(true, true);
                 tempPlayer.layerDirty = false;
             }
