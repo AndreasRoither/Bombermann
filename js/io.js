@@ -64,7 +64,7 @@ socket.on('game-not-found', function (id, playerInfo) {
 });
 
 socket.on('player-joined', function (player) {
-    player.name = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    player.name = player.name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     addPlayerToBox(player);
     change_infobar("Player " + player.name + " joined");
 
@@ -263,6 +263,8 @@ socket.on('left', function (playerId, playerName) {
 });
 
 socket.on('player-message', function (data, playerName) {
+    playerName = playerName.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    data.message = data.message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     var message_container = "<li><div class=\"msg-container\"><img src=\"img/Bomb/Bomb_f01.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
     message_container += "<p class=\"ellipses\">" + playerName + "</p><p>" + decodeURIComponent(data.message) + "</p><span class=\"time-right\">" + data.time + "</span></div></li>";
 
