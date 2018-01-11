@@ -17,9 +17,9 @@ String.prototype.hashCode = function () {
 
 function createGame() {
   if (currentlyConnected) {
-    var playerName = encodeURIComponent($("#playerName1").val());
-    difficulty = $("#difficulty").val();
-    mode = parseInt($("#mode").val());
+    var playerName = encodeURIComponent($("#playerName1").val().replace(/</g, "&lt;").replace(/>/g, "&gt;"));
+    difficulty = $("#difficulty").val().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    mode = parseInt($("#mode").val().replace(/</g, "&lt;").replace(/>/g, "&gt;"));
     var hashcode = socket.id.hashCode();
 
     socket.emit("create", hashcode, playerName, "Test", difficulty, mode);
@@ -32,8 +32,8 @@ function createGame() {
 function joinGame() {
   if (currentlyConnected) {
     var data = {
-      name: encodeURIComponent($("#playerName2").val()),
-      id: encodeURIComponent($("#gameId").val())
+      name: encodeURIComponent($("#playerName2").val().replace(/</g, "&lt;").replace(/>/g, "&gt;")),
+      id: encodeURIComponent($("#gameId").val().replace(/</g, "&lt;").replace(/>/g, "&gt;"))
     };
     socket.emit("join", data);
   }
