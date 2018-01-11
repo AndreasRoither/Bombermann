@@ -61,7 +61,7 @@ var logInterval = setInterval(function () {
     console.log('\r\tCurrent connected sockets:  ' + currentConnectedSockets);
     console.log('\r\tCurrent open game sessions: ' + currentOpenGameSessions);
     console.log('\r\tCurrent connected players:  ' + currentConnectedPlayers + '\n\r');
-}, 20000);
+}, 30000);
 
 var currentdate = new Date();
 var datetime = 'Start time: ' + currentdate.getDate() + '/' +

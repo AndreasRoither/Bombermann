@@ -128,10 +128,9 @@ socket.on('game-start', function (id, matrix) {
         $(this).removeClass("stripe-1").load();
     });
 
-    if (!myPlayer.isAlive) {
-        myPlayer.isAlive = true;
-        myPlayer.layerDirty = true;
-    }
+    myPlayer.isAlive = true;
+    myPlayer.layerDirty = true;
+    
 
     if (gameFinished) {
         if (diarrheaIntervalRunning) {
@@ -142,6 +141,7 @@ socket.on('game-start', function (id, matrix) {
         if (players.playerCount != 0) {
             myPlayer.resetPosition();
             players.players.forEach(tempPlayer => {
+                tempPlayer.isAlive = true;
                 tempPlayer.resetPosition();
                 tempPlayer.resetStats();
             });
