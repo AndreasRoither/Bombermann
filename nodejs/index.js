@@ -404,8 +404,6 @@ io.on('connection', function (client) {
         if (debug) console.log('\r\nConnected players: ' + game.players.length);
 
         if (game.players.length == 0) {
-            game = null;
-            games[gameID] = null;
             if (currentOpenGameSessions > 0) currentOpenGameSessions--;
         }
     });
@@ -643,6 +641,7 @@ function playerStartPosition(index) {
     return pos;
 }
 
+// delete game sessions
 setInterval(function () {
     for (id in games) {
         var created = games[id].created + (1000 * 60 * 60)
