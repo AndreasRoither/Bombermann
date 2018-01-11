@@ -150,8 +150,8 @@ var movDown = false;
 
 // prevent down or up scrolling; since 
 window.addEventListener("keydown", function(e) {
-  // space and arrow keys
-  if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+  // arrow keys
+  if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
       e.preventDefault();
   }
 }, false);

@@ -329,9 +329,8 @@ io.on('connection', function (client) {
         game.players.forEach(function (player) {
             if (player.id == playerId) {
                 player.alive = false;
-                deadPlayers++;
                 playerName = player.name;
-                console.log(player.name);
+                if (debug) console.log(player.name);
             }
 
             if (player.alive) {
@@ -341,6 +340,10 @@ io.on('connection', function (client) {
             if (player.id == bombId) {
                 player.kills++;
                 if (debug) console.log('Player Id ' + player.name + ' Player Kills' + player.kills);
+            }
+
+            if (!player.alive) {
+                deadPlayers++;
             }
         });
 

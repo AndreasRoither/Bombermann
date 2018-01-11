@@ -27,7 +27,7 @@ var myGameArea = {
     start: function () {
         this.canvas.width = 665;
         this.canvas.height = 455;
-        this.interval = setInterval(updateGameArea, 16);
+        this.interval = setInterval(updateGameArea, 30);
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -137,7 +137,7 @@ function startGame(position, difficulty, mode) {
     myBombHandler = new bombHandler();
 
     myBackground = new background(myGameArea.context, globalTileSize);
-    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
+    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 4);
     currentDifficulty = difficulty;
 
     if (currentDifficulty == difficultyTypes.hardmode) {
@@ -601,13 +601,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
 
         if (this.imageCounter < 7) {
-            if (this.delay == 2) {
-                this.imageCounter = this.imageCounter + 1;
-                this.delay = 0;
-            }
-            else {
-                this.delay++;
-            }
+            this.imageCounter = this.imageCounter + 1;
         } else {
             this.imageCounter = 0;
         }
