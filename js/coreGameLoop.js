@@ -1,13 +1,7 @@
 
-//load images first
+// load images first
 var myImageFactory = new ImageFactory();
 myImageFactory.load(ImageFactoryLoaded);
-
-var virusTimer = {
-    diarrhea: 15000,
-    fastBomb: 20000,
-    default: 15000
-};
 
 /********************/
 /*   Declarations   */
@@ -32,6 +26,13 @@ var myGameArea = {
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+};
+
+// Times for different viruses
+var virusTimer = {
+    diarrhea: 15000,
+    fastBomb: 20000,
+    default: 15000
 };
 
 // all directions
@@ -71,50 +72,6 @@ var modeTypes = {
     fogofwar: 3,
     virusonly: 4,
     destroytheblock: 5
-};
-
-/*  handles all player bombs
- *  automatic removal of bombs after bomb explodetimer
- */
-function bombHandler() {
-    this.bombCounter = 0;
-    this.myBombsCounter = 0;
-    this.bombs = [];
-
-    this.addBomb = function (position, radius, bombTimer) {
-        var playerBomb = new bomb(myPlayer.ctx, bombTimer, 1000, radius, 2, position);
-        this.bombs.push(playerBomb);
-        this.myBombsCounter += 1;
-        this.bombCounter += 1;
-        var index = this.bombCounter;
-
-        // notify other players
-        playerBombSet(playerBomb);
-    };
-
-    this.addBombEnemy = function (enemyBomb) {
-        var playerBomb = new bomb(myPlayer.ctx, enemyBomb.bombTimer, enemyBomb.explodeTimer, enemyBomb.explosionRadius, 2, enemyBomb.pos);
-        playerBomb.bombPlayerId = enemyBomb.bombPlayerId;
-        this.bombs.push(playerBomb);
-        this.bombCounter += 1;
-        var index = this.bombCounter;
-        var _this = this;
-    };
-
-    this.clearBombs = function () {
-        this.bombs = [];
-    };
-
-    this.removeBomb = function (bomb) {
-        var index = this.bombs.indexOf(bomb);
-        if (index > -1) {
-            if (bomb.bombPlayerId == socket.id){ 
-                this.myBombsCounter--;
-            }
-            this.bombCounter--;
-            this.bombs.splice(index, 1);
-        }
-    };
 };
 
 var globalPlayerSizeMultiplier = 0.5;
@@ -266,15 +223,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     this.BlockCoord = [
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1]
-    ];
-
-    this.oldBlockCoord = [
         [1, 1],
         [1, 1],
         [1, 1],
@@ -822,7 +770,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
     // calculate player pos, and set old one to prevent overdrawing other players
     this.convertPlayerPos();
-    this.oldBlockCoord = this.BlockCoord;
 }
 
 /* Multiplayer player object
@@ -835,15 +782,6 @@ function playerObject(position, id) {
     this.isAlive = true;
 
     this.BlockCoord = [
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1]
-    ];
-
-    this.oldBlockCoord = [
         [1, 1],
         [1, 1],
         [1, 1],
@@ -896,13 +834,6 @@ function playerObject(position, id) {
         }
 
         this.removePowerUp();
-    };
-
-    this.drawBlockCoords = function () {
-        for (var i = 0; i < 6; ++i) { //draw blocks behind player
-            myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
-        }
-        this.oldBlockCoord = this.BlockCoord;
     };
 
     //gives upper left and lower right corner in background coords
@@ -979,7 +910,6 @@ function playerObject(position, id) {
     };
 
     this.convertPlayerPos();
-    this.oldBlockCoord = this.BlockCoord;
 }
 
 function otherPlayers() {
@@ -1040,14 +970,6 @@ function background(context, tileSize) {
     // update function draws the background
     this.update = function () {
         this.drawBackground();
-    };
-
-    // draw around player pos
-    this.drawAroundplayer = function () {
-        for (var i = 0; i < 6; ++i) { //draw blocks behind player
-            myBackground.drawBlock(myPlayer.oldBlockCoord[i][0], myPlayer.oldBlockCoord[i][1]);
-        }
-        myPlayer.oldBlockCoord = myPlayer.BlockCoord;
     };
 
     // draw_background draws background according to the matrix (this.map)
@@ -1175,6 +1097,49 @@ function background(context, tileSize) {
         this.layerDirty = true;
     };
 }
+
+/*  handles all player bombs
+ */
+function bombHandler() {
+    this.bombCounter = 0;
+    this.myBombsCounter = 0;
+    this.bombs = [];
+
+    this.addBomb = function (position, radius, bombTimer) {
+        var playerBomb = new bomb(myPlayer.ctx, bombTimer, 1000, radius, 2, position);
+        this.bombs.push(playerBomb);
+        this.myBombsCounter += 1;
+        this.bombCounter += 1;
+        var index = this.bombCounter;
+
+        // notify other players
+        playerBombSet(playerBomb);
+    };
+
+    this.addBombEnemy = function (enemyBomb) {
+        var playerBomb = new bomb(myPlayer.ctx, enemyBomb.bombTimer, enemyBomb.explodeTimer, enemyBomb.explosionRadius, 2, enemyBomb.pos);
+        playerBomb.bombPlayerId = enemyBomb.bombPlayerId;
+        this.bombs.push(playerBomb);
+        this.bombCounter += 1;
+        var index = this.bombCounter;
+        var _this = this;
+    };
+
+    this.clearBombs = function () {
+        this.bombs = [];
+    };
+
+    this.removeBomb = function (bomb) {
+        var index = this.bombs.indexOf(bomb);
+        if (index > -1) {
+            if (bomb.bombPlayerId == socket.id){ 
+                this.myBombsCounter--;
+            }
+            this.bombCounter--;
+            this.bombs.splice(index, 1);
+        }
+    };
+};
 
 /*everything with bombs*/
 function bomb(context, bombTimer, explodeTimer, explosionRadius, status, position) {

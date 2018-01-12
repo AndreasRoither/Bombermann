@@ -212,6 +212,11 @@ socket.on('player-death', function ( playerId, playerName, killerId) {
 });
 
 socket.on('win', function (winner) {
+
+    playerRdy = false;
+    gameStarted = false;
+    gameFinished = true;
+
     botmsg = {
         message: "And the winner is: " + winner.name,
         message2: "Kills: " + winner.kills
@@ -229,16 +234,13 @@ socket.on('win', function (winner) {
     bot_message_container += "<p>" + botmsg.message + "</p></div></li>";
     $("#playermsgcontainer").prepend(bot_message_container).load();
 
-    change_infobar("And the winner is: " + winner.name + " Kills: " + winner.kills);
-
     $("#checkbox").prop("checked", false);
     $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
     $('#players > li > div > p > span').each(function () { 
         $(this).removeClass("ready").addClass("not-ready").text("not ready");
     });
-    playerRdy = false;
-    gameStarted = false;
-    gameFinished = true;
+
+    change_infobar("And the winner is: " + winner.name + " Kills: " + winner.kills);
 });
 
 socket.on('left', function (playerId, playerName) {

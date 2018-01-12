@@ -7,8 +7,9 @@ var playerRdy = false;
 $(document).ready(function () {
   showModalPopup();
   // Get the element with id="defaultOpen" and click on it
-  document.getElementById("defaultOpen").click();
+  $("#defaultOpen").click();
   addListeners();
+  $("#playerName1").focus();
 });
 
 function make_responsive() {
@@ -164,8 +165,6 @@ window.addEventListener("keydown", function(e) {
     }
   }*/
 }, false);
-
-
 
 window.addEventListener("keydown", function (event) {
   var target = event.target || event.srcElement;
