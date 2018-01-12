@@ -154,7 +154,18 @@ window.addEventListener("keydown", function(e) {
   if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
       e.preventDefault();
   }
+
+  /*
+  if (([32].indexOf(e.keyCode) > -1) && gameStarted) {
+    element = document.getElementById('text_msg');
+    alert(document.activeElement());
+    if (!(element == document.activeElement())) {
+      e.preventDefault();
+    }
+  }*/
 }, false);
+
+
 
 window.addEventListener("keydown", function (event) {
   var target = event.target || event.srcElement;

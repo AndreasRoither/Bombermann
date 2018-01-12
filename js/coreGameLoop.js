@@ -27,7 +27,7 @@ var myGameArea = {
     start: function () {
         this.canvas.width = 665;
         this.canvas.height = 455;
-        this.interval = setInterval(updateGameArea, 30);
+        this.interval = setInterval(updateGameArea, 16);
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -137,7 +137,7 @@ function startGame(position, difficulty, mode) {
     myBombHandler = new bombHandler();
 
     myBackground = new background(myGameArea.context, globalTileSize);
-    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 4);
+    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
     currentDifficulty = difficulty;
 
     if (currentDifficulty == difficultyTypes.hardmode) {
@@ -184,62 +184,25 @@ function updateGameArea() {
     updateStatus();//gamepad
     if (movLeft || movRight || movUp || movDown) {
         myPlayer.tryMove();
-    }
-    // redraw background if sth changed
-    if (myBackground.layerDirty) {
-        myBackground.update();
-        myPlayer.update(false, true);
-        myBackground.layerDirty = false;
-
-        players.players.forEach(element => {
-            if (element.isAlive) element.update(true);
-        });
-
-        myBombHandler.bombs.forEach(element => {
-            element.drawBomb();
-        });
-    }
-
-    // redraw player if sth changed
-    if (myPlayer.layerDirty) {
-        myPlayer.update(true, false);
-        myPlayer.layerDirty2 = true;
-        playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
-    } else if (myPlayer.layerDirty2) {
+    } else {
         myPlayer.imageCounter = 0;
-        myPlayer.layerDirty2 = false;
-        myPlayer.update(true, false);
-        playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
     }
 
-    // draw bombs
-    if (myBombHandler.bombCounter != 0) {
-        myBombHandler.bombs.forEach(element => {
-            var collision = false;
-            if (collisionDetectionBomb(element)) {
-                element.layerDirty = true;
-                collision = true;
-            }
+    // redraw background
+    myBackground.update();
 
-            if (element.layerDirty || element.status >= 1) {
-                console.log("Bomb drawn")
-                element.drawBomb();
+    // redraw bombs
+    myBombHandler.bombs.forEach(element => {
+        element.drawBomb();
+    });
 
-                if (collision) myPlayer.update(false, false);
-                //element.layerDirty = false;
-            }
-        });
-    }
+    // redraw other players
+    players.players.forEach(element => {
+        element.update(false, false);
+    });
 
-    // draw players
-    if (players.playerCount != 0) {
-        players.players.forEach(tempPlayer => {
-            if ((tempPlayer.layerDirty && tempPlayer.isAlive) || (collisionDetectionPlayer(tempPlayer) && tempPlayer.isAlive)) {
-                tempPlayer.update(true, true);
-                tempPlayer.layerDirty = false;
-            }
-        });
-    }
+    // redraw myplayer
+    myPlayer.update(false, false);
 }
 
 /********************/
@@ -475,9 +438,11 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         // update image counter and return true if moved
         if (moved) {
             this.updateImageCounter();
+            playerMoved(this.pos, this.imageCounter, this.currentDirection);
             return true;
-        } else
+        } else {
             return false;
+        }
     };
 
     //checks if player can move to a point
@@ -557,22 +522,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     }
 
     // draws player according to the current looking direction
-    this.update = function (draw_bg, draw_others) {
+    this.update = function () {
         if (!this.isAlive) return;
-        if (draw_bg) {
-            for (var i = 0; i < 6; ++i) { //draw blocks behind player
-                myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
-            }
-            this.oldBlockCoord = this.BlockCoord;
-        }
 
-        if (draw_others) {
-            if (players.playerCount != 0) {
-                players.players.forEach(element => {
-                    element.update(false, false);
-                });
-            }
-        }
         //draw Player
         switch (this.currentDirection) {
             case directions.left:
@@ -600,7 +552,13 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
 
         if (this.imageCounter < 7) {
-            this.imageCounter = this.imageCounter + 1;
+            if (this.delay == 2) { 
+                this.imageCounter = this.imageCounter + 1; 
+                this.delay = 0; 
+            } 
+            else { 
+                this.delay++; 
+            } 
         } else {
             this.imageCounter = 0;
         }
@@ -913,12 +871,8 @@ function playerObject(position, id) {
         points: 0
     };
 
-    this.update = function (draw_bg, draw_others) {
-        // draw block behind player and draw player
-        if (draw_bg) {
-            this.convertPlayerPos();
-            this.drawBlockCoords();
-        }
+    this.update = function () {
+        if (!this.isAlive) return;
 
         switch (this.currentDirection) {
             case directions.left:
@@ -934,10 +888,8 @@ function playerObject(position, id) {
                 myGameArea.context.drawImage(myImageFactory.front[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
         }
-        if (draw_others) {
-            myPlayer.update(false, false);
-            this.removePowerUp();
-        }
+
+        this.removePowerUp();
     };
 
     this.drawBlockCoords = function () {
