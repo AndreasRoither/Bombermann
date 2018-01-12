@@ -231,16 +231,29 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         [1, 1]
     ];
 
+    this.checkBlockCoords = function(blockcoordY, blockcoordX) {
+        if (myBackground.map[blockcoordY][blockcoordX] == tileBlocks.background) {
+            return true;
+        }
+
+        if ((myBackground.map[blockcoordY][blockcoordX] >= tileBlocks.BombUp) && (myBackground.map[blockcoordY][blockcoordX] <= tileBlocks.Virus)) {
+            return true;
+        }
+        return false;
+    };
+
     this.moveLeft = function () {
         if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, -this.walkStep, 0) &&
             this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, -this.walkStep, 0)) {
             this.speed.speedX -= this.walkStep;
         }
         else if (!movUp && !movDown && (this.quarter == 3 || this.quarter == 4) && this.BlockCoord[0][0]!=0) {
-            this.moveDown();
+            if (this.checkBlockCoords(this.BlockCoord[2][1],this.BlockCoord[2][0]))
+                this.moveDown();
         }
         else if (!movUp && !movDown && (this.quarter == 2 || this.quarter == 1) && this.BlockCoord[0][0]!=0) {
-            this.moveUp();
+            if (this.checkBlockCoords(this.BlockCoord[4][1],this.BlockCoord[4][0]))
+               this.moveUp();
         }
         double = false;
         this.currentDirection = directions.left;
@@ -252,10 +265,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.speed.speedX += this.walkStep;
         }
         else if (!movUp && !movDown && (this.quarter == 4 || this.quarter == 3) && this.BlockCoord[1][0]!=18) {
-            this.moveDown();
+            if (this.checkBlockCoords(this.BlockCoord[3][1],this.BlockCoord[3][0]))
+                this.moveDown();
         }
         else if (!movUp && !movDown && (this.quarter == 1 || this.quarter == 2) && this.BlockCoord[1][0]!=18) {
-            this.moveUp();
+            if (this.checkBlockCoords(this.BlockCoord[5][1],this.BlockCoord[5][0]))
+                this.moveUp();
         }
         double = false;
         this.currentDirection = directions.right;
@@ -267,10 +282,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.speed.speedY -= this.walkStep;
         }
         else if (!movLeft && !movRight && (this.quarter == 1 || this.quarter == 4) && this.BlockCoord[0][1]!=0) {
-            this.moveRight();
+            if (this.checkBlockCoords(this.BlockCoord[1][1],this.BlockCoord[1][0]))
+                this.moveRight();
         }
         else if (!movLeft && !movRight && (this.quarter == 2 || this.quarter == 3) && this.BlockCoord[0][1]!=0) {
-            this.moveLeft();
+            if (this.checkBlockCoords(this.BlockCoord[0][1],this.BlockCoord[0][0]))
+                this.moveLeft();
         }
         double = false;
         this.currentDirection = directions.up;
@@ -282,10 +299,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.speed.speedY += this.walkStep;
         }
         else if (!movLeft && !movRight && (this.quarter == 4 || this.quarter == 1) && this.BlockCoord[2][1]!=12) {
-            this.moveRight();
+            if (this.checkBlockCoords(this.BlockCoord[3][1],this.BlockCoord[3][0]))
+                this.moveRight();
         }
         else if (!movLeft && !movRight && (this.quarter == 3 || this.quarter == 2) && this.BlockCoord[2][1]!=12) {
-            this.moveLeft();
+            if (this.checkBlockCoords(this.BlockCoord[2][1],this.BlockCoord[2][0]))
+                this.moveLeft();
         }
         double = false;
         this.currentDirection = directions.down;
@@ -1107,6 +1126,8 @@ function bombHandler() {
 
     this.clearBombs = function () {
         this.bombs = [];
+        this.bombCounter = 0;
+        this.myBombsCounter = 0;
     };
 
     this.removeBomb = function (bomb) {

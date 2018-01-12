@@ -1,6 +1,6 @@
 
 // connect to server
-var socket = io.connect('http://10.29.19.55:4200/');
+var socket = io.connect('http://localhost:4200/');
 var currentlyConnected = false;
 var gameId = 0;
 
