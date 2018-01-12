@@ -320,16 +320,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, -this.walkStep, 0) &&
             this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, -this.walkStep, 0)) {
             this.speed.speedX -= this.walkStep;
-            overrideDown = false;
-            overrideUp = false;
         }
-        else if (!movUp && !movDown && (this.quarter == 3 || this.quarter == 4) && !overrideUp) {
+        else if (!movUp && !movDown && (this.quarter == 3 || this.quarter == 4) && this.BlockCoord[0][0]!=0) {
             this.moveDown();
-            overrideDown = true;
         }
-        else if (!movUp && !movDown && (this.quarter == 2 || this.quarter == 1) && !overrideDown) {
+        else if (!movUp && !movDown && (this.quarter == 2 || this.quarter == 1) && this.BlockCoord[0][0]!=0) {
             this.moveUp();
-            overrideUp = true;
         }
         double = false;
         this.currentDirection = directions.left;
@@ -339,16 +335,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, this.walkStep, 0) &&
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, this.walkStep, 0)) {
             this.speed.speedX += this.walkStep;
-            overrideDown = false;
-            overrideUp = false;
         }
-        else if (!movUp && !movDown && (this.quarter == 4 || this.quarter == 3) && !overrideUp) {
+        else if (!movUp && !movDown && (this.quarter == 4 || this.quarter == 3) && this.BlockCoord[1][0]!=18) {
             this.moveDown();
-            overrideDown = true;
         }
-        else if (!movUp && !movDown && (this.quarter == 1 || this.quarter == 2) && !overrideDown) {
+        else if (!movUp && !movDown && (this.quarter == 1 || this.quarter == 2) && this.BlockCoord[1][0]!=18) {
             this.moveUp();
-            overrideUp = true;
         }
         double = false;
         this.currentDirection = directions.right;
@@ -358,16 +350,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep) &&
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep)) {
             this.speed.speedY -= this.walkStep;
-            overrideRight = false;
-            overrideLeft = false;
         }
-        else if (!movLeft && !movRight && (this.quarter == 1 || this.quarter == 4) && !overrideLeft) {
+        else if (!movLeft && !movRight && (this.quarter == 1 || this.quarter == 4) && this.BlockCoord[0][1]!=0) {
             this.moveRight();
-            overrideRight = true;
         }
-        else if (!movLeft && !movRight && (this.quarter == 2 || this.quarter == 3) && !overrideRight) {
+        else if (!movLeft && !movRight && (this.quarter == 2 || this.quarter == 3) && this.BlockCoord[0][1]!=0) {
             this.moveLeft();
-            overrideLeft = true;
         }
         double = false;
         this.currentDirection = directions.up;
@@ -377,16 +365,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         if (this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep) &&
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep)) {
             this.speed.speedY += this.walkStep;
-            overrideRight = false;
-            overrideLeft = false;
         }
-        else if (!movLeft && !movRight && (this.quarter == 4 || this.quarter == 1) && !overrideLeft) {
+        else if (!movLeft && !movRight && (this.quarter == 4 || this.quarter == 1) && this.BlockCoord[2][1]!=12) {
             this.moveRight();
-            overrideRight = true;
         }
-        else if (!movLeft && !movRight && (this.quarter == 3 || this.quarter == 2) && !overrideRight) {
+        else if (!movLeft && !movRight && (this.quarter == 3 || this.quarter == 2) && this.BlockCoord[2][1]!=12) {
             this.moveLeft();
-            overrideLeft = true;
         }
         double = false;
         this.currentDirection = directions.down;
@@ -402,10 +386,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         var movedDiagonally = false;
 
         //controlling for corner assist
-        var overrideLeft = false;
-        var overrideRight = false;
-        var overrideUp = false;
-        var overrideDown = false;
         var double = false;
 
         for (var i = 0; i < this.walkSpeed; ++i) {
