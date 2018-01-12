@@ -185,7 +185,6 @@ function updateGameArea() {
     if (movLeft || movRight || movUp || movDown) {
         myPlayer.tryMove();
     }
-
     // redraw background if sth changed
     if (myBackground.layerDirty) {
         myBackground.update();
