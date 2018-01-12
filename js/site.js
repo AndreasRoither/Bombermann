@@ -7,8 +7,9 @@ var playerRdy = false;
 $(document).ready(function () {
   showModalPopup();
   // Get the element with id="defaultOpen" and click on it
-  document.getElementById("defaultOpen").click();
+  $("#defaultOpen").click();
   addListeners();
+  $("#playerName1").focus();
 });
 
 function make_responsive() {
@@ -154,6 +155,15 @@ window.addEventListener("keydown", function(e) {
   if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
       e.preventDefault();
   }
+
+  /*
+  if (([32].indexOf(e.keyCode) > -1) && gameStarted) {
+    element = document.getElementById('text_msg');
+    alert(document.activeElement());
+    if (!(element == document.activeElement())) {
+      e.preventDefault();
+    }
+  }*/
 }, false);
 
 window.addEventListener("keydown", function (event) {

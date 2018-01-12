@@ -1,13 +1,7 @@
 
-//load images first
+// load images first
 var myImageFactory = new ImageFactory();
 myImageFactory.load(ImageFactoryLoaded);
-
-var virusTimer = {
-    diarrhea: 15000,
-    fastBomb: 20000,
-    default: 15000
-};
 
 /********************/
 /*   Declarations   */
@@ -27,11 +21,18 @@ var myGameArea = {
     start: function () {
         this.canvas.width = 665;
         this.canvas.height = 455;
-        this.interval = setInterval(updateGameArea, 30);
+        this.interval = setInterval(updateGameArea, 16);
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+};
+
+// Times for different viruses
+var virusTimer = {
+    diarrhea: 15000,
+    fastBomb: 20000,
+    default: 15000
 };
 
 // all directions
@@ -73,53 +74,6 @@ var modeTypes = {
     destroytheblock: 5
 };
 
-/*  handles all player bombs
- *  automatic removal of bombs after bomb explodetimer
- */
-function bombHandler() {
-    this.bombCounter = 0;
-    this.myBombsCounter = 0;
-    this.bombs = [];
-
-    this.addBomb = function (position, radius, bombTimer) {
-        var playerBomb = new bomb(myPlayer.ctx, bombTimer, 1000, radius, 2, position);
-        this.bombs.push(playerBomb);
-        this.myBombsCounter += 1;
-        this.bombCounter += 1;
-        var index = this.bombCounter;
-        var _this = this;
-
-        // notify other players
-        playerBombSet(playerBomb);
-
-        // set remove bomb timeout
-        setTimeout(function () {
-            _this.bombs.splice(index, 1);
-            _this.bombCounter -= 1;
-            _this.myBombsCounter -= 1;
-        }, (playerBomb.bombTimer + playerBomb.explodeTimer));
-    };
-
-    this.addBombEnemy = function (enemyBomb) {
-        var playerBomb = new bomb(myPlayer.ctx, enemyBomb.bombTimer, enemyBomb.explodeTimer, enemyBomb.explosionRadius, 2, enemyBomb.pos);
-        playerBomb.bombPlayerId = enemyBomb.bombPlayerId;
-        this.bombs.push(playerBomb);
-        this.bombCounter += 1;
-        var index = this.bombCounter;
-        var _this = this;
-
-        // set remove bomb timeout
-        setTimeout(function () {
-            _this.bombs.splice(index, 1);
-            _this.bombCounter -= 1;
-        }, (playerBomb.bombTimer + playerBomb.explodeTimer));
-    };
-
-    this.clearBombs = function () {
-        this.bombs = [];
-    };
-};
-
 var globalPlayerSizeMultiplier = 0.5;
 var globalTileSize = 35;
 var gameStarted = false;
@@ -128,6 +82,7 @@ var gameFinished = false;
 var currentGamemode;
 var currentDifficulty;
 var closingInterval;
+var bombsToDelete = [];
 
 /********************
 *     Functions     *
@@ -137,7 +92,7 @@ function startGame(position, difficulty, mode) {
     myBombHandler = new bombHandler();
 
     myBackground = new background(myGameArea.context, globalTileSize);
-    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 4);
+    myPlayer = new player(myGameArea.context, position, globalPlayerSizeMultiplier, 2);
     currentDifficulty = difficulty;
 
     if (currentDifficulty == difficultyTypes.hardmode) {
@@ -163,7 +118,7 @@ function startGame(position, difficulty, mode) {
                     change_infobar("Closing in!");
                     myBackground.nextSolidBlock();
                 }, 500);
-            }, 20000);
+            }, 5000);
 
             break;
         case modeTypes.destroytheblock:
@@ -181,66 +136,35 @@ function startGame(position, difficulty, mode) {
 }
 
 function updateGameArea() {
-    updateStatus();//gamepad
+    updateStatus(); //gamepad
     if (movLeft || movRight || movUp || movDown) {
         myPlayer.tryMove();
-    }
-
-    // redraw background if sth changed
-    if (myBackground.layerDirty) {
-        myBackground.update();
-        myPlayer.update(false, true);
-        myBackground.layerDirty = false;
-
-        players.players.forEach(element => {
-            if (element.isAlive) element.update(true);
-        });
-
-        myBombHandler.bombs.forEach(element => {
-            element.drawBomb();
-        });
-    }
-
-    // redraw player if sth changed
-    if (myPlayer.layerDirty) {
-        myPlayer.update(true, false);
-        myPlayer.layerDirty2 = true;
-        playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
-    } else if (myPlayer.layerDirty2) {
+    } else {
         myPlayer.imageCounter = 0;
-        myPlayer.layerDirty2 = false;
-        myPlayer.update(true, false);
-        playerMoved(myPlayer.pos, myPlayer.imageCounter, myPlayer.currentDirection);
     }
 
-    // draw bombs
-    if (myBombHandler.bombCounter != 0) {
-        myBombHandler.bombs.forEach(element => {
-            var collision = false;
-            if (collisionDetectionBomb(element)) {
-                element.layerDirty = true;
-                collision = true;
-            }
+    // redraw background
+    myBackground.update();
 
-            if (element.layerDirty || element.status >= 1) {
-                console.log("Bomb drawn")
-                element.drawBomb();
+    // redraw bombs
+    myBombHandler.bombs.forEach(element => {
+        element.drawBomb();
+        if (element.status == 1) bombsToDelete.push(element);
+    });
 
-                if (collision) myPlayer.update(false, false);
-                //element.layerDirty = false;
-            }
+    if (bombsToDelete.length != 0) {
+        bombsToDelete.forEach(element => {
+            myBombHandler.removeBomb(element);
         });
     }
 
-    // draw players
-    if (players.playerCount != 0) {
-        players.players.forEach(tempPlayer => {
-            if ((tempPlayer.layerDirty && tempPlayer.isAlive) || (collisionDetectionPlayer(tempPlayer) && tempPlayer.isAlive)) {
-                tempPlayer.update(true, true);
-                tempPlayer.layerDirty = false;
-            }
-        });
-    }
+    // redraw other players
+    players.players.forEach(element => {
+        element.update();
+    });
+
+    // redraw myplayer
+    myPlayer.update();
 }
 
 /********************/
@@ -299,15 +223,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     };
 
     this.BlockCoord = [
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1]
-    ];
-
-    this.oldBlockCoord = [
         [1, 1],
         [1, 1],
         [1, 1],
@@ -456,15 +371,18 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         // update image counter and return true if moved
         if (moved) {
             this.updateImageCounter();
+            playerMoved(this.pos, this.imageCounter, this.currentDirection);
             return true;
-        } else
+        } else {
             return false;
+        }
     };
 
     //checks if player can move to a point
     this.possibleMove = function (x, y, dx, dy) {
         var tempY = Math.trunc((y + dy) / myBackground.tileSize);
         var tempX = Math.trunc((x + dx) / myBackground.tileSize);
+
         if (myBackground.map[tempY][tempX] == tileBlocks.background || myBackground.map[tempY][tempX] == tileBlocks.BombUp || myBackground.map[tempY][tempX] == tileBlocks.FlameUp || myBackground.map[tempY][tempX] == tileBlocks.SpeedUp || myBackground.map[tempY][tempX] == tileBlocks.Virus) {
             return true;
         }
@@ -538,22 +456,9 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
     }
 
     // draws player according to the current looking direction
-    this.update = function (draw_bg, draw_others) {
+    this.update = function () {
         if (!this.isAlive) return;
-        if (draw_bg) {
-            for (var i = 0; i < 6; ++i) { //draw blocks behind player
-                myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
-            }
-            this.oldBlockCoord = this.BlockCoord;
-        }
 
-        if (draw_others) {
-            if (players.playerCount != 0) {
-                players.players.forEach(element => {
-                    element.update(false, false);
-                });
-            }
-        }
         //draw Player
         switch (this.currentDirection) {
             case directions.left:
@@ -581,7 +486,13 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
 
         if (this.imageCounter < 7) {
-            this.imageCounter = this.imageCounter + 1;
+            if (this.delay == 2) { 
+                this.imageCounter = this.imageCounter + 1; 
+                this.delay = 0; 
+            } 
+            else { 
+                this.delay++; 
+            } 
         } else {
             this.imageCounter = 0;
         }
@@ -839,7 +750,6 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
 
     // calculate player pos, and set old one to prevent overdrawing other players
     this.convertPlayerPos();
-    this.oldBlockCoord = this.BlockCoord;
 }
 
 /* Multiplayer player object
@@ -852,15 +762,6 @@ function playerObject(position, id) {
     this.isAlive = true;
 
     this.BlockCoord = [
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1],
-        [1, 1]
-    ];
-
-    this.oldBlockCoord = [
         [1, 1],
         [1, 1],
         [1, 1],
@@ -894,12 +795,8 @@ function playerObject(position, id) {
         points: 0
     };
 
-    this.update = function (draw_bg, draw_others) {
-        // draw block behind player and draw player
-        if (draw_bg) {
-            this.convertPlayerPos();
-            this.drawBlockCoords();
-        }
+    this.update = function () {
+        if (!this.isAlive) return;
 
         switch (this.currentDirection) {
             case directions.left:
@@ -915,17 +812,8 @@ function playerObject(position, id) {
                 myGameArea.context.drawImage(myImageFactory.front[this.imageCounter], this.pos.x, this.pos.y, this.dimensions.width, this.dimensions.height);
                 break;
         }
-        if (draw_others) {
-            myPlayer.update(false, false);
-            this.removePowerUp();
-        }
-    };
 
-    this.drawBlockCoords = function () {
-        for (var i = 0; i < 6; ++i) { //draw blocks behind player
-            myBackground.drawBlock(this.oldBlockCoord[i][0], this.oldBlockCoord[i][1]);
-        }
-        this.oldBlockCoord = this.BlockCoord;
+        this.removePowerUp();
     };
 
     //gives upper left and lower right corner in background coords
@@ -1002,7 +890,6 @@ function playerObject(position, id) {
     };
 
     this.convertPlayerPos();
-    this.oldBlockCoord = this.BlockCoord;
 }
 
 function otherPlayers() {
@@ -1063,14 +950,6 @@ function background(context, tileSize) {
     // update function draws the background
     this.update = function () {
         this.drawBackground();
-    };
-
-    // draw around player pos
-    this.drawAroundplayer = function () {
-        for (var i = 0; i < 6; ++i) { //draw blocks behind player
-            myBackground.drawBlock(myPlayer.oldBlockCoord[i][0], myPlayer.oldBlockCoord[i][1]);
-        }
-        myPlayer.oldBlockCoord = myPlayer.BlockCoord;
     };
 
     // draw_background draws background according to the matrix (this.map)
@@ -1159,8 +1038,8 @@ function background(context, tileSize) {
             this.draw_image(this.ctx, myImageFactory.tiles[tileBlocks.solid], this.closingPosition.x, this.closingPosition.y);
 
             var playerCoords = {
-                bodyX: myPlayer.BlockCoord[3][0],
-                bodyY: myPlayer.BlockCoord[3][1]
+                bodyX: myPlayer.BlockCoord[4][0],
+                bodyY: myPlayer.BlockCoord[4][1]
             };
 
             if (this.closingPosition.y == playerCoords.bodyY && this.closingPosition.x == playerCoords.bodyX) {
@@ -1199,6 +1078,49 @@ function background(context, tileSize) {
     };
 }
 
+/*  handles all player bombs
+ */
+function bombHandler() {
+    this.bombCounter = 0;
+    this.myBombsCounter = 0;
+    this.bombs = [];
+
+    this.addBomb = function (position, radius, bombTimer) {
+        var playerBomb = new bomb(myPlayer.ctx, bombTimer, 1000, radius, 2, position);
+        this.bombs.push(playerBomb);
+        this.myBombsCounter += 1;
+        this.bombCounter += 1;
+        var index = this.bombCounter;
+
+        // notify other players
+        playerBombSet(playerBomb);
+    };
+
+    this.addBombEnemy = function (enemyBomb) {
+        var playerBomb = new bomb(myPlayer.ctx, enemyBomb.bombTimer, enemyBomb.explodeTimer, enemyBomb.explosionRadius, 2, enemyBomb.pos);
+        playerBomb.bombPlayerId = enemyBomb.bombPlayerId;
+        this.bombs.push(playerBomb);
+        this.bombCounter += 1;
+        var index = this.bombCounter;
+        var _this = this;
+    };
+
+    this.clearBombs = function () {
+        this.bombs = [];
+    };
+
+    this.removeBomb = function (bomb) {
+        var index = this.bombs.indexOf(bomb);
+        if (index > -1) {
+            if (bomb.bombPlayerId == socket.id){ 
+                this.myBombsCounter--;
+            }
+            this.bombCounter--;
+            this.bombs.splice(index, 1);
+        }
+    };
+};
+
 /*everything with bombs*/
 function bomb(context, bombTimer, explodeTimer, explosionRadius, status, position) {
     this.bombPlayerId = socket.id;
@@ -1227,15 +1149,12 @@ function bomb(context, bombTimer, explodeTimer, explosionRadius, status, positio
         this.status = 3;
         this.makeExplosion();
         explosion.play();
-        myBackground.layerDirty = true;
         await sleep(this.explodeTimer);
         this.bombOver();
     };
 
     this.bombOver = function () {
         this.status = 1;
-        myBackground.layerDirty = true;
-        this.layerDirty = false;
     };
 
     this.makeExplosion = function () {
@@ -1505,43 +1424,13 @@ function collisionDetectionBomb(bomb) {
     var playerCoords = {
         headX: myPlayer.BlockCoord[1][0],
         headY: myPlayer.BlockCoord[1][1],
-        bodyX: myPlayer.BlockCoord[3][0],
-        bodyY: myPlayer.BlockCoord[3][1]
+        bodyX: myPlayer.BlockCoord[4][0],
+        bodyY: myPlayer.BlockCoord[4][1]
     };
 
     if (bomb.pos.x == playerCoords.headX || bomb.pos.x == playerCoords.bodyX || bomb.pos.y == playerCoords.headY || bomb.pos.y == playerCoords.bodyY) {
         return true;
     }
-}
-
-// collision detection between players
-function collisionDetectionPlayer(player) {
-
-    // check player Block Coords
-    var playerCoords = {
-        headX: myPlayer.BlockCoord[1][0],
-        headY: myPlayer.BlockCoord[1][1],
-        bodyX: myPlayer.BlockCoord[3][0],
-        bodyY: myPlayer.BlockCoord[3][1]
-    };
-
-    var otherPlayerCoords = {
-        headX: player.BlockCoord[1][0],
-        headY: player.BlockCoord[1][1],
-        bodyX: player.BlockCoord[3][0],
-        bodyY: player.BlockCoord[3][1]
-    };
-
-    if (((playerCoords.headX == otherPlayerCoords.headX) || (playerCoords.headX - 1 == otherPlayerCoords.headX) || (playerCoords.headX + 1 == otherPlayerCoords.headX)) &&
-        ((playerCoords.headY == otherPlayerCoords.headY) ||
-            (playerCoords.headY == otherPlayerCoords.bodyY) ||
-            (playerCoords.bodyY == otherPlayerCoords.headY) ||
-            (playerCoords.bodyY - 1 == otherPlayerCoords.headY) ||
-            (playerCoords.headY - 1 == otherPlayerCoords.bodyY) ||
-            (playerCoords.headY + 1 == otherPlayerCoords.bodyY))) {
-        return true;
-    }
-    return false;
 }
 
 function getRandomInt(min, max) {
