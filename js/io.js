@@ -179,6 +179,20 @@ socket.on('player-points', function(playerId, points) {
 
 // destroy the block
 socket.on('dtb-win', function (winner) {
+    myPlayer.resetPosition();
+    myPlayer.resetStats();
+    playerRdy = false;
+    gameStarted = false;
+    gameFinished = true;
+
+    $("#checkbox").prop("checked", false);
+    $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
+    $('#players > li > div > p > span').each(function () { 
+        $(this).removeClass("ready").addClass("not-ready").text("not ready");
+    });
+
+    change_infobar("And the winner is: " + winner.name + " Kills: " + winner.kills);
+
     botmsg = {
         message: "And the winner is: " + winner.name,
         message2: "Points: " + winner.points

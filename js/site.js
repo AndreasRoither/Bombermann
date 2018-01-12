@@ -8,8 +8,8 @@ $(document).ready(function () {
   showModalPopup();
   // Get the element with id="defaultOpen" and click on it
   $("#defaultOpen").click();
-  addListeners();
   $("#playerName1").focus();
+  addListeners();
 });
 
 function make_responsive() {

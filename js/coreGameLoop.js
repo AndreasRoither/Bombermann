@@ -118,7 +118,7 @@ function startGame(position, difficulty, mode) {
                     change_infobar("Closing in!");
                     myBackground.nextSolidBlock();
                 }, 500);
-            }, 5000);
+            }, 20000);
 
             break;
         case modeTypes.destroytheblock:

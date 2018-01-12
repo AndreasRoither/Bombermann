@@ -135,7 +135,7 @@ function playerDead (id, bombId) {
 function playerNotDead (id) {
   $("#playercontainer" + id).removeClass("stripe-1").load();
   $("#checkbox").prop("checked", false);
-  $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
+  $("#playerReady").removeClass("ready").addClass("not-ready").text("not-ready");
   playerRdy = false;
   gameStarted = false;
 }
