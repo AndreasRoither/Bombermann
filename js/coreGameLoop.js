@@ -105,30 +105,6 @@ function startGame(position, difficulty, mode) {
     currentGamemode = mode;
     players = new otherPlayers();
 
-    switch (mode) {
-        case modeTypes.deathmatch:
-            break;
-        case modeTypes.closingin:
-
-            // set timeout when to start closing in mode
-            setTimeout(function () {
-                // set interval
-                myBackground.setClosingStartPosition(0, 1);
-                closingInterval = setInterval(function () {
-                    change_infobar("Closing in!");
-                    myBackground.nextSolidBlock();
-                }, 500);
-            }, 20000);
-
-            break;
-        case modeTypes.destroytheblock:
-            break;
-        case modeTypes.fogofwar:
-            myBackground.layerDirty = false;
-            myBackground.drawAroundplayer();
-            break;
-    }
-
     myGameArea.start();
 
     gameLoaded = true;
