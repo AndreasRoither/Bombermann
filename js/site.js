@@ -306,64 +306,62 @@ function updateStatus() {
   }
 
   var i = 0;
-  var j;
+  var j = 0;
   var cooldown = 0;
 
-  for (j in controllers) {
-    var controller = controllers[j];
-    var d = document.getElementById("controller" + j);
-    var buttons = d.getElementsByClassName("button");
+  var controller = controllers[j];
+  var d = document.getElementById("controller" + j);
+  var buttons = d.getElementsByClassName("button");
 
-    for (i = 0; i < controller.buttons.length; i++) {
-      var b = buttons[i];
-      var val = controller.buttons[i];
-      var pressed = val == 1.0;
-      if (typeof (val) == "object") {
-        pressed = val.pressed;
-        val = val.value;
-      }
+  for (i = 0; i < controller.buttons.length; i++) {
+    var b = buttons[i];
+    var val = controller.buttons[i];
+    var pressed = val == 1.0;
+    if (typeof (val) == "object") {
+      pressed = val.pressed;
+      val = val.value;
+    }
 
-      // 0 = A
-      if (pressed) {
-        if (i == 0 && cooldown == 0) {
-          cooldown = 10;
-          myPlayer.layBomb();
-        }
+    // 0 = A
+    if (pressed) {
+      if (i == 0 && cooldown == 0) {
+        cooldown = 10;
+        myPlayer.layBomb();
       }
     }
-    if (cooldown > 0) cooldown -= 1;
+  }
+  if (cooldown > 0) cooldown -= 1;
 
-    if (controller.axes[0] > 0.25) { //right
-      padRight = true;
-      movRight = true;
-    } else if (controller.axes[0] < -0.25) { //left
-      padLeft = true;
-      movLeft = true;
-    } else {
-      if (padLeft) {
-        padLeft = false;
-        movLeft = false;
-      }
-      if (padRight) {
-        padRight = false;
-        movRight = false;
-      }
+  if (controller.axes[0] > 0.25) { //right
+    padRight = true;
+    movRight = true;
+  } else if (controller.axes[0] < -0.25) { //left
+    padLeft = true;
+    movLeft = true;
+  } else {
+    if (padLeft) {
+      padLeft = false;
+      movLeft = false;
     }
-    if (controller.axes[1] > 0.25) { //down
-      padDown = true;
-      movDown = true;
-    } else if (controller.axes[1] < -0.25) { //up
-      padUp = true;
-      movUp = true;
-    } else {
-      if (padDown) {
-        padDown = false;
-        movDown = false;
-      }
-      if (padUp) {
-        padUp = false;
-        movUp = false;
-      }
+    if (padRight) {
+      padRight = false;
+      movRight = false;
+    }
+  }
+  if (controller.axes[1] > 0.25) { //down
+    padDown = true;
+    movDown = true;
+  } else if (controller.axes[1] < -0.25) { //up
+    padUp = true;
+    movUp = true;
+  } else {
+    if (padDown) {
+      padDown = false;
+      movDown = false;
+    }
+    if (padUp) {
+      padUp = false;
+      movUp = false;
     }
   }
 }
