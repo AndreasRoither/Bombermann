@@ -300,6 +300,7 @@ function removegamepad(gamepad) {
   delete controllers[gamepad.index];
 }
 
+var cooldown = 0;
 function updateStatus() {
   if (!haveEvents) {
     scangamepads();
@@ -307,7 +308,6 @@ function updateStatus() {
 
   var i = 0;
   var j = 0;
-  var cooldown = 0;
 
   if(controllers[0] != undefined) {
     var controller = controllers[j];
