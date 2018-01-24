@@ -6,7 +6,7 @@
 Bombermann is a game built with Javascript HTML and CSS. It's a remake from the classic game [Bomberman](https://de.wikipedia.org/wiki/Bomberman).
 
 ### Installation
-Download the repository. Start the Node JS Server with: node index.js. After that open up the index.html in your browser. Enjoy.
+Download the repository. Install [Node JS](https://nodejs.org/en/). Start the Node JS Server with: node index.js in the console from the node js folder in the repo. After that open up the index.html file in your browser. Enjoy.
 As an alternative you can also start the server with the .bat files.
 
 ### INFO
