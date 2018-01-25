@@ -17,7 +17,7 @@ function make_responsive() {
 
   if (x.className === "topnav") {
     x.className += " responsive";
-  } 
+  }
   else {
     x.className = "topnav";
   }
@@ -150,10 +150,10 @@ var movUp = false;
 var movDown = false;
 
 // prevent down or up scrolling; since 
-window.addEventListener("keydown", function(e) {
+window.addEventListener("keydown", function (e) {
   // arrow keys
-  if([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-      e.preventDefault();
+  if ([37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+    e.preventDefault();
   }
 
   /*
@@ -309,7 +309,7 @@ function updateStatus() {
   var i = 0;
   var j = 0;
 
-  if(controllers[0] != undefined) {
+  if (controllers[0] != undefined) {
     var controller = controllers[j];
     var d = document.getElementById("controller" + j);
     var buttons = d.getElementsByClassName("button");
@@ -368,16 +368,16 @@ function updateStatus() {
   }
 }
 
-  function scangamepads() {
-    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
-    for (var i = 0; i < gamepads.length; i++) {
-      if (gamepads[i]) {
-        if (gamepads[i].index in controllers) {
-          controllers[gamepads[i].index] = gamepads[i];
-        } else {
-          addgamepad(gamepads[i]);
-        }
+function scangamepads() {
+  var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+  for (var i = 0; i < gamepads.length; i++) {
+    if (gamepads[i]) {
+      if (gamepads[i].index in controllers) {
+        controllers[gamepads[i].index] = gamepads[i];
+      } else {
+        addgamepad(gamepads[i]);
       }
+    }
   }
 }
 

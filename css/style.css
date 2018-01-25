@@ -34,7 +34,9 @@ body {
     width: 100%;
 }
 
+
 /* top nav style */
+
 .topnav {
     overflow: hidden;
     background-color: #333;
@@ -64,23 +66,31 @@ body {
     color: white;
 }
 
+
 /* three unequal columns the float next to each other */
+
 .column {
     float: left;
 }
 
+
 /* Left and right column */
+
 .column.side {
     width: 25%;
 }
 
+
 /* Middle column */
+
 .column.middle {
     width: 50%;
     padding: 10px;
 }
 
+
 /* nav lists */
+
 ul {
     margin-top: 5px;
     width: 100%;
@@ -103,7 +113,9 @@ ul li {
     list-style: none;
 }
 
+
 /* Clear floats after the columns */
+
 .row:after {
     content: "";
     display: table;
@@ -154,11 +166,14 @@ textarea {
     width: 100%;
 }
 
+
 /********************
 *       Footer      *
 *********************/
 
+
 /* footer that is fixed */
+
 .footer {
     background-color: #f1f1f1;
     text-align: center;
@@ -167,6 +182,7 @@ textarea {
     bottom: 0;
     width: 100%;
 }
+
 
 /********************
 * Bomb & Hover Anim *
@@ -187,7 +203,9 @@ textarea {
     animation-timing-function: linear;
 }
 
+
 /* Bomb Animation */
+
 @keyframes pulse_animation {
     0% {
         transform: scale(1);
@@ -215,11 +233,14 @@ textarea {
     }
 }
 
+
 /********************
 *       Tabs        *
 *********************/
 
+
 /* tab from popup */
+
 .tablink {
     background-color: #555;
     color: white;
@@ -230,7 +251,6 @@ textarea {
     padding: 14px 16px;
     font-size: 17px;
     width: 50%;
-    
 }
 
 .tablink-left {
@@ -302,7 +322,9 @@ textarea {
     transition: 3s;
 }
 
+
 /* Add Zoom Animation */
+
 .animate {
     -webkit-animation: animatezoom 0.5s;
     animation: animatezoom 0.5s
@@ -326,6 +348,7 @@ textarea {
     }
 }
 
+
 /********************
 *       Canvas      *
 *********************/
@@ -340,6 +363,7 @@ canvas {
     max-width: 800px;
     z-index: 2;
 }
+
 
 /********************
 *     infopopup     *
@@ -411,6 +435,7 @@ canvas {
     }
 }
 
+
 /********************
 *      Chat Msg      *
 *       Player       *
@@ -475,11 +500,14 @@ canvas {
     color: #f44336;
 }
 
+
 /* so long words won't break out of the div */
+
 .ellipses {
     text-overflow: ellipsis;
     overflow-wrap: break-word;
 }
+
 
 /********************
 *      Button       *
@@ -568,11 +596,14 @@ canvas {
     background-color: #46a049;
 }
 
+
 /********************
 *      Columns      *
 *********************/
 
+
 /* selects all col- */
+
 [class*="col-"] {
     float: left;
     padding: 15px;
@@ -627,6 +658,7 @@ canvas {
 .col-12 {
     width: 100%;
 }
+
 
 /********************
 *   Toogle Switch   *
@@ -689,18 +721,23 @@ input:checked+.slider:before {
     border-radius: 50%;
 }
 
+
 /********************
 *      Stripes      *
 *********************/
 
+
 /* for player death */
+
 .stripe-1 {
     background: repeating-linear-gradient( 45deg, #ff000069, #ff000069 10px, #f1f1f1 10px, #f1f1f1 20px);
 }
 
+
 /********************
 * Responsive layout *
 *********************/
+
 
 /* the three columns stack on top of each other instead of next to each other  */
 
@@ -731,7 +768,9 @@ input:checked+.slider:before {
     }
 }
 
+
 /* cols */
+
 @media screen and (max-width: 800px) {
     [class*="col-"] {
         width: 100%;

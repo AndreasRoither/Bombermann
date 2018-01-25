@@ -1,6 +1,6 @@
 /********************
-*     Examples      *
-*********************/
+ *     Examples      *
+ *********************/
 
 /*
 // sending to sender-client only
@@ -29,9 +29,9 @@ socket.broadcast.to(socketid).emit('message', 'for your eyes only');*/
 
 
 /********************
-*  Declarations &   *
-*    setting up     *
-*********************/
+ *  Declarations &   *
+ *    setting up     *
+ *********************/
 
 var debug = false;
 var currentOpenGameSessions = 0;
@@ -50,11 +50,11 @@ var port_to_listen = 4200;
 var logInterval = setInterval(function () {
     var tempcurrentdate = new Date();
     var tempdatetime = 'Server check at: ' + tempcurrentdate.getDate() + '/' +
-    (tempcurrentdate.getMonth() + 1) + '/' +
-    tempcurrentdate.getFullYear() + ' @ ' +
-    tempcurrentdate.getHours() + ':' +
-    tempcurrentdate.getMinutes() + ':' +
-    tempcurrentdate.getSeconds();
+        (tempcurrentdate.getMonth() + 1) + '/' +
+        tempcurrentdate.getFullYear() + ' @ ' +
+        tempcurrentdate.getHours() + ':' +
+        tempcurrentdate.getMinutes() + ':' +
+        tempcurrentdate.getSeconds();
 
     console.log('-- ' + tempdatetime + ' --');
     console.log(ConsoleColor.Bright + ConsoleColor.FgGreen + '\r\nServer' + ConsoleColor.Reset);
@@ -153,7 +153,10 @@ io.on('connection', function (client) {
             ready: false,
             alive: true,
             startPosition: playerStartPosition(0),
-            position: { x: 0, y: 0 },
+            position: {
+                x: 0,
+                y: 0
+            },
             points: 0,
             kills: 0
         };
@@ -208,7 +211,10 @@ io.on('connection', function (client) {
                     ready: false,
                     alive: true,
                     startPosition: playerStartPosition(playerIndex),
-                    position: { x: 0, y: 0 },
+                    position: {
+                        x: 0,
+                        y: 0
+                    },
                     points: 0,
                     kills: 0
                 };
@@ -225,13 +231,13 @@ io.on('connection', function (client) {
         }
     });
 
-    client.on('game-finished', function(id){
+    client.on('game-finished', function (id) {
         var game = games[data.id];
         if (!game) return;
         game.started = false;
     });
 
-    client.on('player-reset', function(gameId, playerId){
+    client.on('player-reset', function (gameId, playerId) {
         var game = games[gameId];
         if (!game) return;
 
@@ -292,7 +298,7 @@ io.on('connection', function (client) {
         client.broadcast.to(gameId).emit('player-move', thePlayer, position, imageCounter, currentDirection);
     });
 
-    client.on('points', function(gameId, playerId, points) {
+    client.on('points', function (gameId, playerId, points) {
         var game = games[gameId];
 
         if (!game) return;
@@ -317,7 +323,7 @@ io.on('connection', function (client) {
         client.broadcast.to(gameId).emit('player-points', playerId, points);
     });
 
-    client.on('death', function(gameId, playerId, bombId) {
+    client.on('death', function (gameId, playerId, bombId) {
         var game = games[gameId];
 
         if (!game) return;
@@ -427,8 +433,8 @@ io.on('connection', function (client) {
 });
 
 /********************
-*  Helper functions *
-*********************/
+ *  Helper functions *
+ *********************/
 
 function pickAvatar(game) {
 
@@ -465,29 +471,29 @@ function createMatrix(gamemode, Blocks) {
     var blockSet = false;
 
     //Chances for Deathmatch
-    var bombChance  = 0.08;
+    var bombChance = 0.08;
     var flameChance = 0.08;
     var speedChance = 0.08;
     var virusChance = 0.02;
     var emptyChance = 0.3;
 
-    switch(gamemode) {
+    switch (gamemode) {
         case modeTypes.destroytheblock:
             emptyChance = 0.9;
-            bombChance  = 0.01;
+            bombChance = 0.01;
             flameChance = 0.01;
             speedChance = 0.01;
             virusChance = 0.01;
             break;
         case modeTypes.test:
             emptyChance = 0.99;
-            bombChance  = 0.01;
+            bombChance = 0.01;
             flameChance = 0.01;
             speedChance = 0.01;
             virusChance = 0.01;
             break;
     }
-    
+
     for (var i = 0; i < dimensions.height; i++) {
         matrix[i] = new Array();
         for (var j = 0; j < dimensions.width; j++) {
@@ -498,13 +504,13 @@ function createMatrix(gamemode, Blocks) {
     // top & bottom wall
     for (var i = 0; i < dimensions.width; i++) {
         matrix[0][i] = 0;
-        matrix[dimensions.height-1][i] = tileBlocks.solid;
+        matrix[dimensions.height - 1][i] = tileBlocks.solid;
     }
 
     // side wall
     for (var i = 0; i < dimensions.height; i++) {
         matrix[i][0] = 0;
-        matrix[i][dimensions.width-1] = tileBlocks.solid;
+        matrix[i][dimensions.width - 1] = tileBlocks.solid;
     }
 
     // wall every two pos
@@ -517,7 +523,7 @@ function createMatrix(gamemode, Blocks) {
     // random blocks
     for (var i = 1; i < dimensions.height - 1; i++) {
         for (var j = 1; j < dimensions.width - 1; j++) {
-            if (matrix[i][j] != 0){
+            if (matrix[i][j] != 0) {
                 var block = Math.random();
 
                 if (gamemode == modeTypes.virusonly) {
@@ -525,21 +531,17 @@ function createMatrix(gamemode, Blocks) {
                         matrix[i][j] = tileBlocks.hiddenVirus;
                         blockSet = true;
                     }
-                }
-                else {
+                } else {
                     if (block > (1 - speedChance)) {
                         matrix[i][j] = tileBlocks.hiddenSpeedUp;
                         blockSet = true;
-                    }
-                    else if (block > (1 - speedChance - virusChance)) {
+                    } else if (block > (1 - speedChance - virusChance)) {
                         matrix[i][j] = tileBlocks.hiddenVirus;
                         blockSet = true;
-                    }
-                    else if (block > (1 - speedChance - virusChance - flameChance)) {
+                    } else if (block > (1 - speedChance - virusChance - flameChance)) {
                         matrix[i][j] = tileBlocks.hiddenFlameUp;
                         blockSet = true;
-                    }
-                    else if (block > (1 - speedChance - virusChance - flameChance - bombChance)) {
+                    } else if (block > (1 - speedChance - virusChance - flameChance - bombChance)) {
                         matrix[i][j] = tileBlocks.hiddenBombUp;
                         blockSet = true;
                     }
@@ -548,8 +550,7 @@ function createMatrix(gamemode, Blocks) {
                 if (!blockSet) {
                     if (block > emptyChance) {
                         matrix[i][j] = tileBlocks.explodeable;
-                    }
-                    else {
+                    } else {
                         matrix[i][j] = tileBlocks.background;
                     }
                 }
@@ -560,24 +561,24 @@ function createMatrix(gamemode, Blocks) {
 
     // make sure players can actually move
     // player 1
-    matrix[1][1]=1;
-    matrix[1][2]=1;
-    matrix[2][1]=1;
+    matrix[1][1] = 1;
+    matrix[1][2] = 1;
+    matrix[2][1] = 1;
 
     // player 2
-    matrix[1][16]=1;
-    matrix[1][17]=1;
-    matrix[2][17]=1;
+    matrix[1][16] = 1;
+    matrix[1][17] = 1;
+    matrix[2][17] = 1;
 
     // player 3
-    matrix[10][1]=1;
-    matrix[11][1]=1;
-    matrix[11][2]=1;
+    matrix[10][1] = 1;
+    matrix[11][1] = 1;
+    matrix[11][2] = 1;
 
     // player 4
-    matrix[11][16]=1;
-    matrix[11][17]=1;
-    matrix[10][17]=1;
+    matrix[11][16] = 1;
+    matrix[11][17] = 1;
+    matrix[10][17] = 1;
 
     var count = 0;
     var sum = 0;
@@ -653,8 +654,8 @@ setInterval(function () {
 }, 1000 * 60 * 10);
 
 /********************
-*   Start Server    *
-*********************/
+ *   Start Server    *
+ *********************/
 
 server.listen(port_to_listen, function () {
     var host = server.address().address;
@@ -663,4 +664,6 @@ server.listen(port_to_listen, function () {
     console.log('\r\n-- Server listening --');
     console.log(datetime);
     console.log('\r\nApp listening at http://%s:%s', host, port + '\n\r');
+    if (debug) console.log("\r\nServer operating in debug mode.");
+    else console.log("Server operating in normal mode, to switch to debug mode set debug=true");
 });

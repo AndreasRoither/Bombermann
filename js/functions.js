@@ -70,21 +70,21 @@ function addPlayerToBox(player) {
   $("#players").append(player_container).load();
 }
 
-function arrayClone( arr ) {
+function arrayClone(arr) {
   var i, copy;
 
-  if( Array.isArray(arr) ) {
-      copy = arr.slice( 0 );
-      for( i = 0; i < copy.length; i++ ) {
-          copy[ i ] = arrayClone( copy[ i ] );
-      }
-      return copy;
+  if (Array.isArray(arr)) {
+    copy = arr.slice(0);
+    for (i = 0; i < copy.length; i++) {
+      copy[i] = arrayClone(copy[i]);
+    }
+    return copy;
   }
-  else if( typeof arr === 'object' ) {
-      throw 'Cannot clone array containing an object!';
+  else if (typeof arr === 'object') {
+    throw 'Cannot clone array containing an object!';
   }
   else {
-      return arr;
+    return arr;
   }
 }
 
@@ -123,16 +123,16 @@ function playerMoved(position, imageCounter, currentDirection) {
 }
 
 function playerBombSet(bomb) {
-  socket.emit("bomb",gameId, bomb);
+  socket.emit("bomb", gameId, bomb);
 }
 
-function playerDead (id, bombId) {
+function playerDead(id, bombId) {
   $("#playercontainer" + id).addClass("stripe-1").load();
   change_infobar("You died");
   socket.emit("death", gameId, socket.id, bombId);
 }
 
-function playerNotDead (id) {
+function playerNotDead(id) {
   $("#playercontainer" + id).removeClass("stripe-1").load();
   $("#checkbox").prop("checked", false);
   $("#playerReady").removeClass("ready").addClass("not-ready").text("not-ready");
@@ -145,5 +145,5 @@ function sendPoints(points) {
 }
 
 function gameIsFinished() {
-  socket.emit("game-finished ",gameId);
+  socket.emit("game-finished ", gameId);
 }

@@ -4,22 +4,22 @@ var socket = io.connect('http://localhost:4200/');
 var currentlyConnected = false;
 var gameId = 0;
 
-socket.on('connect', function() {
+socket.on('connect', function () {
     currentlyConnected = true;
     change_infobar("Connected to the Server");
 });
 
-socket.on('disconnect', function() {
+socket.on('disconnect', function () {
     currentlyConnected = false;
     change_infobar("You are disconnected");
 });
 
-socket.on('connect_failed', function() {
+socket.on('connect_failed', function () {
     currentlyConnected = false;
     change_infobar("Connection failed");
 });
 
-socket.on('error', function() {
+socket.on('error', function () {
     currentlyConnected = false;
     change_infobar("Connection error");
 });
@@ -125,13 +125,13 @@ socket.on('game-start', function (id, matrix) {
     gameStarted = true;
     change_infobar("Game started");
 
-    $('#players > li > div').each(function () { 
+    $('#players > li > div').each(function () {
         $(this).removeClass("stripe-1").load();
     });
 
     myPlayer.isAlive = true;
     myPlayer.layerDirty = true;
-    
+
 
     if (gameFinished) {
         if (diarrheaIntervalRunning) {
@@ -188,7 +188,7 @@ socket.on('player-move', function (player, position, imageCounter, currentDirect
     });
 });
 
-socket.on('player-points', function(playerId, points) {
+socket.on('player-points', function (playerId, points) {
     players.players.forEach(element => {
         if (element.id == playerId) {
             element.stats.points = points;
@@ -206,7 +206,7 @@ socket.on('dtb-win', function (winner) {
 
     $("#checkbox").prop("checked", false);
     $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
-    $('#players > li > div > p > span').each(function () { 
+    $('#players > li > div > p > span').each(function () {
         $(this).removeClass("ready").addClass("not-ready").text("not ready");
     });
 
@@ -228,7 +228,7 @@ socket.on('bomb', function (enemyBomb) {
     myBombHandler.addBombEnemy(enemyBomb);
 });
 
-socket.on('player-death', function ( playerId, playerName, killerId) {
+socket.on('player-death', function (playerId, playerName, killerId) {
     $("#playercontainer" + playerId).addClass("stripe-1").load();
 
     players.players.forEach(tempPlayer => {
@@ -258,7 +258,7 @@ socket.on('win', function (winner) {
     var bot_message_container = "<li><div class=\"msg-container player-container\"><img src=\"img/Bomberman/Front/Bman_F_f00.png\" alt=\"Avatar\" class=\"left\" style=\"width:10%;\">";
     bot_message_container += "<p>" + botmsg.message + "</p><p>" + botmsg.message2 + "</p></div></li>";
     $("#playermsgcontainer").prepend(bot_message_container).load();
-    
+
     botmsg = {
         message: "To start the game anew, every player has to be ready again ;)",
     };
@@ -269,7 +269,7 @@ socket.on('win', function (winner) {
 
     $("#checkbox").prop("checked", false);
     $("#playerReady").removeClass("ready").addClass("not-ready").text("not ready");
-    $('#players > li > div > p > span').each(function () { 
+    $('#players > li > div > p > span').each(function () {
         $(this).removeClass("ready").addClass("not-ready").text("not ready");
     });
 

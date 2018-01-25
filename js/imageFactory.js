@@ -97,7 +97,7 @@ function ImageFactory() {
     img.title = title;
 
     // add event listeners for callbacks
-    img.addEventListener('error', function (){
+    img.addEventListener('error', function () {
       base.loadingImgs--;
     });
 
@@ -124,7 +124,7 @@ function ImageFactory() {
   this.load = function (callback) {
     this.callback = callback;
 
-      // create and initialize images from the image paths and push it into the arrays
+    // create and initialize images from the image paths and push it into the arrays
     for (var i = 0; i < this.playerImages.tileCount; i++) {
       this.front.push(this.createImage(this.playerImages.frontImgs[i], "Bomberman Front"));
       this.back.push(this.createImage(this.playerImages.backImgs[i], "Bomberman Back"));

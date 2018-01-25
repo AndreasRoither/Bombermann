@@ -207,7 +207,7 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         [1, 1]
     ];
 
-    this.checkBlockCoords = function(blockcoordY, blockcoordX) {
+    this.checkBlockCoords = function (blockcoordY, blockcoordX) {
         if (myBackground.map[blockcoordY][blockcoordX] == tileBlocks.background) {
             return true;
         }
@@ -223,13 +223,13 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.possibleMove(this.pos.x + this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, -this.walkStep, 0)) {
             this.speed.speedX -= this.walkStep;
         }
-        else if (!movUp && !movDown && (this.quarter == 3 || this.quarter == 4) && this.BlockCoord[0][0]!=0) {
-            if (this.checkBlockCoords(this.BlockCoord[2][1],this.BlockCoord[2][0]))
+        else if (!movUp && !movDown && (this.quarter == 3 || this.quarter == 4) && this.BlockCoord[0][0] != 0) {
+            if (this.checkBlockCoords(this.BlockCoord[2][1], this.BlockCoord[2][0]))
                 this.moveDown();
         }
-        else if (!movUp && !movDown && (this.quarter == 2 || this.quarter == 1) && this.BlockCoord[0][0]!=0) {
-            if (this.checkBlockCoords(this.BlockCoord[4][1],this.BlockCoord[4][0]))
-               this.moveUp();
+        else if (!movUp && !movDown && (this.quarter == 2 || this.quarter == 1) && this.BlockCoord[0][0] != 0) {
+            if (this.checkBlockCoords(this.BlockCoord[4][1], this.BlockCoord[4][0]))
+                this.moveUp();
         }
         double = false;
         this.currentDirection = directions.left;
@@ -240,12 +240,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, this.walkStep, 0)) {
             this.speed.speedX += this.walkStep;
         }
-        else if (!movUp && !movDown && (this.quarter == 4 || this.quarter == 3) && this.BlockCoord[1][0]!=18) {
-            if (this.checkBlockCoords(this.BlockCoord[3][1],this.BlockCoord[3][0]))
+        else if (!movUp && !movDown && (this.quarter == 4 || this.quarter == 3) && this.BlockCoord[1][0] != 18) {
+            if (this.checkBlockCoords(this.BlockCoord[3][1], this.BlockCoord[3][0]))
                 this.moveDown();
         }
-        else if (!movUp && !movDown && (this.quarter == 1 || this.quarter == 2) && this.BlockCoord[1][0]!=18) {
-            if (this.checkBlockCoords(this.BlockCoord[5][1],this.BlockCoord[5][0]))
+        else if (!movUp && !movDown && (this.quarter == 1 || this.quarter == 2) && this.BlockCoord[1][0] != 18) {
+            if (this.checkBlockCoords(this.BlockCoord[5][1], this.BlockCoord[5][0]))
                 this.moveUp();
         }
         double = false;
@@ -257,12 +257,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height / 2 + this.speed.speedY, 0, -this.walkStep)) {
             this.speed.speedY -= this.walkStep;
         }
-        else if (!movLeft && !movRight && (this.quarter == 1 || this.quarter == 4) && this.BlockCoord[0][1]!=0) {
-            if (this.checkBlockCoords(this.BlockCoord[1][1],this.BlockCoord[1][0]))
+        else if (!movLeft && !movRight && (this.quarter == 1 || this.quarter == 4) && this.BlockCoord[0][1] != 0) {
+            if (this.checkBlockCoords(this.BlockCoord[1][1], this.BlockCoord[1][0]))
                 this.moveRight();
         }
-        else if (!movLeft && !movRight && (this.quarter == 2 || this.quarter == 3) && this.BlockCoord[0][1]!=0) {
-            if (this.checkBlockCoords(this.BlockCoord[0][1],this.BlockCoord[0][0]))
+        else if (!movLeft && !movRight && (this.quarter == 2 || this.quarter == 3) && this.BlockCoord[0][1] != 0) {
+            if (this.checkBlockCoords(this.BlockCoord[0][1], this.BlockCoord[0][0]))
                 this.moveLeft();
         }
         double = false;
@@ -274,12 +274,12 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
             this.possibleMove(this.pos.x + this.dimensions.width - this.collsionCorrection + this.speed.speedX, this.pos.y + this.dimensions.height - this.collsionCorrection + this.speed.speedY, 0, this.walkStep)) {
             this.speed.speedY += this.walkStep;
         }
-        else if (!movLeft && !movRight && (this.quarter == 4 || this.quarter == 1) && this.BlockCoord[2][1]!=12) {
-            if (this.checkBlockCoords(this.BlockCoord[3][1],this.BlockCoord[3][0]))
+        else if (!movLeft && !movRight && (this.quarter == 4 || this.quarter == 1) && this.BlockCoord[2][1] != 12) {
+            if (this.checkBlockCoords(this.BlockCoord[3][1], this.BlockCoord[3][0]))
                 this.moveRight();
         }
-        else if (!movLeft && !movRight && (this.quarter == 3 || this.quarter == 2) && this.BlockCoord[2][1]!=12) {
-            if (this.checkBlockCoords(this.BlockCoord[2][1],this.BlockCoord[2][0]))
+        else if (!movLeft && !movRight && (this.quarter == 3 || this.quarter == 2) && this.BlockCoord[2][1] != 12) {
+            if (this.checkBlockCoords(this.BlockCoord[2][1], this.BlockCoord[2][0]))
                 this.moveLeft();
         }
         double = false;
@@ -481,13 +481,13 @@ function player(context, position, playerSizeMultiplier, walkSpeed) {
         }
 
         if (this.imageCounter < 7) {
-            if (this.delay == 2) { 
-                this.imageCounter = this.imageCounter + 1; 
-                this.delay = 0; 
-            } 
-            else { 
-                this.delay++; 
-            } 
+            if (this.delay == 2) {
+                this.imageCounter = this.imageCounter + 1;
+                this.delay = 0;
+            }
+            else {
+                this.delay++;
+            }
         } else {
             this.imageCounter = 0;
         }
@@ -1109,7 +1109,7 @@ function bombHandler() {
     this.removeBomb = function (bomb) {
         var index = this.bombs.indexOf(bomb);
         if (index > -1) {
-            if (bomb.bombPlayerId == socket.id){ 
+            if (bomb.bombPlayerId == socket.id) {
                 this.myBombsCounter--;
             }
             this.bombCounter--;
