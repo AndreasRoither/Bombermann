@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  app:
+    image: bombermann:bombermann
+    workind_dir: /Bombermann
+    ports:
+      - 3000:4200
+    command: sh -c "cd nodejs && node index.js"
