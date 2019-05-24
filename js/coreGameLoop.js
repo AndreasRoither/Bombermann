@@ -13,6 +13,8 @@ var canvas_game = document.getElementById("gameCanvas");
 
 var diarrheaIntervalRunning = false;
 
+var fps = 60;
+
 /* Game Area (Canvas) */
 var myGameArea = {
     gameStartedUp: false,
@@ -21,7 +23,7 @@ var myGameArea = {
     start: function () {
         this.canvas.width = 665;
         this.canvas.height = 455;
-        this.interval = setInterval(updateGameArea, 16);
+        this.interval = setInterval(updateGameArea, 1000/fps);
     },
     clear: function () {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
