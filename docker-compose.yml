@@ -4,6 +4,7 @@ services:
   app:
     image: bombermann:bombermann
     working_dir: /Bombermann
+    restart: always 
     ports:
       - 3000:4200
     command: sh -c "cd nodejs && npm install && node index.js"
