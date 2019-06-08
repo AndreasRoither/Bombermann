@@ -6,4 +6,4 @@ services:
     working_dir: /Bombermann
     ports:
       - 3000:4200
-    command: sh -c "cd nodejs && node index.js"
+    command: sh -c "cd nodejs && npm install && node index.js"
