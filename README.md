@@ -34,14 +34,16 @@ When you opened the page a modal popup will show. Input your name and choose the
 </p>
 
 ### Docker
-Create image:  
-`docker image build -t bombermann:bombermann .`
-Start container with compose:  
-`docker-compose up`
+- Locate the `js` folder and open `io.js` inside
+- Change `localhost:4200` to your specific needs
+- Create image:  
+  - `docker image build -t bombermann:bombermann .`
+- Start container with compose:  
+  - `docker-compose up`
 
 ### Technology used
-Built with
-[Visual Studio Code](https://code.visualstudio.com/)
+Built with:  
+[Visual Studio Code](https://code.visualstudio.com/)  
 [Node JS](https://nodejs.org/en/)
 
 ### Credits
