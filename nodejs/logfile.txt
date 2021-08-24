@@ -1,6 +1,0 @@
-
--- Server listening --
-Start time: 10/1/2018 @ 16:3:15
-
-App listening at http://:::4200
-
