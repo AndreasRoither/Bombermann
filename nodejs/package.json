@@ -9,7 +9,7 @@
     "author": "Roither Andreas, Nimmervoll David",
     "license": "ISC",
     "dependencies": {
-        "express": "^4.16.4",
+        "express": "^4.17.3",
         "jquery": "^3.4.1",
         "socket.io": "^4.0.0"
     }
